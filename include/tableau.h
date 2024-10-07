@@ -1,4 +1,4 @@
-#IFNDEF TABLEAU_H
-#DEFINE TABLEAU_H
+#ifndef TABLEAU_H
+#define TABLEAU_H
 
-#ENDIF
+#endif

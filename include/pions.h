@@ -1,5 +1,5 @@
-#IFNDEF PIONS_H
-#DEFINE PIONS_H
+#ifndef PIONS_H
+#define PIONS_H
 
 #include "classes.h"
 #include "tableau.h"
@@ -48,4 +48,4 @@ class Sauterelles{
     void deplacementsPossibles();
 };
 
-#ENDIF
+#endif

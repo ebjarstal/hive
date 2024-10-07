@@ -1,5 +1,5 @@
-#IFNDEF CLASSES_H
-#DEFINE CLASSES_H
+#ifndef CLASSES_H
+#define CLASSES_H
 
 #include <iostream>
 #include <string>
@@ -96,4 +96,4 @@ class JoueurIA{
     void jouer();
 };
 
-#ENDIF
+#endif
