@@ -1,3 +1,6 @@
+#IFNDEF CLASSES_H
+#DEFINE CLASSES_H
+
 #include <iostream>
 #include <string>
 #include <list>
@@ -92,3 +95,5 @@ class JoueurIA{
     public:
     void jouer();
 };
+
+#ENDIF
