@@ -1,4 +1,4 @@
-#include "plateau.h"
+#include "../include/plateau.h"
 
 void test1() {
     int n = 6;
