@@ -1,4 +1,4 @@
-#include "plateau.h"
+#include "../include/plateau.h"
 
  // Constructeur pour initialiser la grille avec les lignes et colonnes données
 Plateau::Plateau(int lignes, int colonnes) : lignes(lignes), colonnes(colonnes) {
