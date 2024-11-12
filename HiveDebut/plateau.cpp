@@ -3,7 +3,7 @@
 // Constructeur pour initialiser la grille avec les lignes et colonnes donn es
 Plateau::Plateau(unsigned int l, unsigned int c, unsigned int z, GestionnairePions& gP, GestionnaireMouvements& gM, GestionnaireVoisins& gV) : nb_lignes(l), nb_colonnes(c), nb_couches(z), gestionnairePions(gP), gestionnaireMouvements(gM), gestionnaireVoisins(gV) {
     grille.resize(l, std::vector<std::vector<Pion*>>(c, std::vector<Pion*>(z, nullptr))); // Initialiser la grille avec des nullptr
-    std::cout << "Plateau créé avec " << l << " lignes, " << c << " colonnes et " << z << " couches." << std::endl;
+    std::cout << "Plateau cree avec " << l << " lignes, " << c << " colonnes et " << z << " couches." << std::endl;
 }
 
 // Destructeur pour supprimer les objets Pion alloues dynamiquement
