@@ -1,1 +1,0 @@
-Le dossier 'test' sert à créer des fichiers .cpp dans lesquels on test tout et n'importe quoi dans le projet pour s'assurer qu'il fonctionne comme prévu (et surtout pour détecter d'éventuels bugs)
