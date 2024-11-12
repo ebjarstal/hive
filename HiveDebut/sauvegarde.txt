@@ -1,0 +1,33 @@
+Nombre de tour: 6
+Nombre d'undo: 0
+Joueur 1:
+Couleur: [31m
+Pions en main:
+  Type: S, Couleur: [31m
+  Type: S, Couleur: [31m
+  Type: F, Couleur: [31m
+  Type: C, Couleur: [31m
+  Type: C, Couleur: [31m
+Joueur 2:
+Couleur: [37m
+Pions en main:
+  Type: R, Couleur: [37m
+  Type: S, Couleur: [37m
+  Type: S, Couleur: [37m
+  Type: S, Couleur: [37m
+  Type: F, Couleur: [37m
+  Type: F, Couleur: [37m
+  Type: F, Couleur: [37m
+  Type: C, Couleur: [37m
+  Type: C, Couleur: [37m
+Plateau:
+  Position: (8, 9, 0), Type: F, Couleur: [31m
+  Position: (9, 9, 0), Type: F, Couleur: [31m
+  Position: (10, 9, 0), Type: S, Couleur: [31m
+  Position: (11, 10, 0), Type: R, Couleur: [31m
+Historique des mouvements:
+  De (-1, -1, -1)   (11, 10, 0)
+  De (-1, -1, -1)   (9, 8, 0)
+  De (-1, -1, -1)   (8, 9, 0)
+  De (-1, -1, -1)   (10, 9, 0)
+  De (-1, -1, -1)   (9, 9, 0)
