@@ -3,6 +3,7 @@
 #include "plateau.h"
 #include "joueur.h"
 #include "mouvement.h"
+#include "usine.h"
 
 #include <iostream>
 #include <stack>

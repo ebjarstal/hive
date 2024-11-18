@@ -31,7 +31,7 @@ void Partie::jouerUnTour(Joueur* j) {
             std::cout << "Joueur 2 gagne !! La partie s'est finie en " << Partie::getNombreTour() << " tours." << std::endl;
         }
         else {
-            std::cout << "Egalit  !! La partie s'est finie en " << Partie::getNombreTour() << " tours." << std::endl;
+            std::cout << "Egalite !! La partie s'est finie en " << Partie::getNombreTour() << " tours." << std::endl;
         }
     }
 }
@@ -152,16 +152,23 @@ void Partie::setup() {
 
 
 std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
+    Usinedepions usine;
     std::vector<Pion*> pions;
-    pions.push_back(new Pion("R", couleur));
-    pions.push_back(new Pion("S", couleur));
-    pions.push_back(new Pion("S", couleur));
-    pions.push_back(new Pion("S", couleur));
-    pions.push_back(new Pion("F", couleur));
-    pions.push_back(new Pion("F", couleur));
-    pions.push_back(new Pion("F", couleur));
-    pions.push_back(new Pion("C", couleur));
-    pions.push_back(new Pion("C", couleur));
+
+    pions.push_back(usine.creerPion("Reine", couleur));
+    pions.push_back(usine.creerPion("Sauterelle", couleur));
+    pions.push_back(usine.creerPion("Sauterelle", couleur));
+    pions.push_back(usine.creerPion("Sauterelle", couleur));
+    pions.push_back(usine.creerPion("Fourmi", couleur));
+    pions.push_back(usine.creerPion("Fourmi", couleur));
+    pions.push_back(usine.creerPion("Fourmis", couleur));
+    pions.push_back(usine.creerPion("Scarabee", couleur));
+    pions.push_back(usine.creerPion("Scarabee", couleur));
+    pions.push_back(usine.creerPion("Araignee", couleur));
+    pions.push_back(usine.creerPion("Araignee", couleur));
+
+    //rajouter ligne avec le type et le nombre de fois de votre extension
+
     return pions;
 }
 
