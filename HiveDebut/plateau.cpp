@@ -19,11 +19,11 @@ Plateau::~Plateau() {
 }
 
 void Plateau::afficher() const {
-    // Calculer la largeur maximale n cessaire pour le num ro de ligne
+    // Calculer la largeur maximale necessaire pour le numero de ligne
     size_t largeurLigne = std::to_string(nb_lignes - 1).size();
 
     for (unsigned int ligne = 0; ligne < nb_lignes; ++ligne) {
-        // Afficher le num ro de ligne avec un espace r serv 
+        // Afficher le numero de ligne avec un espace reserve
         std::cout << std::setw(largeurLigne) << ligne << " ";
 
         // Imprimer les espaces seulement pour une ligne sur deux

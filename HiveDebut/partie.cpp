@@ -1,10 +1,10 @@
 ﻿#include "partie.h"
 
 Partie::~Partie() {
-    delete joueur1;  // Libere la m�moire allouee pour joueur1
-    delete joueur2;  // Libere la m�moire allouee pour joueur2
+    delete joueur1;  // Libère la mémoire allouée pour joueur1
+    delete joueur2;  // Libère la mémoire allouée pour joueur2
 
-    // Libere chaque mouvement dans l'historique
+    // Libère chaque mouvement dans l'historique
     while (!historique.empty()) {
         delete historique.top();
         historique.pop();
@@ -52,13 +52,13 @@ std::vector<std::string> Partie::listerSauvegardes() {
 
 void creerDossierSiInexistant(const std::string& cheminDossier) {
     if (_mkdir(cheminDossier.c_str()) == 0) {
-        std::cout << "Dossier cr�� avec succ�s : " << cheminDossier << std::endl;
+        std::cout << "Dossier cree avec succes : " << cheminDossier << std::endl;
     }
     else if (errno == EEXIST) {
-        std::cout << "Le dossier existe d�j� : " << cheminDossier << std::endl;
+        std::cout << "Le dossier existe deja : " << cheminDossier << std::endl;
     }
     else {
-        std::cerr << "Erreur : Impossible de cr�er le dossier " << cheminDossier << std::endl;
+        std::cerr << "Erreur : Impossible de creer le dossier " << cheminDossier << std::endl;
     }
 }
 
@@ -70,7 +70,7 @@ void Partie::setup() {
     int choix = 0;
 
     // Demander à l'utilisateur s'il souhaite charger une partie ou en commencer une nouvelle
-    std::cout << "Voulez-vous (1) Charger une partie ou (2) Commencer une nouvelle partie ? ";
+    std::cout << "Voulez-vous\n(1) Charger une partie\n(2) Commencer une nouvelle partie\n";
     std::cin >> choix;
 
     if (choix == 1) {
@@ -90,7 +90,7 @@ void Partie::setup() {
         }
 
         if (fichiersSauvegarde.empty()) {
-            std::cout << "Aucune sauvegarde trouvée. Création d'une nouvelle partie." << std::endl;
+            std::cout << "Aucune sauvegarde trouvee. Creation d'une nouvelle partie." << std::endl;
         }
         else {
             std::cout << "Sauvegardes disponibles : " << std::endl;
@@ -100,17 +100,17 @@ void Partie::setup() {
 
             int choixSauvegarde = 0;
             while (choixSauvegarde < 1 || choixSauvegarde > fichiersSauvegarde.size()) {
-                std::cout << "Choisissez une sauvegarde à charger (1-" << fichiersSauvegarde.size() << ") : ";
+                std::cout << "Choisissez une sauvegarde a charger (1-" << fichiersSauvegarde.size() << ") : ";
                 std::cin >> choixSauvegarde;
             }
 
             nomPartie = fichiersSauvegarde[choixSauvegarde - 1];
             if (chargerPartie()) {
-                std::cout << "Partie chargée avec succès !" << std::endl;
+                std::cout << "Partie chargee avec succes !" << std::endl;
                 return;
             }
             else {
-                std::cout << "Erreur lors du chargement de la partie. Création d'une nouvelle partie." << std::endl;
+                std::cout << "Erreur lors du chargement de la partie. Creation d'une nouvelle partie." << std::endl;
             }
         }
     }
@@ -125,7 +125,7 @@ void Partie::setup() {
         listeFichiers << nomPartie << std::endl;
     }
 
-    std::cout << "Nouvelle partie créée : " << nomPartie << std::endl;
+    std::cout << "Nouvelle partie creee : " << nomPartie << std::endl;
 
     // Initialisation de la partie
     int nbJoueur = 0;
@@ -138,7 +138,7 @@ void Partie::setup() {
         }
     }
 
-    std::cout << "Nombre de joueurs sélectionné : " << nbJoueur << std::endl;
+    std::cout << "Nombre de joueurs selectionne : " << nbJoueur << std::endl;
 
     if (nbJoueur == 1) {
         joueur1 = new JoueurHumain(initialiserPions(RED), RED);
@@ -233,9 +233,9 @@ bool Partie::chargerPartie() {
     else
         joueur2 = new JoueurIA(pionsJ2, couleurJ2);
 
-    // Charger l'�tat du plateau
+    // Charger l'état du plateau
     while (std::getline(fichier, ligne) && ligne.find("Position") != std::string::npos) {
-        // Extraire les coordonn�es
+        // Extraire les coordonnées
         size_t pos1 = ligne.find("(") + 1;
         size_t pos2 = ligne.find(",");
         int colonne = std::stoi(ligne.substr(pos1, pos2 - pos1));
@@ -259,7 +259,7 @@ bool Partie::chargerPartie() {
 
     // Charger l'historique des mouvements
     while (std::getline(fichier, ligne) && ligne.find("De") != std::string::npos) {
-        // Extraire les anciennes coordonn�es
+        // Extraire les anciennes coordonnées
         size_t pos1 = ligne.find("(") + 1;
         size_t pos2 = ligne.find(",");
         int oldColonne = std::stoi(ligne.substr(pos1, pos2 - pos1));
@@ -272,7 +272,7 @@ bool Partie::chargerPartie() {
         pos2 = ligne.find(")", pos1);
         int oldZ = std::stoi(ligne.substr(pos1, pos2 - pos1));
 
-        // Extraire les nouvelles coordonn�es
+        // Extraire les nouvelles coordonnées
         pos1 = ligne.find("(", pos2) + 1;
         pos2 = ligne.find(",", pos1);
         int newColonne = std::stoi(ligne.substr(pos1, pos2 - pos1));
@@ -296,20 +296,21 @@ bool Partie::chargerPartie() {
 
 
 bool Partie::partieTerminee() const {
-    // Obtenir tous les pions pr sents sur le plateau
+    // Obtenir tous les pions présents sur le plateau
     std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = plateau.gestionnairePions.getPions(plateau);
 
     for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
         Pion* pion = std::get<0>(pionsSurPlateau[i]);
         if (pion->getType() == "R") {
-            // V rifie si la reine a exactement 6 voisins
+            // Vérifie si la reine a exactement 6 voisins
             if (plateau.gestionnaireVoisins.nombreVoisins(*pion, plateau) == 6) {
-                return true; // La partie est termin e
+                return true; // La partie est terminée
             }
         }
     }
     return false;
 }
+
 Joueur* Partie::determinerGagnant() const
 {
     std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = plateau.gestionnairePions.getPions(plateau);
@@ -317,11 +318,11 @@ Joueur* Partie::determinerGagnant() const
     for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
         Pion* pion = std::get<0>(pionsSurPlateau[i]);
         if (pion->getType() == "R") {
-            // V rifie si la reine a exactement 6 voisins
+            // Vérifie si la reine a exactement 6 voisins
             if (plateau.gestionnaireVoisins.nombreVoisins(*pion, plateau) == 6) {
                 string couleurGagnante = pion->getCouleur();
 
-                // D terminer le joueur ayant cette couleur
+                // Déterminer le joueur ayant cette couleur
                 if (joueur1 && joueur1->getCouleur() == couleurGagnante) {
                     return joueur1;
                 }
@@ -344,14 +345,14 @@ void Partie::annulerMouvement() {
         nbUndo += 1;
     }
 
-    // Nombre d'actions   annuler
+    // Nombre d'actions à annuler
     int nbaction = static_cast<int>(historique.size());
 
     // Annuler les mouvements dans l'historique
     for (unsigned int i = 0; i < getNbUndo(); i++) {
-        // V rifier si la pile n'est pas vide
+        // Vérifier si la pile n'est pas vide
         if (!historique.empty()) {
-            // R cup rer le dernier mouvement (pointeur)
+            // Récupérer le dernier mouvement (pointeur)
             Mouvement* ancienMouvement = historique.top();
 
             // D placer le pion dans l'autre sens (annuler le mouvement)
@@ -361,12 +362,12 @@ void Partie::annulerMouvement() {
             // Supprimer le mouvement de l'historique
             historique.pop();
 
-            // Lib rer la m moire de l'objet Mouvement si n cessaire
-            delete ancienMouvement;  // Suppression du pointeur pour  viter la fuite m moire
+            // Libérer la mémoire de l'objet Mouvement si nécessaire
+            delete ancienMouvement;  // Suppression du pointeur pour éviter la fuite mémoire
         }
     }
 
-    // R initialiser le nombre d'undos
+    // Réinitialiser le nombre d'undos
     nbUndo = 0;
 }
 
@@ -378,7 +379,7 @@ void Partie::sauvegarde() {
         return;
     }
 
-    // Sauvegarder les donn�es comme avant...
+    // Sauvegarder les données comme avant...
     fichier << "Nombre de tour: " << nombreTour << std::endl;
     fichier << "Nombre d'undo: " << nbUndo << std::endl;
 
@@ -412,7 +413,7 @@ void Partie::sauvegarde() {
     }
 
     fichier << "Historique des mouvements:" << std::endl;
-    std::stack<Mouvement*> tempHistorique = historique; // Copie pour ne pas d�truire l'historique
+    std::stack<Mouvement*> tempHistorique = historique; // Copie pour ne pas détruire l'historique
     while (!tempHistorique.empty()) {
         Mouvement* mvt = tempHistorique.top();
         tempHistorique.pop();
@@ -421,7 +422,7 @@ void Partie::sauvegarde() {
     }
 
     fichier.close();
-    std::cout << "Sauvegarde de la partie r�ussie dans '" << nomFichier << "'." << std::endl;
+    std::cout << "Sauvegarde de la partie reussie dans '" << nomFichier << "'." << std::endl;
 }
 
 

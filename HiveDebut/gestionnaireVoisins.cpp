@@ -104,7 +104,7 @@ bool GestionnaireVoisins::hasVoisin(Pion& p, Plateau& plateau) const {
 
 bool GestionnaireVoisins::sontVoisin(Pion& p1, Pion& p2, Plateau& plateau) const {
     if (!plateau.gestionnairePions.estPose(p1) || !plateau.gestionnairePions.estPose(p2)) {
-        std::cout << "Au moins l un des deux pions n est pas pose sur le plateau\n";
+        std::cout << "Au moins l'un des deux pions n'est pas pose sur le plateau\n";
         return false;
     }
     std::vector<Pion*> voisins = getVoisins(p1, plateau); // On prend tous les voisins de P1

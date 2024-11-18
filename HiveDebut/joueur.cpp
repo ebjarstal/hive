@@ -128,7 +128,7 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
 }
 
 void JoueurHumain::afficherPionsSurPlateau(const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau){
-    std::cout << "Pions pouvant être déplacés sur le plateau : " << std::endl;
+    std::cout << "Pions pouvant etre deplaces sur le plateau : " << std::endl;
 
     for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
         Pion* pion = std::get<0>(pionsSurPlateau[i]);
@@ -158,7 +158,7 @@ int JoueurHumain::choisirPionSurPlateau(const std::vector<std::tuple<Pion*, int,
 Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
     std::vector<std::tuple<Pion*, int, int, int>> pionsBougeable = plateau.gestionnaireMouvements.getPionsBougeables(plateau);
     if (pionsBougeable.empty()) {
-        std::cout << "Aucun pion peut être bougé\n";
+        std::cout << "Aucun pion peut etre bouge\n";
         return nullptr;
     }
     afficherPionsSurPlateau(pionsBougeable);
