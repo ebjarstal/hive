@@ -1,44 +1,48 @@
 #include "gestionnaireMouvements.h"
 #include "plateau.h"
 
-// Retourne vrai si le pion peut bouger (ne casse pas la ruche ou a la place suffisante)
-bool GestionnaireMouvements::peutBouger(Pion& p, Plateau& plateau) {
+// Retourne vrai si le pion peut bouger (ne casse pas la ruche)
+bool GestionnaireMouvements::cassageRuche(Pion& p, Plateau& plateau) {
 
     // Verification si le pion est pose
     if (plateau.gestionnairePions.estPose(p) == false) {
         std::cout << "Le pion n est pas pose sur le plateau\n";
+        return true;
+    }
+
+    // On doit avoir des voisins, nous sommes pas censé aller dans cette boucle
+    if (plateau.gestionnaireVoisins.nombreVoisins(p, plateau) == 0) {
+        std::cout << "Le pion n a pas de voisins\n";
         return false;
     }
 
     // Verification de la rupture de la ruche
-    if (plateau.gestionnaireVoisins.nombreVoisins(p, plateau) == 0) {
-        std::cout << "Le pion n a pas de voisins\n";
-        return true;
-    }
-
     std::vector<Pion*> voisins = plateau.gestionnaireVoisins.getVoisins(p, plateau);
     std::vector<Pion*> ruche_ref;
 
+    // Sauvegarde des données du pion qui va etre supprimé
     int ref_l = p.getLigne();
     int ref_c = p.getColonne();
     int ref_z = p.getZ();
+
     plateau.gestionnairePions.deletePion(p, plateau); // V rification du cassage de la ruche en supprimant le pion
+    
     for (Pion* voisin : voisins) {
         // compare chaque voisin du pion this avec le pion p
         if (voisin) {
             if (ruche_ref.empty()) {
-                ruche_ref = plateau.gestionnaireVoisins.getRuche(voisin, plateau); // Initialisation de la r f rence
+                ruche_ref = plateau.gestionnaireVoisins.getRuche(voisin, plateau); // Initialisation de la reference
             }
-            // V rification si les ruches des voisins sont les m mes si on enl ve le pion
+            // Verification si les ruches des voisins sont les m mes si on enl ve le pion
             else if (plateau.gestionnaireVoisins.getRuche(voisin, plateau) != ruche_ref) {
-                std::cout << "Le deplacement du pion casse la ruche !";
+                std::cout << "Le deplacement du pion casse la ruche !\n";
                 plateau.gestionnairePions.setPion(ref_l, ref_c, ref_z, &p, plateau); // On remet le pion apr s v rification
-                return false;
+                return true;
             }
         }
     }
     plateau.gestionnairePions.setPion(ref_l, ref_c, ref_z, &p, plateau); // On remet le pion apr s v rification
-    return true;
+    return false;
 }
 
 std::list<Mouvement*> GestionnaireMouvements::emplacementsPossibles(const Pion& p, Plateau& plateau) {
@@ -109,4 +113,49 @@ std::list<Mouvement*> GestionnaireMouvements::emplacementsPossibles(const Pion& 
     }
 
     return mouvementsPossibles;
+}
+
+std::vector<std::tuple<Pion*, int, int, int>> GestionnaireMouvements::getPionsBougeables(Plateau& plateau) {
+    const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau = plateau.gestionnairePions.getPions(plateau);
+    std::vector<std::tuple<Pion*, int, int, int>> pionsBougeables;
+    // Pour chaque pion sur le plateau, on regarde s'il peut bouger
+    for (std::tuple<Pion*, int, int, int> pions: pionsSurPlateau) {
+        Pion* pion = std::get<0>(pions);
+        if (!(plateau.gestionnaireMouvements.cassageRuche(*pion, plateau))) {
+            //std::cout << "Le pion suivant ne casse pas la ruche : " << pion->getColonne() << " " << pion->getLigne() << " " << pion->getZ() << "\n";
+            pionsBougeables.push_back(pions);
+        }
+    }
+    return pionsBougeables;
+}
+
+// Booléen si le déplacement casse la ruche ou non
+bool GestionnaireMouvements::deplacementCasseRuche(Pion* pion, int newLigne, int newColonne, int newZ, Plateau& plateau) {
+    std::vector<Pion*> rucheAvant = plateau.gestionnaireVoisins.getRuche(pion, plateau);
+
+    // D placer temporairement le pion
+    int oldLigne = pion->getLigne();
+    int oldColonne = pion->getColonne();
+    int oldZ = pion->getZ();
+    plateau.gestionnairePions.deletePion(*pion, plateau);
+    plateau.gestionnairePions.setPion(newLigne, newColonne, newZ, pion, plateau);
+
+    std::vector<Pion*> rucheApres = plateau.gestionnaireVoisins.getRuche(pion, plateau);
+
+    // Remettre le pion   sa position initiale
+    plateau.gestionnairePions.deletePion(*pion, plateau);
+    plateau.gestionnairePions.setPion(oldLigne, oldColonne, oldZ, pion, plateau);
+
+    return rucheAvant.size() != rucheApres.size();
+}
+
+// Filtre les deplacements valides de tous les deplacements possibles
+std::list<Mouvement*> GestionnaireMouvements::filtrerDeplacementsValides(const std::list<Mouvement*>& deplacements, Pion* pion, Plateau& plateau) {
+    std::list<Mouvement*> deplacementsValides;
+    for (Mouvement* m : deplacements) {
+        if (!deplacementCasseRuche(pion, m->getLigne(), m->getColonne(), m->getZ(), plateau)) {
+            deplacementsValides.push_back(m);
+        }
+    }
+    return deplacementsValides;
 }

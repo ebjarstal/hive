@@ -55,12 +55,6 @@ private:
     // M thode pour choisir un pion sur le plateau
     int choisirPionSurPlateau(const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau);
 
-    // M thode pour v rifier si le d placement casse la ruche
-    bool deplacementCasseRuche(Pion* pion, int newLigne, int newColonne, int newZ, Plateau& plateau);
-
-    // M thode pour filtrer les emplacements valides
-    std::list<Mouvement*> filtrerEmplacementsValides(const std::list<Mouvement*>& emplacements, Pion* pion, Plateau& plateau);
-
 public:
     JoueurHumain(std::vector<Pion*> pionsEnMain, string couleur) : Joueur(pionsEnMain, couleur) {}
     Mouvement* Jouer(Plateau& plateau) override;
