@@ -1,10 +1,10 @@
-#include "partie.h"
+ï»¿#include "partie.h"
 
 Partie::~Partie() {
-    delete joueur1;  // Libère la mémoire allouée pour joueur1
-    delete joueur2;  // Libère la mémoire allouée pour joueur2
+    delete joueur1;  // Libï¿½re la mï¿½moire allouï¿½e pour joueur1
+    delete joueur2;  // Libï¿½re la mï¿½moire allouï¿½e pour joueur2
 
-    // Libère chaque mouvement dans l'historique
+    // Libï¿½re chaque mouvement dans l'historique
     while (!historique.empty()) {
         delete historique.top();
         historique.pop();
@@ -36,13 +36,99 @@ void Partie::jouerUnTour(Joueur* j) {
     }
 }
 
-void Partie::setup()
-{
+std::vector<std::string> Partie::listerSauvegardes() {
+    std::vector<std::string> sauvegardes;
+    std::ifstream fichierListe("liste_sauvegardes.txt");
+    if (fichierListe) {
+        std::string ligne;
+        while (std::getline(fichierListe, ligne)) {
+            if (!ligne.empty()) {
+                sauvegardes.push_back(ligne);
+            }
+        }
+    }
+    return sauvegardes;
+}
 
-    //r nitialise le plateau
+void creerDossierSiInexistant(const std::string& cheminDossier) {
+    if (_mkdir(cheminDossier.c_str()) == 0) {
+        std::cout << "Dossier crï¿½ï¿½ avec succï¿½s : " << cheminDossier << std::endl;
+    }
+    else if (errno == EEXIST) {
+        std::cout << "Le dossier existe dï¿½jï¿½ : " << cheminDossier << std::endl;
+    }
+    else {
+        std::cerr << "Erreur : Impossible de crï¿½er le dossier " << cheminDossier << std::endl;
+    }
+}
+
+void Partie::setup() {
+    // Crï¿½er le dossier "sauvegarde" s'il n'existe pas
+    const std::string dossierSauvegarde = "sauvegardes";
+    creerDossierSiInexistant(dossierSauvegarde);
+
+    int choix = 0;
+
+    // Demander ï¿½ l'utilisateur s'il souhaite charger une partie ou en commencer une nouvelle
+    std::cout << "Voulez-vous (1) Charger une partie ou (2) Commencer une nouvelle partie ? ";
+    std::cin >> choix;
+
+    if (choix == 1) {
+        // Charger la liste des fichiers de sauvegarde
+        std::vector<std::string> fichiersSauvegarde;
+        std::ifstream listeFichiers(dossierSauvegarde + "/liste_sauvegardes.txt");
+
+        if (!listeFichiers) {
+            std::cerr << "Aucune liste de sauvegarde disponible." << std::endl;
+        }
+        else {
+            std::string nomFichier;
+            while (std::getline(listeFichiers, nomFichier)) {
+                fichiersSauvegarde.push_back(nomFichier);
+            }
+            listeFichiers.close();
+        }
+
+        if (fichiersSauvegarde.empty()) {
+            std::cout << "Aucune sauvegarde trouvee. Creation d'une nouvelle partie." << std::endl;
+        }
+        else {
+            std::cout << "Sauvegardes disponibles : " << std::endl;
+            for (size_t i = 0; i < fichiersSauvegarde.size(); ++i) {
+                std::cout << i + 1 << ". " << fichiersSauvegarde[i] << std::endl;
+            }
+
+            int choixSauvegarde = 0;
+            while (choixSauvegarde < 1 || choixSauvegarde > fichiersSauvegarde.size()) {
+                std::cout << "Choisissez une sauvegarde ï¿½ charger (1-" << fichiersSauvegarde.size() << ") : ";
+                std::cin >> choixSauvegarde;
+            }
+
+            nomPartie = fichiersSauvegarde[choixSauvegarde - 1];
+            if (chargerPartie()) {
+                std::cout << "Partie chargï¿½e avec succï¿½s !" << std::endl;
+                return;
+            }
+            else {
+                std::cout << "Erreur lors du chargement de la partie. Crï¿½ation d'une nouvelle partie." << std::endl;
+            }
+        }
+    }
+
+    // Crï¿½ation d'une nouvelle partie
+    std::cout << "Entrez un nom pour la nouvelle partie : ";
+    std::cin >> nomPartie;
+
+    // Ajouter le nom dans le fichier de liste
+    std::ofstream listeFichiers(dossierSauvegarde + "/liste_sauvegardes.txt", std::ios::app);
+    if (listeFichiers) {
+        listeFichiers << nomPartie << std::endl;
+    }
+
+    std::cout << "Nouvelle partie creee : " << nomPartie << std::endl;
+
+    // Initialisation de la partie
     int nbJoueur = 0;
-
-    // Boucle jusqu'  ce que l'utilisateur entre 1 ou 2
     while (nbJoueur != 1 && nbJoueur != 2) {
         std::cout << "Entrez le nombre de joueurs (1 ou 2) : ";
         std::cin >> nbJoueur;
@@ -52,72 +138,161 @@ void Partie::setup()
         }
     }
 
-    std::cout << "Nombre de joueurs selectionn  : " << nbJoueur << std::endl;
+    std::cout << "Nombre de joueurs selectionne : " << nbJoueur << std::endl;
+
     if (nbJoueur == 1) {
-        std::vector<Pion*> pionsEnMainH;
-        std::vector<Pion*> pionsEnMainIA;
-
-        pionsEnMainH.push_back(new Pion("R", RED));
-        pionsEnMainH.push_back(new Pion("S", RED));
-        pionsEnMainH.push_back(new Pion("S", RED));
-        pionsEnMainH.push_back(new Pion("S", RED));
-        pionsEnMainH.push_back(new Pion("F", RED));
-        pionsEnMainH.push_back(new Pion("F", RED));
-        pionsEnMainH.push_back(new Pion("F", RED));
-        pionsEnMainH.push_back(new Pion("C", RED));
-        pionsEnMainH.push_back(new Pion("C", RED));
-
-        pionsEnMainIA.push_back(new Pion("R", WHITE));
-        pionsEnMainIA.push_back(new Pion("S", WHITE));
-        pionsEnMainIA.push_back(new Pion("S", WHITE));
-        pionsEnMainIA.push_back(new Pion("S", WHITE));
-        pionsEnMainIA.push_back(new Pion("F", WHITE));
-        pionsEnMainIA.push_back(new Pion("F", WHITE));
-        pionsEnMainIA.push_back(new Pion("F", WHITE));
-        pionsEnMainIA.push_back(new Pion("C", WHITE));
-        pionsEnMainIA.push_back(new Pion("C", WHITE));
-
-        joueur1 = new JoueurHumain(pionsEnMainH, RED);
-        joueur2 = new JoueurIA(pionsEnMainIA, WHITE);
-
+        joueur1 = new JoueurHumain(initialiserPions(RED), RED);
+        joueur2 = new JoueurIA(initialiserPions(WHITE), WHITE);
     }
     else {
-        std::vector<Pion*> pionsEnMainH1;
-        std::vector<Pion*> pionsEnMainH2;
+        joueur1 = new JoueurHumain(initialiserPions(RED), RED);
+        joueur2 = new JoueurHumain(initialiserPions(WHITE), WHITE);
+    }
+}
 
-        pionsEnMainH1.push_back(new Pion("R", RED));
-        pionsEnMainH1.push_back(new Pion("S", RED));
-        pionsEnMainH1.push_back(new Pion("S", RED));
-        pionsEnMainH1.push_back(new Pion("S", RED));
-        pionsEnMainH1.push_back(new Pion("F", RED));
-        pionsEnMainH1.push_back(new Pion("F", RED));
-        pionsEnMainH1.push_back(new Pion("F", RED));
-        pionsEnMainH1.push_back(new Pion("C", RED));
-        pionsEnMainH1.push_back(new Pion("C", RED));
+std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
+    std::vector<Pion*> pions;
+    pions.push_back(new Pion("R", couleur));
+    pions.push_back(new Pion("S", couleur));
+    pions.push_back(new Pion("S", couleur));
+    pions.push_back(new Pion("S", couleur));
+    pions.push_back(new Pion("F", couleur));
+    pions.push_back(new Pion("F", couleur));
+    pions.push_back(new Pion("F", couleur));
+    pions.push_back(new Pion("C", couleur));
+    pions.push_back(new Pion("C", couleur));
+    return pions;
+}
 
-        pionsEnMainH2.push_back(new Pion("R", WHITE));
-        pionsEnMainH2.push_back(new Pion("S", WHITE));
-        pionsEnMainH2.push_back(new Pion("S", WHITE));
-        pionsEnMainH2.push_back(new Pion("S", WHITE));
-        pionsEnMainH2.push_back(new Pion("F", WHITE));
-        pionsEnMainH2.push_back(new Pion("F", WHITE));
-        pionsEnMainH2.push_back(new Pion("F", WHITE));
-        pionsEnMainH2.push_back(new Pion("C", WHITE));
-        pionsEnMainH2.push_back(new Pion("C", WHITE));
-
-        joueur1 = new JoueurHumain(pionsEnMainH1, RED);
-        joueur2 = new JoueurHumain(pionsEnMainH2, WHITE);
-
+bool Partie::chargerPartie() {
+    std::string nomFichier = "sauvegardes/" + nomPartie + ".txt"; // Utiliser nomPartie pour le fichier
+    std::ifstream fichier(nomFichier);
+    if (!fichier) {
+        std::cerr << "Erreur : Impossible d'ouvrir le fichier de sauvegarde." << std::endl;
+        return false;
     }
 
-    //Extension Cocc("Coccinelle", 1);
-    //Extension Mous("Moustique", 2);
-    //Extension Clop("Cloporte", 3);
-    //extensions.push_back(Cocc);
-    //extensions.push_back(Mous);
-    //extensions.push_back(Clop);
+    std::string ligne;
 
+    // Lire le nombre de tours et d'undo
+    std::getline(fichier, ligne);
+    nombreTour = std::stoi(ligne.substr(ligne.find(":") + 2));
+
+    std::getline(fichier, ligne);
+    nbUndo = std::stoi(ligne.substr(ligne.find(":") + 2));
+
+    // Charger les informations du joueur 1
+    std::getline(fichier, ligne); // Joueur 1
+    std::getline(fichier, ligne); // Type de joueur
+    std::string typeJ1 = ligne.substr(ligne.find(":") + 2);
+
+    std::getline(fichier, ligne); // Couleur joueur 1
+    std::string couleurJ1 = ligne.substr(ligne.find(":") + 2);
+
+    std::vector<Pion*> pionsJ1;
+    std::getline(fichier, ligne); // Pions en main joueur 1
+    while (std::getline(fichier, ligne) && ligne.find("Type") != std::string::npos) {
+        // Extraire le type du pion
+        std::string typePart = ligne.substr(ligne.find(":") + 2);
+        size_t posVirgule = typePart.find(",");
+        std::string type = typePart.substr(0, posVirgule);
+
+        // Extraire la couleur du pion
+        std::string couleur = typePart.substr(posVirgule + 11); // Sauter ", Couleur: "
+        pionsJ1.push_back(new Pion(type, couleur));
+    }
+
+    if (typeJ1 == "Humain")
+        joueur1 = new JoueurHumain(pionsJ1, couleurJ1);
+    else
+        joueur1 = new JoueurIA(pionsJ1, couleurJ1);
+
+    // Charger les informations du joueur 2
+    std::getline(fichier, ligne); // Type de joueur
+    std::string typeJ2 = ligne.substr(ligne.find(":") + 2);
+
+    std::getline(fichier, ligne); // Couleur joueur 2
+    std::string couleurJ2 = ligne.substr(ligne.find(":") + 2);
+
+    std::vector<Pion*> pionsJ2;
+    std::getline(fichier, ligne); // Pions en main joueur 2
+    while (std::getline(fichier, ligne) && ligne.find("Type") != std::string::npos) {
+        // Extraire le type du pion
+        std::string typePart = ligne.substr(ligne.find(":") + 2);
+        size_t posVirgule = typePart.find(",");
+        std::string type = typePart.substr(0, posVirgule);
+
+        // Extraire la couleur du pion
+        std::string couleur = typePart.substr(posVirgule + 11); // Sauter ", Couleur: "
+        pionsJ2.push_back(new Pion(type, couleur));
+    }
+
+    if (typeJ2 == "Humain")
+        joueur2 = new JoueurHumain(pionsJ2, couleurJ2);
+    else
+        joueur2 = new JoueurIA(pionsJ2, couleurJ2);
+
+    // Charger l'ï¿½tat du plateau
+    while (std::getline(fichier, ligne) && ligne.find("Position") != std::string::npos) {
+        // Extraire les coordonnï¿½es
+        size_t pos1 = ligne.find("(") + 1;
+        size_t pos2 = ligne.find(",");
+        int colonne = std::stoi(ligne.substr(pos1, pos2 - pos1));
+
+        pos1 = pos2 + 2;
+        pos2 = ligne.find(",", pos1);
+        int lignePlateau = std::stoi(ligne.substr(pos1, pos2 - pos1));
+
+        pos1 = pos2 + 2;
+        pos2 = ligne.find(")", pos1);
+        int couche = std::stoi(ligne.substr(pos1, pos2 - pos1));
+
+        // Extraire le type et la couleur
+        size_t posType = ligne.find("Type: ") + 6;
+        size_t posCouleur = ligne.find(", Couleur: ");
+        std::string type = ligne.substr(posType, posCouleur - posType);
+        std::string couleur = ligne.substr(posCouleur + 11);
+        Pion* pion = new Pion(type, couleur);
+        plateau.gestionnairePions.setPion(lignePlateau, colonne, couche, pion, plateau);
+    }
+
+    // Charger l'historique des mouvements
+    while (std::getline(fichier, ligne) && ligne.find("De") != std::string::npos) {
+        // Extraire les anciennes coordonnï¿½es
+        size_t pos1 = ligne.find("(") + 1;
+        size_t pos2 = ligne.find(",");
+        int oldColonne = std::stoi(ligne.substr(pos1, pos2 - pos1));
+
+        pos1 = pos2 + 2;
+        pos2 = ligne.find(",", pos1);
+        int oldLigne = std::stoi(ligne.substr(pos1, pos2 - pos1));
+
+        pos1 = pos2 + 2;
+        pos2 = ligne.find(")", pos1);
+        int oldZ = std::stoi(ligne.substr(pos1, pos2 - pos1));
+
+        // Extraire les nouvelles coordonnï¿½es
+        pos1 = ligne.find("(", pos2) + 1;
+        pos2 = ligne.find(",", pos1);
+        int newColonne = std::stoi(ligne.substr(pos1, pos2 - pos1));
+
+        pos1 = pos2 + 2;
+        pos2 = ligne.find(",", pos1);
+        int newLigne = std::stoi(ligne.substr(pos1, pos2 - pos1));
+
+        pos1 = pos2 + 2;
+        pos2 = ligne.find(")", pos1);
+        int newZ = std::stoi(ligne.substr(pos1, pos2 - pos1));
+
+        Mouvement* mvt = new Mouvement(oldColonne, oldLigne, oldZ, newColonne, newLigne, newZ);
+        historique.push(mvt);
+    }
+
+    fichier.close();
+    return true;
 }
+
+
 
 bool Partie::partieTerminee() const {
     // Obtenir tous les pions pr sents sur le plateau
@@ -195,19 +370,19 @@ void Partie::annulerMouvement() {
 }
 
 void Partie::sauvegarde() {
-    // Ouvrir un fichier pour la sauvegarde
-    std::ofstream fichier("sauvegarde.txt");
+    std::string nomFichier = "sauvegardes/" + nomPartie + ".txt"; // Utiliser nomPartie pour le fichier
+    std::ofstream fichier(nomFichier);
     if (!fichier) {
-        std::cerr << "Erreur : Impossible d ouvrir le fichier de sauvegarde." << std::endl;
+        std::cerr << "Erreur : Impossible d'ouvrir le fichier de sauvegarde." << std::endl;
         return;
     }
 
-    // Sauvegarder le nombre de tour et le nombre d'undo
+    // Sauvegarder les donnï¿½es comme avant...
     fichier << "Nombre de tour: " << nombreTour << std::endl;
     fichier << "Nombre d'undo: " << nbUndo << std::endl;
 
-    // Sauvegarder les informations des joueurs
     fichier << "Joueur 1:" << std::endl;
+    fichier << "Type: " << (dynamic_cast<JoueurHumain*>(joueur1) ? "Humain" : "IA") << std::endl;
     fichier << "Couleur: " << joueur1->getCouleur() << std::endl;
     fichier << "Pions en main:" << std::endl;
     for (Pion* pion : joueur1->pionsEnMain) {
@@ -215,13 +390,13 @@ void Partie::sauvegarde() {
     }
 
     fichier << "Joueur 2:" << std::endl;
+    fichier << "Type: " << (dynamic_cast<JoueurHumain*>(joueur2) ? "Humain" : "IA") << std::endl;
     fichier << "Couleur: " << joueur2->getCouleur() << std::endl;
     fichier << "Pions en main:" << std::endl;
     for (Pion* pion : joueur2->pionsEnMain) {
         fichier << "  Type: " << pion->getType() << ", Couleur: " << pion->getCouleur() << std::endl;
     }
 
-    // Sauvegarder l' tat de la grille du plateau
     fichier << "Plateau:" << std::endl;
     for (unsigned int l = 0; l < plateau.nb_lignes; ++l) {
         for (unsigned int c = 0; c < plateau.nb_colonnes; ++c) {
@@ -235,9 +410,8 @@ void Partie::sauvegarde() {
         }
     }
 
-    // Sauvegarder l'historique des mouvements
     fichier << "Historique des mouvements:" << std::endl;
-    std::stack<Mouvement*> tempHistorique = historique; // Copie pour ne pas d truire l'historique
+    std::stack<Mouvement*> tempHistorique = historique; // Copie pour ne pas dï¿½truire l'historique
     while (!tempHistorique.empty()) {
         Mouvement* mvt = tempHistorique.top();
         tempHistorique.pop();
@@ -245,20 +419,10 @@ void Partie::sauvegarde() {
         fichier << "  (" << mvt->getColonne() << ", " << mvt->getLigne() << ", " << mvt->getZ() << ")" << std::endl;
     }
 
-    /*
-    // Sauvegarder la liste des extensions actives
-    fichier << "Extensions actives:" << std::endl;
-    for (const Extension& extension : extensions) {
-        if (extension.isActive()) {
-            fichier << "  Nom: " << extension.getNom() << ", ID: " << extension.getId() << std::endl;
-        }
-    }
-    */
-
-    // Fermer le fichier
     fichier.close();
-    std::cout << "Sauvegarde de la partie reussie dans 'sauvegarde.txt'." << std::endl;
+    std::cout << "Sauvegarde de la partie rï¿½ussie dans '" << nomFichier << "'." << std::endl;
 }
+
 
 /*
 void Partie::ajouterExtension(unsigned int id)
