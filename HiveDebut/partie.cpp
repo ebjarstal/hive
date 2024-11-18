@@ -1,10 +1,10 @@
 ﻿#include "partie.h"
 
 Partie::~Partie() {
-    delete joueur1;  // Lib�re la m�moire allou�e pour joueur1
-    delete joueur2;  // Lib�re la m�moire allou�e pour joueur2
+    delete joueur1;  // Libere la m�moire allouee pour joueur1
+    delete joueur2;  // Libere la m�moire allouee pour joueur2
 
-    // Lib�re chaque mouvement dans l'historique
+    // Libere chaque mouvement dans l'historique
     while (!historique.empty()) {
         delete historique.top();
         historique.pop();
@@ -15,14 +15,14 @@ void Partie::jouerUnTour(Joueur* j) {
     // Le joueur joue son tour
     Mouvement* mouvement = j->Jouer(plateau);  // Joue le mouvement
 
-    // Ajouter ce mouvement   l'historique
+    // Ajouter ce mouvement a l'historique
     ajouterMouvement(mouvement);
 
     if (j == getJoueur2()) {
         nombreTour += 1;
     }
 
-    // V rification si la partie est termin e
+    // Verification si la partie est terminee
     if (Partie::partieTerminee() == true) {
         if (getJoueur1() == Partie::determinerGagnant()) {
             std::cout << "Joueur 1 gagne !! La partie s'est finie en " << Partie::getNombreTour() << " tours." << std::endl;
@@ -63,13 +63,13 @@ void creerDossierSiInexistant(const std::string& cheminDossier) {
 }
 
 void Partie::setup() {
-    // Cr�er le dossier "sauvegarde" s'il n'existe pas
+    // Créer le dossier "sauvegardes" s'il n'existe pas
     const std::string dossierSauvegarde = "sauvegardes";
     creerDossierSiInexistant(dossierSauvegarde);
 
     int choix = 0;
 
-    // Demander � l'utilisateur s'il souhaite charger une partie ou en commencer une nouvelle
+    // Demander à l'utilisateur s'il souhaite charger une partie ou en commencer une nouvelle
     std::cout << "Voulez-vous (1) Charger une partie ou (2) Commencer une nouvelle partie ? ";
     std::cin >> choix;
 
@@ -90,7 +90,7 @@ void Partie::setup() {
         }
 
         if (fichiersSauvegarde.empty()) {
-            std::cout << "Aucune sauvegarde trouvee. Creation d'une nouvelle partie." << std::endl;
+            std::cout << "Aucune sauvegarde trouvée. Création d'une nouvelle partie." << std::endl;
         }
         else {
             std::cout << "Sauvegardes disponibles : " << std::endl;
@@ -100,22 +100,22 @@ void Partie::setup() {
 
             int choixSauvegarde = 0;
             while (choixSauvegarde < 1 || choixSauvegarde > fichiersSauvegarde.size()) {
-                std::cout << "Choisissez une sauvegarde � charger (1-" << fichiersSauvegarde.size() << ") : ";
+                std::cout << "Choisissez une sauvegarde à charger (1-" << fichiersSauvegarde.size() << ") : ";
                 std::cin >> choixSauvegarde;
             }
 
             nomPartie = fichiersSauvegarde[choixSauvegarde - 1];
             if (chargerPartie()) {
-                std::cout << "Partie charg�e avec succ�s !" << std::endl;
+                std::cout << "Partie chargée avec succès !" << std::endl;
                 return;
             }
             else {
-                std::cout << "Erreur lors du chargement de la partie. Cr�ation d'une nouvelle partie." << std::endl;
+                std::cout << "Erreur lors du chargement de la partie. Création d'une nouvelle partie." << std::endl;
             }
         }
     }
 
-    // Cr�ation d'une nouvelle partie
+    // Création d'une nouvelle partie
     std::cout << "Entrez un nom pour la nouvelle partie : ";
     std::cin >> nomPartie;
 
@@ -125,7 +125,7 @@ void Partie::setup() {
         listeFichiers << nomPartie << std::endl;
     }
 
-    std::cout << "Nouvelle partie creee : " << nomPartie << std::endl;
+    std::cout << "Nouvelle partie créée : " << nomPartie << std::endl;
 
     // Initialisation de la partie
     int nbJoueur = 0;
@@ -138,7 +138,7 @@ void Partie::setup() {
         }
     }
 
-    std::cout << "Nombre de joueurs selectionne : " << nbJoueur << std::endl;
+    std::cout << "Nombre de joueurs sélectionné : " << nbJoueur << std::endl;
 
     if (nbJoueur == 1) {
         joueur1 = new JoueurHumain(initialiserPions(RED), RED);
@@ -149,6 +149,7 @@ void Partie::setup() {
         joueur2 = new JoueurHumain(initialiserPions(WHITE), WHITE);
     }
 }
+
 
 std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
     std::vector<Pion*> pions;
