@@ -122,12 +122,13 @@ bool GestionnaireVoisins::sontVoisin(Pion& p1, Pion& p2, Plateau& plateau) const
 
 // Obtenir l'enti ret  de la ruche (voisins des voisins des voisins ... de (ligne, colonne))
 std::vector<Pion*> GestionnaireVoisins::getRuche(Pion* p, Plateau& plateau) const {
-    std::deque<Pion*> tests; // Queue contenant les pion   tester
-    Pion* test; // Pion   tester
-    std::vector<Pion*> voisins = getVoisins(*p, plateau); // Voisins du pion   tester
+    std::deque<Pion*> tests; // Queue contenant les pions a tester
+    Pion* test; // Pion a tester
+    std::vector<Pion*> voisins = getVoisins(*p, plateau); // Voisins du pion a tester
     std::vector<Pion*> ruche; // Ruche finale
 
     // Initialisation de tests
+    ruche.push_back(p);
     for (Pion* voisin : voisins) {
         if (voisin) {
             tests.push_back(voisin);
@@ -151,5 +152,7 @@ std::vector<Pion*> GestionnaireVoisins::getRuche(Pion* p, Plateau& plateau) cons
             }
         }
     }
+    // Tri des ruche pour pouvoir ensuite les comparer
+    std::sort(ruche.begin(), ruche.end());
     return ruche;
 }

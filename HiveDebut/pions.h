@@ -14,9 +14,9 @@ class Pion {
 private:
     string type;
     string couleur;
-    int ligne = 0;
-    int colonne = 0;
-    int z = 0;  // dimension verticale dans le plateau
+    int ligne = -1;
+    int colonne = -1;
+    int z = -1;  // dimension verticale dans le plateau
 public:
     Pion(string t, string c) : type(t), couleur(c) {}
 

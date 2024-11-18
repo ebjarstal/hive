@@ -12,11 +12,11 @@ Pion* GestionnairePions::getPion(int ligne, int colonne, const Plateau& plateau,
 
 std::vector<std::tuple<Pion*, int, int, int>> GestionnairePions::getPions(Plateau& plateau) const {
     std::vector<std::tuple<Pion*, int, int, int>> pions;
-    for (unsigned int i = 0; i < plateau.nb_lignes; ++i) {
-        for (unsigned int j = 0; j < plateau.nb_colonnes; ++j) {
-            for (int k = 0; k < plateau.grille[i][j].size(); ++k) {
-                if (plateau.grille[i][j][k] != nullptr) {
-                    pions.push_back(std::make_tuple(plateau.grille[i][j][k], i, j, k));
+    for (unsigned int l = 0; l < plateau.nb_lignes; ++l) {
+        for (unsigned int c = 0; c < plateau.nb_colonnes; ++c) {
+            for (int z = 0; z < plateau.grille[l][c].size(); ++z) {
+                if (plateau.grille[l][c][z] != nullptr) {
+                    pions.push_back(std::make_tuple(plateau.grille[l][c][z], l, c, z));
                 }
             }
         }
@@ -33,6 +33,7 @@ void GestionnairePions::setPion(int ligne, int colonne, int z, Pion* pion, Plate
         pion->setColonne(colonne);
         pion->setZ(z);
         plateau.grille[ligne][colonne][z] = pion;
+        std::cout << "Pion ajouté au coordonnées suivantes : (" << colonne << "," << ligne << "," << z << ")\n";
     }
     else {
         throw std::out_of_range("Position de grille invalide"); // Lancer une exception si la position est invalide
@@ -55,6 +56,7 @@ void GestionnairePions::deletePion(Pion& p, Plateau& plateau) {
         p.setLigne(0);
         p.setColonne(0);
         p.setZ(0);
+        std::cout << "Pion supprimé au coordonnées suivantes : (" << colonne << "," << ligne << "," << z << ")\n";
     }
     else {
         throw std::out_of_range("Position de grille invalide");
@@ -76,5 +78,5 @@ void GestionnairePions::movePion(int ligne, int colonne, int z, Pion* p, Plateau
 
 // Verifie les coordonnees du pion (par defaut elles sont a 0)
 bool GestionnairePions::estPose(Pion& p) const {
-    return p.getLigne() != 0 && p.getColonne() != 0 && p.getZ() != 0;
+    return p.getLigne() != -1 && p.getColonne() != -1 && p.getZ() != -1;
 }

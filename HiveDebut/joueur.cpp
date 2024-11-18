@@ -118,8 +118,6 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
 
     pionsEnMain.erase(pionsEnMain.begin() + choixPion);
 
-    std::cout << "Pion pose en (" << emplacementChoisi->getColonne() << ", " << emplacementChoisi->getLigne() << ", " << emplacementChoisi->getZ() << ")." << std::endl;
-
     for (Mouvement* m : emplacements) {
         if (m != emplacementChoisi) {
             delete m;
@@ -129,8 +127,9 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
     return emplacementChoisi;
 }
 
-void JoueurHumain::afficherPionsSurPlateau(const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau) {
-    std::cout << "Pions disponibles sur le plateau : " << std::endl;
+void JoueurHumain::afficherPionsSurPlateau(const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau){
+    std::cout << "Pions pouvant être déplacés sur le plateau : " << std::endl;
+
     for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
         Pion* pion = std::get<0>(pionsSurPlateau[i]);
         int ligne = std::get<1>(pionsSurPlateau[i]);
@@ -139,25 +138,6 @@ void JoueurHumain::afficherPionsSurPlateau(const std::vector<std::tuple<Pion*, i
 
         std::cout << i << ": " << pion->getType() << " en (" << colonne << ", " << ligne << ", " << z << ")" << std::endl;
     }
-}
-
-bool JoueurHumain::deplacementCasseRuche(Pion* pion, int newLigne, int newColonne, int newZ, Plateau& plateau) {
-    std::vector<Pion*> rucheAvant = plateau.gestionnaireVoisins.getRuche(pion, plateau);
-
-    // D placer temporairement le pion
-    int oldLigne = pion->getLigne();
-    int oldColonne = pion->getColonne();
-    int oldZ = pion->getZ();
-    plateau.gestionnairePions.deletePion(*pion, plateau);
-    plateau.gestionnairePions.setPion(newLigne, newColonne, newZ, pion, plateau);
-
-    std::vector<Pion*> rucheApres = plateau.gestionnaireVoisins.getRuche(pion, plateau);
-
-    // Remettre le pion   sa position initiale
-    plateau.gestionnairePions.deletePion(*pion, plateau);
-    plateau.gestionnairePions.setPion(oldLigne, oldColonne, oldZ, pion, plateau);
-
-    return rucheAvant.size() != rucheApres.size();
 }
 
 int JoueurHumain::choisirPionSurPlateau(const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau) {
@@ -175,35 +155,29 @@ int JoueurHumain::choisirPionSurPlateau(const std::vector<std::tuple<Pion*, int,
     }
 }
 
-std::list<Mouvement*> JoueurHumain::filtrerEmplacementsValides(const std::list<Mouvement*>& emplacements, Pion* pion, Plateau& plateau) {
-    std::list<Mouvement*> emplacementsValides;
-    for (Mouvement* m : emplacements) {
-        if (!deplacementCasseRuche(pion, m->getLigne(), m->getColonne(), m->getZ(), plateau)) {
-            emplacementsValides.push_back(m);
-        }
-    }
-    return emplacementsValides;
-}
-
 Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
-    std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = plateau.gestionnairePions.getPions(plateau);
-    afficherPionsSurPlateau(pionsSurPlateau);
+    std::vector<std::tuple<Pion*, int, int, int>> pionsBougeable = plateau.gestionnaireMouvements.getPionsBougeables(plateau);
+    if (pionsBougeable.empty()) {
+        std::cout << "Aucun pion peut être bougé\n";
+        return nullptr;
+    }
+    afficherPionsSurPlateau(pionsBougeable);
 
-    int choixPion = choisirPionSurPlateau(pionsSurPlateau);
-    Pion* pionChoisi = std::get<0>(pionsSurPlateau[choixPion]);
+    int choixPion = choisirPionSurPlateau(pionsBougeable);
+    Pion* pionChoisi = std::get<0>(pionsBougeable[choixPion]);
 
     std::list<Mouvement*> emplacements = plateau.gestionnaireMouvements.emplacementsPossibles(*pionChoisi, plateau);
-    std::list<Mouvement*> emplacementsValides = filtrerEmplacementsValides(emplacements, pionChoisi, plateau);
+    std::list<Mouvement*> deplacementsValides = plateau.gestionnaireMouvements.filtrerDeplacementsValides(emplacements, pionChoisi, plateau);
 
-    if (emplacementsValides.empty()) {
+    if (deplacementsValides.empty()) {
         std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer." << std::endl;
         return nullptr;
     }
 
-    afficherEmplacements(emplacementsValides);
-    int choixEmplacement = choisirEmplacement(emplacementsValides);
+    afficherEmplacements(deplacementsValides);
+    int choixEmplacement = choisirEmplacement(deplacementsValides);
 
-    auto it = emplacementsValides.begin();
+    auto it = deplacementsValides.begin();
     std::advance(it, choixEmplacement);
     Mouvement* emplacementChoisi = *it;
 
