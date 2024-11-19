@@ -1,8 +1,10 @@
+// usine.h
 #pragma once
 
 #include <map>
 #include <vector>
 #include <string>
+#include "pions.h" // Inclure le fichier d'en-tête de Pion
 
 class Usinedepions {
 private:
@@ -18,16 +20,15 @@ public:
         nombreDePions["Fourmi"] = 3;
         nombreDePions["Scarabee"] = 2;
         nombreDePions["Araignee"] = 3;
-        
+
         nombreDePions["Coccinelle"] = 1;
         nombreDePions["Cloporte"] = 1;
         nombreDePions["Moustique"] = 1;
-     
+
     }//ajoute des types si besoin de plus
 
     // Méthode pour créer un pion en fonction de son type
-    Pion* creerPion(const std::string& type, const std::string couleur);
- 
+    Pion* creerPion(const std::string& type, const std::string& couleur);
 
     // Méthode pour ajouter un nouveau type de pion (ex. pour des extensions)
     void ajouterExtension(const std::string& type, unsigned int nombre) {
@@ -39,4 +40,3 @@ public:
         return nombreDePions;
     }
 };
-
