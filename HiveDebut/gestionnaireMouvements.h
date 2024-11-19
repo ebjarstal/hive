@@ -21,7 +21,7 @@ class GestionnaireMouvements {
 public:
     bool cassageRuche(Pion& p, Plateau& plateau); // s'occupe du cassage de ruche
     std::vector<std::tuple<Pion*, int, int, int>> getPionsBougeables(Plateau& plateau);
-    list<Mouvement*> emplacementsPossibles(const Pion& p, Plateau& plateau); // quand pose le pion sur le plateau
+    list<Mouvement*> emplacementsPossibles(Pion& p, Plateau& plateau); // quand pose le pion sur le plateau
 
     // M thode pour filtrer les deplacements valides
     std::list<Mouvement*> filtrerDeplacementsValides(const std::list<Mouvement*>& emplacements, Pion* pion, Plateau& plateau);

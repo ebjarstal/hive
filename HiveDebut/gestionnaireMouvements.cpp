@@ -45,7 +45,7 @@ bool GestionnaireMouvements::cassageRuche(Pion& p, Plateau& plateau) {
     return false;
 }
 
-std::list<Mouvement*> GestionnaireMouvements::emplacementsPossibles(const Pion& p, Plateau& plateau) {
+std::list<Mouvement*> GestionnaireMouvements::emplacementsPossibles(Pion& p, Plateau& plateau) {
     std::list<Mouvement*> mouvementsPossibles;
     std::set<std::tuple<int, int, int>> emplacementsUniques;
 
@@ -109,7 +109,7 @@ std::list<Mouvement*> GestionnaireMouvements::emplacementsPossibles(const Pion& 
         int ligne = std::get<0>(emplacement);
         int colonne = std::get<1>(emplacement);
         int z = std::get<2>(emplacement);
-        mouvementsPossibles.push_back(new Mouvement(ligne, colonne, z, -1, -1, -1));
+        mouvementsPossibles.push_back(new Mouvement(p.getId(), ligne, colonne, z, -1, -1, -1));
     }
 
     return mouvementsPossibles;
@@ -154,6 +154,7 @@ std::list<Mouvement*> GestionnaireMouvements::filtrerDeplacementsValides(const s
     std::list<Mouvement*> deplacementsValides;
     for (Mouvement* m : deplacements) {
         if (!deplacementCasseRuche(pion, m->getLigne(), m->getColonne(), m->getZ(), plateau)) {
+            m->setCoordSrc(make_tuple(pion->getLigne(), pion->getColonne(), pion->getZ()));
             deplacementsValides.push_back(m);
         }
     }

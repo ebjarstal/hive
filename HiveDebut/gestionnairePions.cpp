@@ -32,8 +32,9 @@ void GestionnairePions::setPion(int ligne, int colonne, int z, Pion* pion, Plate
         pion->setLigne(ligne);
         pion->setColonne(colonne);
         pion->setZ(z);
+        Pion::resetPion(pion, pion->getId());
         plateau.grille[ligne][colonne][z] = pion;
-        std::cout << "Pion ajoute aux coordonnees suivantes : (" << colonne << "," << ligne << "," << z << ")\n";
+        //std::cout << "Pion ajoute aux coordonnees suivantes : (" << colonne << "," << ligne << "," << z << ")\n";
     }
     else {
         throw std::out_of_range("Position de grille invalide"); // Lancer une exception si la position est invalide
@@ -56,7 +57,8 @@ void GestionnairePions::deletePion(Pion& p, Plateau& plateau) {
         p.setLigne(0);
         p.setColonne(0);
         p.setZ(0);
-        std::cout << "Pion supprime aux coordonnees suivantes : (" << colonne << "," << ligne << "," << z << ")\n";
+        Pion::resetPion(&p, p.getId());
+        //std::cout << "Pion supprime aux coordonnees suivantes : (" << colonne << "," << ligne << "," << z << ")\n";
     }
     else {
         throw std::out_of_range("Position de grille invalide");

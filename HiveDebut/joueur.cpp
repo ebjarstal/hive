@@ -35,7 +35,7 @@ void JoueurHumain::afficherEmplacements(const std::list<Mouvement*>& emplacement
     std::cout << "Emplacements possibles : " << std::endl;
     int index = 0;
     for (Mouvement* m : emplacements) {
-        std::cout << index++ << ": (" << m->getColonne() << ", " << m->getLigne() << ", " << m->getZ() << ")" << std::endl;
+        std::cout << index++ << ": (" << m->getLigne() << ", " << m->getColonne() << ", " << m->getZ() << ")" << std::endl;
     }
 }
 
@@ -71,12 +71,13 @@ int JoueurHumain::choisirEmplacement(const std::list<Mouvement*>& emplacements) 
 
 
 Mouvement* JoueurHumain::Jouer(Plateau& plateau) {
+
     int choix;
     if (isMainVide()) {
         choix = 2; // Si la main est vide, le joueur ne peut que d placer un pion
     }
     else if (peutBougerPions()) {
-        std::cout << "Voulez-vous poser (1) ou deplacer (2) un pion ? ";
+        std::cout << "Voulez-vous poser (1) ou deplacer (2) ?";
         std::cin >> choix;
     }
     else {
@@ -113,9 +114,9 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
     std::advance(it, choixEmplacement);
     Mouvement* emplacementChoisi = *it;
 
-    Pion* pionAPoser = new Pion(pionChoisi->getType(), pionChoisi->getCouleur());
-    plateau.gestionnairePions.setPion(emplacementChoisi->getLigne(), emplacementChoisi->getColonne(), emplacementChoisi->getZ(), pionAPoser, plateau);
-
+    Pion* pionAPoser = new Pion(pionChoisi->getId(), pionChoisi->getType(), pionChoisi->getCouleur());
+    plateau.gestionnairePions.setPion(emplacementChoisi->getLigne(), emplacementChoisi->getColonne(), emplacementChoisi->getZ(), pionAPoser, plateau); 
+    cout << pionAPoser->getLigne() << pionAPoser->getColonne() << pionAPoser->getZ();
     pionsEnMain.erase(pionsEnMain.begin() + choixPion);
 
     for (Mouvement* m : emplacements) {
@@ -123,7 +124,6 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
             delete m;
         }
     }
-
     return emplacementChoisi;
 }
 

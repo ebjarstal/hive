@@ -25,6 +25,7 @@ public:
     string getCouleur() { return couleur; }
     bool peutBougerPions();
     bool isMainVide();
+    virtual bool estIA() const = 0;
     virtual Mouvement* Jouer(Plateau& plateau) = 0; // Methode virtuelle pure
     virtual ~Joueur(); // Destructeur virtuel pour eviter des fuites memoire
 };
@@ -58,6 +59,7 @@ private:
 public:
     JoueurHumain(std::vector<Pion*> pionsEnMain, string couleur) : Joueur(pionsEnMain, couleur) {}
     Mouvement* Jouer(Plateau& plateau) override;
+    bool estIA() const override { return false; }
     ~JoueurHumain() override = default;
 };
 
@@ -70,5 +72,6 @@ public:
         std::cout << "L intelligence artificielle joue son tour." << std::endl;
         return nullptr;
     }
+    bool estIA() const override { return true; }
     ~JoueurIA() override = default;
 };
