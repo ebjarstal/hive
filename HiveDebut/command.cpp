@@ -6,7 +6,7 @@
 
 void PoserPionCommand::execute() {
     GestionnairePions::setPion(mouv->getLigne(), mouv->getColonne(), mouv->getZ(), pion, plateau);
-    joueur.pionsEnMain.erase(std::remove(joueur.pionsEnMain.begin(), joueur.pionsEnMain.end(), pion), joueur.pionsEnMain.end());
+	joueur.pionsEnMain.erase(std::remove_if(joueur.pionsEnMain.begin(), joueur.pionsEnMain.end(), [&](Pion* p) { return p->getId() == pion->getId(); }), joueur.pionsEnMain.end()); // Ne supprime rien
 }
 
 void PoserPionCommand::undo() {
@@ -38,7 +38,7 @@ std::string DeplacerPionCommand::getDescription() const {
 	int j = 1;
 	oss << "Pion ID: " << pion->getId()
 		<< " De (" << mouv->getOldLigne() << ", " << mouv->getOldColonne() << ", " << mouv->getOldZ() << ")"
-		<< " A (" << mouv->getLigne() << ", " << mouv->getColonne() << ", " << mouv->getZ() << ")"
+		<< " A (" << mouv->getLigne() << ", " << mouv->getColonne() << ", " << mouv->getZ() << ") "
 		<< j;
 	return oss.str();
 }

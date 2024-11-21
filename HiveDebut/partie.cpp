@@ -248,12 +248,12 @@ bool Partie::chargerPartie() {
         }
 
         if (oldLigne == -1 && oldColonne == -1 && oldZ == -1) {
-            auto poserPionCommand = std::make_unique<PoserPionCommand>(j, plateau, Pion::getPionById(pionId), mvt);
-            gC.historique.push(std::move(poserPionCommand));
+            auto poserPionCommand = new PoserPionCommand(j, plateau, Pion::getPionById(pionId), mvt);
+            gC.historique.push(poserPionCommand);
         }
         else {
-            auto deplacerPionCommand = std::make_unique<DeplacerPionCommand>(j, plateau, Pion::getPionById(pionId), mvt);
-            gC.historique.push(std::move(deplacerPionCommand));
+            auto deplacerPionCommand = new DeplacerPionCommand(j, plateau, Pion::getPionById(pionId), mvt);
+            gC.historique.push(deplacerPionCommand);
         }
     }
     fichier.close();
@@ -483,26 +483,25 @@ void Partie::sauvegarde() {
             }
         }
     }
-
+    
     fichier << "Historique des mouvements:" << std::endl;
-    std::stack<std::unique_ptr<Command>>& historique = gC.historique;
-    std::stack<std::unique_ptr<Command>> historiqueInversee;  // Pile temporaire pour inverser l'ordre
+    std::stack<Command*> historique = gC.historique;
+    std::stack<Command*> historiqueInversee;  // Pile temporaire pour inverser l'ordre
 
     // Copier les éléments dans une pile temporaire (ce qui inverse l'ordre)
-    while (!gC.historique.empty()) {
-        historiqueInversee.push(std::move(const_cast<std::stack<std::unique_ptr<Command>>&>(historique).top()));
-        const_cast<std::stack<std::unique_ptr<Command>>&>(historique).pop();
+    while (!historique.empty()) {
+        historiqueInversee.push(historique.top());
+        historique.pop();
     }
 
     // Écrire les éléments depuis la pile temporaire
     while (!historiqueInversee.empty()) {
-        const auto& cmd = historiqueInversee.top();
-        fichier << cmd->getDescription() << std::endl;
+        Command* cmd = historiqueInversee.top();
         historiqueInversee.pop();
 
-        //historique.push(cmd);
+        fichier << cmd->getDescription() << std::endl;
+        historique.push(cmd);
     }
-
 
     fichier.close();
     std::cout << "Sauvegarde de la partie reussie dans '" << nomFichier << "'." << std::endl;

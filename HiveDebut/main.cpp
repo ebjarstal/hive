@@ -20,9 +20,7 @@ int main() {
     Partie partie(plateau, gC);
     partie.setup();
     while (partie.partieTerminee() != true) {
-        std::cout << "Historique SiAZE 1 : " << gC.historique.size() << "\n";
         partie.sauvegarde();
-        std::cout << "Historique SiAZE 2 : " << gC.historique.size() << "\n";
         partie.jouerUnTour(partie.getJoueur1());
         partie.jouerUnTour(partie.getJoueur2());
 

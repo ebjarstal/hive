@@ -1,12 +1,12 @@
 #include "GestionnaireCommand.h"
 
-std::stack<std::unique_ptr<Command>> GestionnaireCommand::historique;
+std::stack<Command*> GestionnaireCommand::historique;
 
-void GestionnaireCommand::executeCommand(std::unique_ptr<Command> cmd) {
+void GestionnaireCommand::executeCommand(Command* cmd) {
     // Exécuter la commande
     cmd->execute();
     // Ajouter la commande à l'historique
-    historique.push(std::move(cmd));
+    historique.push(cmd);
 }
 
 void GestionnaireCommand::undoCommand() {

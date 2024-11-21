@@ -5,11 +5,10 @@
 
 class GestionnaireCommand {
 public:
-	void executeCommand(std::unique_ptr<Command> cmd);
+	void executeCommand(Command* cmd);
 	void undoCommand();
-	static std::stack<std::unique_ptr<Command>> historique;
 
 private:
-	//static std::stack<std::unique_ptr<Command>> historique;
+	static std::stack<Command*> historique;
 	friend class Partie;
 };

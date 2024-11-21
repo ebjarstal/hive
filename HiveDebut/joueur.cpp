@@ -171,7 +171,7 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau, GestionnaireCommand& 
     Mouvement* emplacementChoisi = choisirEmplacement(emplacements);
 
     Pion* pionAPoser = new Pion(pionChoisi->getId(), pionChoisi->getType(), pionChoisi->getCouleur());
-    auto poserPionCommand = std::make_unique<PoserPionCommand>(*this, plateau, pionAPoser, emplacementChoisi);
+    auto poserPionCommand = new PoserPionCommand(*this, plateau, pionAPoser, emplacementChoisi);
     gC.executeCommand(std::move(poserPionCommand));
 
     for (Mouvement* m : emplacements) {
@@ -203,7 +203,7 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau, GestionnaireComman
     afficherEmplacements(deplacementsValides);
     Mouvement* emplacementChoisi = choisirEmplacement(deplacementsValides);
 
-    auto deplacerPionCommand = std::make_unique<DeplacerPionCommand>(*this, plateau, pionChoisi, emplacementChoisi);
+    auto deplacerPionCommand = new DeplacerPionCommand(*this, plateau, pionChoisi, emplacementChoisi);
     gC.executeCommand(std::move(deplacerPionCommand));
 
     for (Mouvement* m : emplacements) {
