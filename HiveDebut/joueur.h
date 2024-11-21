@@ -18,6 +18,8 @@ using namespace std;
 class Joueur {
 protected:
     friend class Partie;
+    friend class PoserPionCommand;
+    friend class DeplacerPionCommand;
     vector<Pion*> pionsEnMain;
     string couleur;
     Joueur(vector<Pion*> pEm, string c); // uniquement Partie peut le creer et avec param car extension

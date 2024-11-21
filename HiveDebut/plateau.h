@@ -55,4 +55,6 @@ private:
     friend class GestionnaireMouvements;
     friend class JoueurHumain;
     friend class JoueurIA;
+    friend class PoserPionCommand;
+    friend class DeplacerPionCommand;
 };
