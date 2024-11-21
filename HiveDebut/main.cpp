@@ -15,6 +15,8 @@ int main() {
     GestionnaireVoisins gV;
     unsigned int length = 20;
 
+    test
+
     Plateau plateau(length, length, 5, gP, gM, gV);
     Partie partie(plateau);
     partie.setup();
