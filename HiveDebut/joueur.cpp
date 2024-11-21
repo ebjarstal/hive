@@ -20,8 +20,75 @@ bool Joueur::peutBougerPions() {
     return true;
 }
 
+bool Joueur::isMainVide() {
+    if (pionsEnMain.size() == 0) return true;
+    else return false;
+}
+
 Joueur::Joueur(vector<Pion*> pEm, string c) : pionsEnMain(pEm), couleur(c) {
 
+}
+
+// -------------------------------- JOUEUR HUMAIN -------------------------------------
+
+Pion* JoueurHumain::choisirPion(const std::vector<Pion*>& pions) {
+    int choixPion;
+    while (true) {
+        std::cout << "Choisissez un pion a poser (numero) : ";
+        std::cin >> choixPion;
+
+        if (choixPion >= 0 && static_cast<size_t>(choixPion) < pions.size()) {
+            return pions[choixPion];
+        }
+        else {
+            std::cout << "Choix de pion invalide. Veuillez reessayer." << std::endl;
+        }
+    }
+}
+
+Pion* JoueurHumain::choisirPionEnMain() {
+    int choixPion;
+    while (true) {
+        std::cout << "Choisissez un pion a poser (numero) : ";
+        std::cin >> choixPion;
+
+        if (choixPion >= 0 && static_cast<size_t>(choixPion) < pionsEnMain.size()) {
+            return pionsEnMain[choixPion];
+        }
+        else {
+            std::cout << "Choix de pion invalide. Veuillez reessayer." << std::endl;
+        }
+    }
+}
+
+Mouvement* JoueurHumain::choisirEmplacement(const std::vector<Mouvement*>& emplacements) {
+    int choixEmplacement;
+    while (true) {
+        std::cout << "Choisissez un emplacement pour poser le pion (numero) : ";
+        std::cin >> choixEmplacement;
+
+        if (choixEmplacement >= 0 && static_cast<size_t>(choixEmplacement) < emplacements.size()) {
+            return emplacements[choixEmplacement];
+        }
+        else {
+            std::cout << "Choix d'emplacement invalide. Veuillez reessayer." << std::endl;
+        }
+    }
+}
+
+Pion* JoueurHumain::choisirPionSurPlateau(Plateau& plateau) {
+    int choixPion;
+    while (true) {
+        std::cout << "Choisissez un pion a deplacer (numero) : ";
+        std::cin >> choixPion;
+
+        if (choixPion >= 0 && static_cast<size_t>(choixPion) < GestionnaireMouvements::getPionsBougeables(plateau).size()) {
+            return std::get<0>(GestionnaireMouvements::getPionsBougeables(plateau)[choixPion]);
+        }
+        else {
+            std::cout << "Choix de pion invalide. Veuillez reessayer." << std::endl;
+        }
+    }
 }
 
 void JoueurHumain::afficherPions(const std::vector<Pion*>& pions) {
@@ -31,7 +98,15 @@ void JoueurHumain::afficherPions(const std::vector<Pion*>& pions) {
     }
 }
 
-void JoueurHumain::afficherEmplacements(const std::list<Mouvement*>& emplacements) {
+void JoueurHumain::afficherPionsEnMain() {
+    std::cout << "Pions disponibles en main : " << std::endl;
+    for (size_t i = 0; i < pionsEnMain.size(); ++i) {
+        std::cout << i << ": " << pionsEnMain[i]->getType() << std::endl;
+    }
+}
+
+
+void JoueurHumain::afficherEmplacements(const std::vector<Mouvement*>& emplacements) {
     std::cout << "Emplacements possibles : " << std::endl;
     int index = 0;
     for (Mouvement* m : emplacements) {
@@ -39,38 +114,23 @@ void JoueurHumain::afficherEmplacements(const std::list<Mouvement*>& emplacement
     }
 }
 
-int JoueurHumain::choisirPion(const std::vector<Pion*>& pions) {
-    int choixPion;
-    while (true) {
-        std::cout << "Choisissez un pion a poser (numero) : ";
-        std::cin >> choixPion;
 
-        if (choixPion >= 0 && static_cast<size_t>(choixPion) < pions.size()) {
-            return choixPion;
-        }
-        else {
-            std::cout << "Choix de pion invalide. Veuillez reessayer." << std::endl;
-        }
+void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau) {
+    std::cout << "Pions pouvant etre deplaces sur le plateau : " << std::endl;
+
+    std::vector<std::tuple<Pion*,int,int,int>> pionsSurPlateau = GestionnaireMouvements::getPionsBougeables(plateau);
+
+    for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
+        Pion* pion = std::get<0>(pionsSurPlateau[i]);
+        int ligne = std::get<1>(pionsSurPlateau[i]);
+        int colonne = std::get<2>(pionsSurPlateau[i]);
+        int z = std::get<3>(pionsSurPlateau[i]);
+
+        std::cout << i << ": " << pion->getType() << " en (" << colonne << ", " << ligne << ", " << z << ")" << std::endl;
     }
 }
 
-int JoueurHumain::choisirEmplacement(const std::list<Mouvement*>& emplacements) {
-    int choixEmplacement;
-    while (true) {
-        std::cout << "Choisissez un emplacement pour poser le pion (numero) : ";
-        std::cin >> choixEmplacement;
-
-        if (choixEmplacement >= 0 && static_cast<size_t>(choixEmplacement) < emplacements.size()) {
-            return choixEmplacement;
-        }
-        else {
-            std::cout << "Choix d'emplacement invalide. Veuillez reessayer." << std::endl;
-        }
-    }
-}
-
-
-Mouvement* JoueurHumain::Jouer(Plateau& plateau) {
+void JoueurHumain::Jouer(Plateau& plateau, GestionnaireCommand& gC) {
 
     int choix;
     if (isMainVide()) {
@@ -85,39 +145,34 @@ Mouvement* JoueurHumain::Jouer(Plateau& plateau) {
     }
 
     if (choix == 1) {
-        return poserPionHumain(plateau);  // Appel de la m thode pour poser un pion
+        poserPionHumain(plateau, gC);  // Appel de la m thode pour poser un pion
     }
     else if (choix == 2 && !plateau.isVide()) {
-        return deplacerPionHumain(plateau);  // Appel de la m thode pour d placer un pion
+        deplacerPionHumain(plateau, gC);  // Appel de la m thode pour d placer un pion
     }
     else {
         std::cout << "Choix invalide." << std::endl;
-        return nullptr; // Ajout d'un retour par d faut
+        return; // Ajout d'un retour par d faut
     }
 }
 
-Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
-    afficherPions(pionsEnMain);
-    int choixPion = choisirPion(pionsEnMain);
-    Pion* pionChoisi = pionsEnMain[choixPion];
+Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau, GestionnaireCommand& gC) {
 
-    std::list<Mouvement*> emplacements = plateau.gestionnaireMouvements.emplacementsPossibles(*pionChoisi, plateau);
+    afficherPions(pionsEnMain);
+    Pion* pionChoisi = choisirPion(pionsEnMain);
+
+    std::vector<Mouvement*> emplacements = GestionnaireMouvements::emplacementsPossibles(*pionChoisi, plateau);
     if (emplacements.empty()) {
         std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer." << std::endl;
         return nullptr;
     }
 
     afficherEmplacements(emplacements);
-    int choixEmplacement = choisirEmplacement(emplacements);
-
-    auto it = emplacements.begin();
-    std::advance(it, choixEmplacement);
-    Mouvement* emplacementChoisi = *it;
+    Mouvement* emplacementChoisi = choisirEmplacement(emplacements);
 
     Pion* pionAPoser = new Pion(pionChoisi->getId(), pionChoisi->getType(), pionChoisi->getCouleur());
-    plateau.gestionnairePions.setPion(emplacementChoisi->getLigne(), emplacementChoisi->getColonne(), emplacementChoisi->getZ(), pionAPoser, plateau); 
-    cout << pionAPoser->getLigne() << pionAPoser->getColonne() << pionAPoser->getZ();
-    pionsEnMain.erase(pionsEnMain.begin() + choixPion);
+    auto poserPionCommand = std::make_unique<PoserPionCommand>(*this, plateau, pionAPoser, emplacementChoisi);
+    gC.executeCommand(std::move(poserPionCommand));
 
     for (Mouvement* m : emplacements) {
         if (m != emplacementChoisi) {
@@ -127,47 +182,18 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
     return emplacementChoisi;
 }
 
-void JoueurHumain::afficherPionsSurPlateau(const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau){
-    std::cout << "Pions pouvant etre deplaces sur le plateau : " << std::endl;
-
-    for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
-        Pion* pion = std::get<0>(pionsSurPlateau[i]);
-        int ligne = std::get<1>(pionsSurPlateau[i]);
-        int colonne = std::get<2>(pionsSurPlateau[i]);
-        int z = std::get<3>(pionsSurPlateau[i]);
-
-        std::cout << i << ": " << pion->getType() << " en (" << colonne << ", " << ligne << ", " << z << ")" << std::endl;
-    }
-}
-
-int JoueurHumain::choisirPionSurPlateau(const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau) {
-    int choixPion;
-    while (true) {
-        std::cout << "Choisissez un pion a deplacer (numero) : ";
-        std::cin >> choixPion;
-
-        if (choixPion >= 0 && static_cast<size_t>(choixPion) < pionsSurPlateau.size()) {
-            return choixPion;
-        }
-        else {
-            std::cout << "Choix de pion invalide. Veuillez reessayer." << std::endl;
-        }
-    }
-}
-
-Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
-    std::vector<std::tuple<Pion*, int, int, int>> pionsBougeable = plateau.gestionnaireMouvements.getPionsBougeables(plateau);
+Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau, GestionnaireCommand& gC) {
+    std::vector<std::tuple<Pion*, int, int, int>> pionsBougeable = GestionnaireMouvements::getPionsBougeables(plateau);
     if (pionsBougeable.empty()) {
         std::cout << "Aucun pion peut etre bouge\n";
         return nullptr;
     }
-    afficherPionsSurPlateau(pionsBougeable);
+    afficherPionsSurPlateau(plateau);
 
-    int choixPion = choisirPionSurPlateau(pionsBougeable);
-    Pion* pionChoisi = std::get<0>(pionsBougeable[choixPion]);
+    Pion* pionChoisi = choisirPionSurPlateau(plateau);
 
-    std::list<Mouvement*> emplacements = plateau.gestionnaireMouvements.emplacementsPossibles(*pionChoisi, plateau);
-    std::list<Mouvement*> deplacementsValides = plateau.gestionnaireMouvements.filtrerDeplacementsValides(emplacements, pionChoisi, plateau);
+    std::vector<Mouvement*> emplacements = GestionnaireMouvements::emplacementsPossibles(*pionChoisi, plateau);
+    std::vector<Mouvement*> deplacementsValides = GestionnaireMouvements::filtrerDeplacementsValides(emplacements, pionChoisi, plateau);
 
     if (deplacementsValides.empty()) {
         std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer." << std::endl;
@@ -175,13 +201,10 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
     }
 
     afficherEmplacements(deplacementsValides);
-    int choixEmplacement = choisirEmplacement(deplacementsValides);
+    Mouvement* emplacementChoisi = choisirEmplacement(deplacementsValides);
 
-    auto it = deplacementsValides.begin();
-    std::advance(it, choixEmplacement);
-    Mouvement* emplacementChoisi = *it;
-
-    plateau.gestionnairePions.movePion(emplacementChoisi->getLigne(), emplacementChoisi->getColonne(), emplacementChoisi->getZ(), pionChoisi, plateau);
+    auto deplacerPionCommand = std::make_unique<DeplacerPionCommand>(*this, plateau, pionChoisi, emplacementChoisi);
+    gC.executeCommand(std::move(deplacerPionCommand));
 
     for (Mouvement* m : emplacements) {
         if (m != emplacementChoisi) {
@@ -190,9 +213,4 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
     }
 
     return emplacementChoisi;
-}
-
-bool Joueur::isMainVide() {
-    if (pionsEnMain.size() == 0) return true;
-    else return false;
 }

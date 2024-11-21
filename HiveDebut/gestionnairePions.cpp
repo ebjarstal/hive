@@ -2,7 +2,7 @@
 #include "plateau.h"
 
 // Obtenir le Pion a la position specifiee dans la grille
-Pion* GestionnairePions::getPion(int ligne, int colonne, const Plateau& plateau, int z) const {
+Pion* GestionnairePions::getPion(int ligne, int colonne, const Plateau& plateau, int z){
     if (plateau.estValide(ligne, colonne, z)) {
         return plateau.grille[ligne][colonne][z];
     }
@@ -10,7 +10,7 @@ Pion* GestionnairePions::getPion(int ligne, int colonne, const Plateau& plateau,
 }
 
 
-std::vector<std::tuple<Pion*, int, int, int>> GestionnairePions::getPions(Plateau& plateau) const {
+std::vector<std::tuple<Pion*, int, int, int>> GestionnairePions::getPions(Plateau& plateau){
     std::vector<std::tuple<Pion*, int, int, int>> pions;
     for (unsigned int l = 0; l < plateau.nb_lignes; ++l) {
         for (unsigned int c = 0; c < plateau.nb_colonnes; ++c) {
@@ -79,6 +79,6 @@ void GestionnairePions::movePion(int ligne, int colonne, int z, Pion* p, Plateau
 }
 
 // Verifie les coordonnees du pion (par defaut elles sont a 0)
-bool GestionnairePions::estPose(Pion& p) const {
+bool GestionnairePions::estPose(Pion& p){
     return p.getLigne() != -1 && p.getColonne() != -1 && p.getZ() != -1;
 }

@@ -19,15 +19,11 @@ class Plateau;
 
 class GestionnaireMouvements {
 public:
-    bool cassageRuche(Pion& p, Plateau& plateau); // s'occupe du cassage de ruche
-    std::vector<std::tuple<Pion*, int, int, int>> getPionsBougeables(Plateau& plateau);
-    list<Mouvement*> emplacementsPossibles(Pion& p, Plateau& plateau); // quand pose le pion sur le plateau
-
-    // M thode pour filtrer les deplacements valides
-    std::list<Mouvement*> filtrerDeplacementsValides(const std::list<Mouvement*>& emplacements, Pion* pion, Plateau& plateau);
-    // M thode pour v rifier si le deplacement casse la ruche
-    bool deplacementCasseRuche(Pion* pion, int newLigne, int newColonne, int newZ, Plateau& plateau);
-
+    static bool cassageRuche(Pion& p, Plateau& plateau); // s'occupe du cassage de ruche
+    static std::vector<std::tuple<Pion*, int, int, int>> getPionsBougeables(Plateau& plateau);
+    static std::vector<Mouvement*> emplacementsPossibles(Pion& p, Plateau& plateau); // quand pose le pion sur le plateau
+    static std::vector<Mouvement*> filtrerDeplacementsValides(const std::vector<Mouvement*>& emplacements, Pion* pion, Plateau& plateau);     // filtrer les deplacements valides
+    static bool deplacementCasseRuche(Pion* pion, int newLigne, int newColonne, int newZ, Plateau& plateau);     // Verifier si le deplacement casse la ruche
 
 private:
     friend class Plateau;

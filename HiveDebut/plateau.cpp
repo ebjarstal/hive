@@ -36,7 +36,7 @@ void Plateau::afficher() const {
                 std::cout << RESET << ". ";
             }
             else {
-                std::cout << gestionnairePions.getPion(ligne, colonne, *this)->getCouleur()
+                std::cout << GestionnairePions::getPion(ligne, colonne, *this)->getCouleur()
                     << grille[ligne][colonne][0]->getType() << " ";
             }
         }
