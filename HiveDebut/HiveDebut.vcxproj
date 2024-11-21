@@ -137,6 +137,7 @@
     <ClCompile Include="partie.cpp" />
     <ClCompile Include="pions.cpp" />
     <ClCompile Include="plateau.cpp" />
+    <ClCompile Include="usine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gestionnaireMouvements.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="partie.h" />
     <ClInclude Include="pions.h" />
     <ClInclude Include="plateau.h" />
+    <ClInclude Include="usine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

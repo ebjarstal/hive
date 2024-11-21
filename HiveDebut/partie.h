@@ -4,6 +4,7 @@
 #include "joueur.h"
 #include "pions.h"
 #include "mouvement.h"
+#include "usine.h"
 
 #include <iostream>
 #include <stack>
