@@ -1,4 +1,5 @@
 ﻿#include "partie.h"
+#include "commande.h"
 
 Partie::~Partie() {
     delete joueur1;  // Libère la mémoire allouée pour joueur1
@@ -7,27 +8,13 @@ Partie::~Partie() {
 
 void Partie::jouerUnTour(Joueur* j) {
     // Le joueur joue son tour
-    if (historique.size() >= 2 && getNbUndo() >= 1 && !j->estIA()) {
-        int choixUndo;
-        std::cout << "Voulez-vous annuler (1) ou non (2) un mouvement ? (" << getNbUndo() << " restants) ";
-        std::cin >> choixUndo;
-        if (choixUndo == 1) {
-            annulerMouvement();
-            plateau.afficher();
-        }
-    }
-
     Mouvement* mouvement = j->Jouer(getPlateau());  // Joue le mouvement
-
+    
     if (mouvement) {
-        ajouterMouvement(mouvement);  // Executer et ajouter à l'historique
+        appliquerMouvement(mouvement);
         if (j == getJoueur2()) {
             nombreTour++;
         }
-    }
-
-    if (j == getJoueur2()) {
-        nombreTour += 1;
     }
 
     // Verification si la partie est terminee
@@ -160,12 +147,12 @@ void Partie::setup() {
     std::cout << "Nombre de joueurs selectionne : " << nbJoueur << std::endl;
 
     if (nbJoueur == 1) {
-        joueur1 = new JoueurHumain(initialiserPions(RED), RED);
-        joueur2 = new JoueurIA(initialiserPions(WHITE), WHITE);
+        joueur1 = new JoueurHumain(initialiserPions(RED), RED, *this);
+        joueur2 = new JoueurIA(initialiserPions(WHITE), WHITE, *this);
     }
     else {
-        joueur1 = new JoueurHumain(initialiserPions(RED), RED);
-        joueur2 = new JoueurHumain(initialiserPions(WHITE), WHITE);
+        joueur1 = new JoueurHumain(initialiserPions(RED), RED, *this);
+        joueur2 = new JoueurHumain(initialiserPions(WHITE), WHITE, *this);
     }
 }
 
@@ -259,9 +246,9 @@ bool Partie::chargerPartie() {
     }
     // Créer le joueur 1
     if (typeJ1 == "Humain")
-        joueur1 = new JoueurHumain(pionsJ1, couleurJ1);
+        joueur1 = new JoueurHumain(pionsJ1, couleurJ1, *this);
     else
-        joueur1 = new JoueurIA(pionsJ1, couleurJ1);
+        joueur1 = new JoueurIA(pionsJ1, couleurJ1, *this);
 
     // Charger les informations du joueur 2
     std::getline(fichier, ligne); // "Type: Humain/IA"
@@ -293,9 +280,9 @@ bool Partie::chargerPartie() {
     }
     // Créer le joueur 2
     if (typeJ2 == "Humain")
-        joueur2 = new JoueurHumain(pionsJ2, couleurJ2);
+        joueur2 = new JoueurHumain(pionsJ2, couleurJ2, *this);
     else
-        joueur2 = new JoueurIA(pionsJ2, couleurJ2);
+        joueur2 = new JoueurIA(pionsJ2, couleurJ2, *this);
 
     // Charger l'état du plateau
     while (std::getline(fichier, ligne) && ligne.find("Position") != std::string::npos) {
@@ -363,7 +350,8 @@ bool Partie::chargerPartie() {
         
         // Créer un mouvement en utilisant l'ID du pion
         Mouvement* mvt = new Mouvement(pionId, newLigne, newColonne, newZ, oldLigne, oldColonne, oldZ);
-        historique.push(mvt);
+        MouvementCommande* cmd = new MouvementCommande(mvt, *this);
+        historique.push(cmd);
     }
     fichier.close();
     return true;
@@ -415,53 +403,18 @@ void Partie::annulerMouvement() {
     if (historique.size() >= 2) {
         // Récupérer le dernier mouvement
         //Problème avec les pions qui ont été posé
-        Mouvement* mouvement = historique.top();
+        MouvementCommande* mouvement = historique.top();
         historique.pop();
-        // Inverser le mouvement : ramener le pion à son origine
-        Pion* pion = Pion::getPionById(mouvement->getPionId());
-        Pion::getPion();
-        Joueur* j = getJoueur1();
-        if (j->getCouleur() != pion->getCouleur()) {
-            j = getJoueur2();
-        }
-        tuple<int, int, int> coordSrc = mouvement->getCoordSrc();
-        if (mouvement->getOldLigne() == -1 && mouvement->getOldColonne() == -1 && mouvement->getOldZ() == -1) {
-            plateau.gestionnairePions.deletePion(*pion, plateau);
-            j->pionsEnMain.push_back(pion);
-        }
-        else {
-            plateau.gestionnairePions.movePion(
-                mouvement->getOldLigne(),
-                mouvement->getOldColonne(),
-                mouvement->getOldZ(),
-                pion,
-                plateau
-            );
-        }
+
+        annulerUniqueMouvement(mouvement);
         
         // Libérer la mémoire
         delete mouvement;
 
-        Mouvement* mouvement1 = historique.top();
+        MouvementCommande* mouvement1 = historique.top();
         historique.pop();
-        // Inverser le mouvement : ramener le pion à son origine
-        Pion* pion1 = Pion::getPionById(mouvement1->getPionId());
-        if (j->getCouleur() != pion1->getCouleur()) {
-            j = getJoueur2();
-        }
-        if (mouvement1->getOldLigne() == -1 && mouvement1->getOldColonne() == -1 && mouvement1->getOldZ() == -1) {
-            plateau.gestionnairePions.deletePion(*pion1, plateau);
-            j->pionsEnMain.push_back(pion1);
-        }
-        else {
-            plateau.gestionnairePions.movePion(
-                mouvement1->getOldLigne(),
-                mouvement1->getOldColonne(),
-                mouvement1->getOldZ(),
-                pion1,
-                plateau
-            );
-        }
+
+        annulerUniqueMouvement(mouvement1);
         // Libérer la mémoire
         delete mouvement1;
 
@@ -515,7 +468,7 @@ void Partie::sauvegarde() {
     }
 
     fichier << "Historique des mouvements:" << std::endl;
-    std::stack<Mouvement*> tempPile;  // Pile temporaire pour inverser l'ordre
+    std::stack<MouvementCommande*> tempPile;  // Pile temporaire pour inverser l'ordre
 
     // Copier les éléments dans une pile temporaire (ce qui inverse l'ordre)
     while (!historique.empty()) {
@@ -525,21 +478,52 @@ void Partie::sauvegarde() {
 
     // Écrire les éléments depuis la pile temporaire
     while (!tempPile.empty()) {
-        Mouvement* mvt = tempPile.top();
+        MouvementCommande* cmd = tempPile.top();
+        Mouvement* mvt = cmd->getMouvement();
+        
         tempPile.pop();
-
         fichier << "ID: " << mvt->getPionId() << " ";
         fichier << "  De (" << mvt->getOldLigne() << ", " << mvt->getOldColonne() << ", " << mvt->getOldZ() << ") ";
         fichier << "  A (" << mvt->getLigne() << ", " << mvt->getColonne() << ", " << mvt->getZ() << ")" << std::endl;
 
         // Restaurer l'historique original
-        historique.push(mvt);
+        historique.push(cmd);
     }
 
     fichier.close();
     std::cout << "Sauvegarde de la partie reussie dans '" << nomFichier << "'." << std::endl;
 }
 
+void Partie::annulerUniqueMouvement(Mouvement* mouvement) {
+    // Créer une commande pour annuler le mouvement
+    MouvementCommande* commande = new MouvementCommande(mouvement, *this);
+    commande->undo();
+    historique.push(commande);
+}
+
+void Partie::annulerUniqueMouvement(MouvementCommande* commande) {
+    commande->undo();
+    historique.push(commande);
+}
+
+void Partie::appliquerMouvement(Mouvement* mouvement) {
+    // Créer une commande pour appliquer le mouvement
+    MouvementCommande* commande = new MouvementCommande(mouvement, *this);
+    commande->execute();
+    historique.push(commande);
+}
+
+
+void Partie::appliquerMouvement(MouvementCommande* commande) {
+    commande->execute();
+    historique.push(commande);
+}
+
+void Partie::ajouterMouvement(Mouvement* m) { 
+    if (m != nullptr) {
+        historique.push(new MouvementCommande(m, *this));
+    }
+}
 
 /*
 void Partie::ajouterExtension(unsigned int id)

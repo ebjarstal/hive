@@ -9,6 +9,9 @@
 #include <iostream>
 #include <stack>
 #include <fstream>
+#include <algorithm>
+#include <set>
+#define NOMINMAX
 #include <windows.h>
 #include <sstream>
 #include <map>
@@ -20,13 +23,15 @@
 
 using namespace std;
 
+class MouvementCommande;
+
 class Partie {
 private:
     Plateau& plateau;
     Joueur* joueur1;
     Joueur* joueur2;
     unsigned int nombreTour;
-    std::stack<Mouvement*> historique;
+    std::stack<MouvementCommande*> historique;
     unsigned int nbUndo;
 
     //std::vector<Extension> extensions;
@@ -52,5 +57,13 @@ public:
     Joueur* getJoueur2() const { return joueur2; }
     unsigned int getNbUndo() const { return nbUndo; }
     void annulerMouvement();
-    void ajouterMouvement(Mouvement* m) { if (m != nullptr) historique.push(m); }
+    void annulerUniqueMouvement(Mouvement* mouvement);
+    void annulerUniqueMouvement(MouvementCommande* commande);
+    void ajouterMouvement(Mouvement* m);
+    void appliquerMouvement(Mouvement* mouvement);
+    void appliquerMouvement(MouvementCommande* commande);
+    bool canUndo() { return !historique.empty() && historique.size() >= 2 && getNbUndo() >= 1; }
+
+    Joueur& joueurAdverse(Joueur& joueur) { return (&joueur == joueur1) ? *joueur2 : *joueur1; }
+    
 };
