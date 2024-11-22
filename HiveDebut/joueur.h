@@ -15,16 +15,21 @@
 
 using namespace std;
 
+class Partie;
+
 class Joueur {
 protected:
     friend class Partie;
+    Partie* partie;
     vector<Pion*> pionsEnMain;
     string couleur;
-    Joueur(vector<Pion*> pEm, string c); // uniquement Partie peut le creer et avec param car extension
+    Joueur(vector<Pion*> pEm, string c, Partie& p); // uniquement Partie peut le creer et avec param car extension
 public:
     string getCouleur() { return couleur; }
+    vector<Pion*>& getPionsEnMain() { return pionsEnMain; }
     bool peutBougerPions();
     bool isMainVide();
+    std::vector<Pion*> getPionsEnJeu(Plateau& plateau);
     virtual bool estIA() const = 0;
     virtual Mouvement* Jouer(Plateau& plateau) = 0; // Methode virtuelle pure
     virtual ~Joueur(); // Destructeur virtuel pour eviter des fuites memoire
@@ -57,7 +62,7 @@ private:
     int choisirPionSurPlateau(const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau);
 
 public:
-    JoueurHumain(std::vector<Pion*> pionsEnMain, string couleur) : Joueur(pionsEnMain, couleur) {}
+    JoueurHumain(std::vector<Pion*> pionsEnMain, string couleur, Partie& p) : Joueur(pionsEnMain, couleur, p) {}
     Mouvement* Jouer(Plateau& plateau) override;
     bool estIA() const override { return false; }
     ~JoueurHumain() override = default;
@@ -66,12 +71,19 @@ public:
 
 class JoueurIA : public Joueur {
 public:
-    JoueurIA(std::vector<Pion*> pionsEnMain, string couleur) : Joueur(pionsEnMain, couleur) {}
+    JoueurIA(std::vector<Pion*> pionsEnMain, string couleur, Partie& p) : Joueur(pionsEnMain, couleur, p) {}
     Mouvement* Jouer(Plateau& plateau) override {
         // Implementation specifique pour un joueur IA
         std::cout << "L intelligence artificielle joue son tour." << std::endl;
         return nullptr;
     }
+
+    Mouvement* trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCourant, int profondeurMax);
+    int calculerBlocageAbeille(Plateau& plateau, Joueur& joueur, bool isMaximizingPlayer);
+    int evaluerPartie(Plateau& plateau, Joueur& j, bool isMaximizingPlayer);
+    int calculerScoreBlocage(Plateau& plateau, Joueur& joueur, bool isMaximizingPlayer);
+    int minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, bool isMaximizingPlayer, int alpha, int beta);
+
     bool estIA() const override { return true; }
     ~JoueurIA() override = default;
 };

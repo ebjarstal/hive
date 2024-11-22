@@ -36,7 +36,7 @@ public:
     bool isVide() const;
     void redimensionnerPlateau();
     bool estValide(int ligne, int colonne, int z = 0) const;  // Méthode non statique car elle dépend des dimensions du Plateau
-
+    
     GestionnairePions& getGestionnairePions() const { return gestionnairePions; }
     GestionnaireVoisins& getGestionnaireVoisins() const { return gestionnaireVoisins; }
     GestionnaireMouvements& getGestionnaireMouvements() const { return gestionnaireMouvements; }

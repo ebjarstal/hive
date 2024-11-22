@@ -23,6 +23,7 @@ public:
 
     void setPion(int ligne, int colonne, int z, Pion* p, Plateau& plateau);  // Poser un pion
     void deletePion(Pion& p, Plateau& plateau);  // Supprimer un pion
+    std::vector<Pion*> getPionsEnJeu(Plateau& plateau, string couleur);
     void movePion(int ligne, int colonne, int z, Pion* p, Plateau& plateau);  // Deplacer un pion
     bool estPose(Pion& p) const;  // Booleen si le pion est sur le plateau
 
