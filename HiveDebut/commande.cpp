@@ -25,6 +25,7 @@ void MouvementCommande::execute() {
 
 void MouvementCommande::undo() {
     if (mouvement->getOldLigne() == -1 && mouvement->getOldColonne() == -1 && mouvement->getOldZ() == -1) {
+        cout << mouvement->getLigne() << mouvement->getColonne() << mouvement->getZ();
         partie.getPlateau().getGestionnairePions().deletePion(*pion, partie.getPlateau());
         joueur->getPionsEnMain().push_back(pion);
     }

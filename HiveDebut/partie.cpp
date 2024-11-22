@@ -404,10 +404,10 @@ void Partie::annulerMouvement() {
         // Récupérer le dernier mouvement
         //Problème avec les pions qui ont été posé
         MouvementCommande* mouvement = historique.top();
+
         historique.pop();
 
         annulerUniqueMouvement(mouvement);
-        
         // Libérer la mémoire
         delete mouvement;
 
@@ -460,7 +460,7 @@ void Partie::sauvegarde() {
             for (unsigned int z = 0; z < plateau.nb_couches; ++z) {
                 Pion* pion = plateau.gestionnairePions.getPion(l, c, plateau, z);
                 if (pion != nullptr) {
-                    fichier << "  Position: (" << c << ", " << l << ", " << z << "), ";
+                    fichier << "  Position: (" << l << ", " << c << ", " << z << "), ";
                     fichier << "  ID: " << pion->getId() << ",  Type: " << pion->getType() << ", Couleur: " << pion->getCouleur() << std::endl;
                 }
             }
@@ -469,7 +469,7 @@ void Partie::sauvegarde() {
 
     fichier << "Historique des mouvements:" << std::endl;
     std::stack<MouvementCommande*> tempPile;  // Pile temporaire pour inverser l'ordre
-
+    
     // Copier les éléments dans une pile temporaire (ce qui inverse l'ordre)
     while (!historique.empty()) {
         tempPile.push(historique.top());
@@ -498,12 +498,10 @@ void Partie::annulerUniqueMouvement(Mouvement* mouvement) {
     // Créer une commande pour annuler le mouvement
     MouvementCommande* commande = new MouvementCommande(mouvement, *this);
     commande->undo();
-    historique.push(commande);
 }
 
 void Partie::annulerUniqueMouvement(MouvementCommande* commande) {
     commande->undo();
-    historique.push(commande);
 }
 
 void Partie::appliquerMouvement(Mouvement* mouvement) {

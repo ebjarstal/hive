@@ -76,7 +76,7 @@ std::list<Mouvement*> GestionnaireMouvements::deplacementPossibles(Pion& p, Plat
                         // Ajouter l'emplacement au set pour éviter les doublons
                         emplacementsVisites.insert({ v_ligne, v_colonne, v_z });
                         // Ajouter le mouvement à la liste des mouvements possibles
-                        mouvementsPossibles.push_back(new Mouvement(p.getId(), v_ligne, v_colonne, v_z, ligne, colonne, z));
+                        mouvementsPossibles.push_back(new Mouvement(p.getId(), v_ligne, v_colonne, v_z, p.getLigne(), p.getColonne(), p.getZ()));
                     }
                 }
             }
