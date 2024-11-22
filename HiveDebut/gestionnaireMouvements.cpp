@@ -229,7 +229,7 @@ std::vector<std::tuple<Pion*, int, int, int>> GestionnaireMouvements::getPionsBo
     // Pour chaque pion sur le plateau, on regarde s'il peut bouger
     for (std::tuple<Pion*, int, int, int> pions: pionsSurPlateau) {
         Pion* pion = std::get<0>(pions);
-        if (!(plateau.gestionnaireMouvements.cassageRuche(*pion, plateau)) && j.getCouleur() == pion->getCouleur()) {
+        if (!(plateau.gestionnaireMouvements.cassageRuche(*pion, plateau))) {
             //std::cout << "Le pion suivant ne casse pas la ruche : " << pion->getColonne() << " " << pion->getLigne() << " " << pion->getZ() << "\n";
             pionsBougeables.push_back(pions);
         }

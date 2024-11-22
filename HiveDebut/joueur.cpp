@@ -169,7 +169,7 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
     int choixPion = choisirPionSurPlateau(pionsBougeable);
     Pion* pionChoisi = std::get<0>(pionsBougeable[choixPion]);
 
-    std::list<Mouvement*> deplacementsValides = plateau.gestionnaireMouvements.deplacementPossiblesArraigne(*pionChoisi, plateau);
+    std::list<Mouvement*> deplacementsValides = plateau.gestionnaireMouvements.deplacementPossibles(*pionChoisi, plateau);
 
     if (deplacementsValides.empty()) {
         std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer." << std::endl;
