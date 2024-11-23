@@ -101,3 +101,21 @@ void GestionnairePions::movePion(int ligne, int colonne, int z, Pion* p, Plateau
 bool GestionnairePions::estPose(Pion& p){
     return p.getLigne() != -1 && p.getColonne() != -1 && p.getZ() != -1;
 }
+
+std::vector<Pion*> GestionnairePions::getPionsEnJeu(Plateau& plateau, string couleur) {
+    // Récupérer tous les pions sur le plateau
+    std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = plateau.getGestionnairePions().getPions(plateau);
+
+    // Vecteur pour stocker les pions appartenant à ce joueur
+    std::vector<Pion*> pionsEnJeu;
+
+    // Parcourir les pions sur le plateau
+    for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
+        Pion* pion = std::get<0>(pionsSurPlateau[i]); // Récupérer le pion
+        if (pion->getCouleur() == couleur) {     // Vérifier la couleur
+            pionsEnJeu.push_back(pion);              // Ajouter à la liste des pions du joueur
+        }
+    }
+
+    return pionsEnJeu;
+}

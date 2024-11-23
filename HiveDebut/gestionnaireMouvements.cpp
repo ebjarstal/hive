@@ -90,7 +90,6 @@ std::vector<Mouvement*> GestionnaireMouvements::emplacementsPossibles(Pion& p, P
                     // Obtenir les coordonn es des cases voisines de ce pion
                     std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
 
-                    // Parcourir chaque case voisine
                     for (const auto& voisinCoord : voisinsCoords) {
                         int v_ligne = std::get<0>(voisinCoord);
                         int v_colonne = std::get<1>(voisinCoord);
@@ -126,7 +125,7 @@ std::vector<Mouvement*> GestionnaireMouvements::emplacementsPossibles(Pion& p, P
         }
     }
 
-    // Convertir les emplacements uniques en objets Mouvement et les ajouter   la liste des mouvements possibles
+    // Convertir les emplacements uniques en objets Mouvement et les ajouter à la liste des mouvements possibles
     for (const auto& emplacement : emplacementsUniques) {
         int ligne = std::get<0>(emplacement);
         int colonne = std::get<1>(emplacement);

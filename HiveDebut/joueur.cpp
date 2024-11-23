@@ -136,6 +136,7 @@ void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau) {
 void JoueurHumain::Jouer(Plateau& plateau) {
 
     int choix;
+    bool annulerMouvement = false;
     if (isMainVide()) {
         choix = 2; // Si la main est vide, le joueur ne peut que d placer un pion
     }
@@ -163,6 +164,14 @@ void JoueurHumain::Jouer(Plateau& plateau) {
     }
     else if (choix == 3 && partie.canUndo()){
         partie.annulerMouvement();
+    }
+    else if (choix == 2 && !plateau.isVide() && partie->canUndo()) {
+        partie->annulerMouvement();
+        Jouer(plateau);
+    }
+    else if (choix == 3 && partie->canUndo()) {
+        partie->annulerMouvement();
+        Jouer(plateau);
     }
     else {
         std::cout << "Choix invalide." << std::endl;

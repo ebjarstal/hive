@@ -18,6 +18,8 @@ using namespace std;
 class Plateau;
 class Joueur;
 
+class Joueur;
+
 class GestionnaireMouvements {
 public:
     static bool cassageRuche(Pion& p, Plateau& plateau); // s'occupe du cassage de ruche

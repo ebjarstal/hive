@@ -43,7 +43,7 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="usine.cpp">
-      <Filter>Fichiers sources</Filter>
+        <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="command.cpp">
       <Filter>Fichiers sources</Filter>

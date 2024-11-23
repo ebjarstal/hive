@@ -10,6 +10,9 @@
 #include <iostream>
 #include <stack>
 #include <fstream>
+#include <algorithm>
+#include <set>
+#define NOMINMAX
 #include <windows.h>
 #include <sstream>
 #include <map>
@@ -24,6 +27,8 @@
 #define RESET "\033[37m"
 
 using namespace std;
+
+class MouvementCommande;
 
 class Partie {
 private:
