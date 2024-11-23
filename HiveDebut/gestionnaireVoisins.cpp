@@ -156,3 +156,75 @@ std::vector<Pion*> GestionnaireVoisins::getRuche(Pion* p, Plateau& plateau) cons
     std::sort(ruche.begin(), ruche.end());
     return ruche;
 }
+
+// Obtenir les coordonées des cases vides autour d'un pion d'après une référence
+std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(Pion& p, Plateau& plateau) {
+    std::vector<std::tuple<int, int, int>> casesVides;
+
+    int ligne = p.getLigne();
+    int colonne = p.getColonne();
+    int z = p.getZ();
+
+    // Liste des déplacements possibles pour un hexagone, dépendant de la parité de la ligne
+    std::vector<std::tuple<int, int, int>> directions;
+
+    if (ligne % 2 == 0) { // Ligne paire
+        directions = {
+            {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {1, -1, 0}, {-1, -1, 0}
+        };
+    }
+    else { // Ligne impaire
+        directions = {
+            {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {1, 1, 0}, {-1, 1, 0}
+        };
+    }
+
+    // Parcours des voisins autour du pion
+    for (const auto& direction : directions) {
+        int voisinLigne = ligne + std::get<0>(direction);
+        int voisinColonne = colonne + std::get<1>(direction);
+        int voisinZ = z + std::get<2>(direction);
+
+        // Vérifie si la case voisine est vide
+        if (plateau.gestionnairePions.getPion(voisinLigne, voisinColonne, plateau, voisinZ) == nullptr) {
+            casesVides.emplace_back(voisinLigne, voisinColonne, voisinZ);
+        }
+    }
+
+    return casesVides;
+}
+
+// Obtenir les coordonées des cases vides autour d'un pion d'après des coordonées
+std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(int ligne, int colonne, int z, Plateau& plateau) {
+    std::vector<std::tuple<int, int, int>> casesVides;
+
+    // Liste des déplacements possibles pour un hexagone, dépendant de la parité de la ligne
+    std::vector<std::tuple<int, int, int>> directions;
+
+    if (ligne % 2 == 0) { // Ligne paire
+        directions = {
+            {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {1, -1, 0}, {-1, -1, 0}
+        };
+    }
+    else { // Ligne impaire
+        directions = {
+            {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {1, 1, 0}, {-1, 1, 0}
+        };
+    }
+
+    // Parcours des voisins autour du pion
+    for (const auto& direction : directions) {
+        int voisinLigne = ligne + std::get<0>(direction);
+        int voisinColonne = colonne + std::get<1>(direction);
+        int voisinZ = z + std::get<2>(direction);
+
+        // Vérifie si la case voisine est vide
+        if (plateau.gestionnairePions.getPion(voisinLigne, voisinColonne, plateau, voisinZ) == nullptr) {
+            casesVides.emplace_back(voisinLigne, voisinColonne, voisinZ);
+        }
+    }
+
+    return casesVides;
+}
+
+

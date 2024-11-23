@@ -102,11 +102,11 @@ Mouvement* JoueurHumain::Jouer(Plateau& plateau) {
     }
     else if (choix == 2 && !plateau.isVide() && partie->canUndo()) {
         partie->annulerMouvement();
-        Jouer(plateau);
+        return Jouer(plateau);
     }
     else if (choix == 3 && partie->canUndo()) {
         partie->annulerMouvement();
-        Jouer(plateau);
+        return Jouer(plateau);
     }
     else {
         std::cout << "Choix invalide." << std::endl;

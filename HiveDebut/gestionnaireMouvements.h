@@ -25,7 +25,8 @@ public:
     std::vector<std::tuple<Pion*, int, int, int>> getPionsBougeables(Plateau& plateau, Joueur& j);
     list<Mouvement*> emplacementsPossibles(Pion& p, Plateau& plateau); // quand pose le pion sur le plateau
     std::list<Mouvement*> deplacementPossibles(Pion& p, Plateau& plateau);
-    std::list<Mouvement*> deplacementPossiblesArraigne(Pion& p, Plateau& plateau);
+    std::list<Mouvement*> deplacementPossiblesAraigne(Pion& p, Plateau& plateau);
+    std::list<Mouvement*> deplacementPossiblesReine(Pion& p, Plateau& plateau);
     // M thode pour filtrer les deplacements valides
     std::vector<Mouvement*> genererTousLesMouvements(Plateau& p, Joueur& joueur);
     // M thode pour v rifier si le deplacement casse la ruche

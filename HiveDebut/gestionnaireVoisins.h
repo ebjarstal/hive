@@ -21,6 +21,8 @@ public:
     std::vector<Pion*> getVoisins(Pion& p, Plateau& plateau) const;  // Recuperer les voisins d'un pion avec une reference Pion
     std::vector<Pion*> getVoisins(int ligne, int colonne, Plateau& plateau, int z = 0) const;  // Recuperer les voisins d'un pion avec ses coordonnees
     std::vector<std::tuple<int, int, int>> getVoisinsCoords(int ligne, int colonne, Plateau& plateau, int z = 0) const;  // Recuperer les coordonnees des voisins d'un pion avec ses coordonnees
+    std::vector<std::tuple<int, int, int>> getCasesVidesAutour(Pion& p,Plateau& plateau); // Recuperer les cases vides autour d'un pion avec une référence Pion
+    std::vector<std::tuple<int, int, int>> getCasesVidesAutour(int ligne, int colonne, int z, Plateau& plateau); // Recuperer les cases vides autour d'un pion avec ses coordonnées
 
     int nombreVoisins(Pion& p, Plateau& plateau) const;  // Recuperer le nombre de voisin d'un pion
     bool hasVoisin(Pion& p, Plateau& plateau) const;  // Booleen si le pion a des voisins
