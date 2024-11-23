@@ -1,5 +1,4 @@
 ﻿#include "partie.h"
-#include "commande.h"
 
 std::stack<Command*> Partie::historique;
 
@@ -471,7 +470,7 @@ void Partie::sauvegarde() {
             for (unsigned int z = 0; z < plateau.getNbCouches(); ++z) {
                 Pion* pion = GestionnairePions::getPion(l, c, plateau, z);
                 if (pion != nullptr) {
-                    fichier << "  Position: (" << l << ", " << c << ", " << z << "), ";
+                    fichier << "  Position: (" << c << ", " << l << ", " << z << "), ";
                     fichier << "  ID: " << pion->getId() << ",  Type: " << pion->getType() << ", Couleur: " << pion->getCouleur() << std::endl;
                 }
             }

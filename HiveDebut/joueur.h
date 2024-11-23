@@ -32,7 +32,6 @@ public:
     vector<Pion*>& getPionsEnMain() { return pionsEnMain; }
     bool peutBougerPions();
     bool isMainVide();
-    std::vector<Pion*> getPionsEnJeu(Plateau& plateau);
     virtual bool estIA() const = 0;
     virtual void Jouer(Plateau& plateau) = 0; // Methode virtuelle pure
     virtual ~Joueur(); // Destructeur virtuel pour eviter des fuites memoire
