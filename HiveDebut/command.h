@@ -2,10 +2,11 @@
 
 #include <iostream>
 
-class Joueur;
 class Plateau;
-class Pion;
+class Partie;
 class Mouvement;
+class Pion;
+class Joueur;
 
 class Command {
 public:
@@ -17,27 +18,29 @@ public:
 
 class PoserPionCommand : public Command {
 public:
-	PoserPionCommand(Joueur& j, Plateau& plt, Pion* pion, Mouvement* mouv) : joueur(j), plateau(plt), pion(pion), mouv(mouv) {}
+	PoserPionCommand(Partie& p, Mouvement* mouv);
 	virtual void execute() override;
 	virtual void undo() override;
 	virtual std::string getDescription() const override;
 
 private:
-	Joueur& joueur;
+	Partie& partie;
 	Plateau& plateau;
-	Pion* pion;
 	Mouvement* mouv;
+	Pion* pion;
+	Joueur* joueur;
 };
 
 class DeplacerPionCommand : public Command {
 public:
-	DeplacerPionCommand(Joueur& j, Plateau& plt, Pion* pion, Mouvement* mouv) : joueur(j), plateau(plt), pion(pion), mouv(mouv) {}
+	DeplacerPionCommand(Partie& p, Mouvement* mouv);
 	virtual void execute() override;
 	virtual void undo() override;
 	virtual std::string getDescription() const override;
 private:
-	Joueur& joueur;
+	Partie& partie;
 	Plateau& plateau;
-	Pion* pion;
 	Mouvement* mouv;
+	Pion* pion;
+	Joueur* joueur;
 };

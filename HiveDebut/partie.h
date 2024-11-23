@@ -13,6 +13,10 @@
 #include <windows.h>
 #include <sstream>
 #include <map>
+#include <algorithm>
+#include <set>
+
+#define NOMINMAX
 
 // Permet d'utiliser les couleurs dans la console
 #define RED "\033[31m"
@@ -30,6 +34,7 @@ private:
     unsigned int nombreTour;
     unsigned int nbUndo;
 
+    friend class JoueurIA;
 public:
 
     string nomPartie;
@@ -41,6 +46,9 @@ public:
     Joueur* getJoueur1() const { return joueur1; }
     Joueur* getJoueur2() const { return joueur2; }
     unsigned int getNbUndo() const { return nbUndo; }
+    Joueur& joueurAdverse(Joueur& joueur) { return (&joueur == joueur1) ? *joueur2 : *joueur1; }
+
+    bool canUndo() { return !gC.historique.empty() && gC.historique.size() >= 2 && getNbUndo() >= 1; }
 
     void setup(); // Met en place une partie
     static void creerDossierSiInexistant(const std::string& cheminDossier);

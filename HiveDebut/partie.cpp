@@ -133,9 +133,9 @@ bool Partie::chargerPartie() {
     }
     // Créer le joueur 1
     if (typeJ1 == "Humain")
-        joueur1 = new JoueurHumain(pionsJ1, couleurJ1);
+        joueur1 = new JoueurHumain(pionsJ1, couleurJ1, *this);
     else
-        joueur1 = new JoueurIA(pionsJ1, couleurJ1);
+        joueur1 = new JoueurIA(pionsJ1, couleurJ1, *this);
 
     // Charger les informations du joueur 2
     std::getline(fichier, ligne); // "Type: Humain/IA"
@@ -167,9 +167,9 @@ bool Partie::chargerPartie() {
     }
     // Créer le joueur 2
     if (typeJ2 == "Humain")
-        joueur2 = new JoueurHumain(pionsJ2, couleurJ2);
+        joueur2 = new JoueurHumain(pionsJ2, couleurJ2, *this);
     else
-        joueur2 = new JoueurIA(pionsJ2, couleurJ2);
+        joueur2 = new JoueurIA(pionsJ2, couleurJ2, *this);
 
     // Charger l'état du plateau
     while (std::getline(fichier, ligne) && ligne.find("Position") != std::string::npos) {
@@ -248,11 +248,11 @@ bool Partie::chargerPartie() {
         }
 
         if (oldLigne == -1 && oldColonne == -1 && oldZ == -1) {
-            auto poserPionCommand = new PoserPionCommand(j, plateau, Pion::getPionById(pionId), mvt);
+            auto poserPionCommand = new PoserPionCommand(*this, mvt);
             gC.historique.push(poserPionCommand);
         }
         else {
-            auto deplacerPionCommand = new DeplacerPionCommand(j, plateau, Pion::getPionById(pionId), mvt);
+            auto deplacerPionCommand = new DeplacerPionCommand(*this, mvt);
             gC.historique.push(deplacerPionCommand);
         }
     }
@@ -299,12 +299,12 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
     std::cout << "Nombre de joueurs selectionne : " << nbJoueur << std::endl;
 
     if (nbJoueur == 1) {
-        joueur1 = new JoueurHumain(initialiserPions(RED), RED);
-        joueur2 = new JoueurIA(initialiserPions(WHITE), WHITE);
+        joueur1 = new JoueurHumain(initialiserPions(RED), RED, *this);
+        joueur2 = new JoueurIA(initialiserPions(WHITE), WHITE, *this);
     }
     else {
-        joueur1 = new JoueurHumain(initialiserPions(RED), RED);
-        joueur2 = new JoueurHumain(initialiserPions(WHITE), WHITE);
+        joueur1 = new JoueurHumain(initialiserPions(RED), RED, *this);
+        joueur2 = new JoueurHumain(initialiserPions(WHITE), WHITE, *this);
     }
 }
 
@@ -362,15 +362,6 @@ std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
 
 void Partie::jouerUnTour(Joueur* j) {
     // Le joueur joue son tour
-    if (gC.historique.size() >= 2 && getNbUndo() >= 1 && !j->estIA()) {
-        int choixUndo;
-        std::cout << "Voulez-vous annuler (1) ou non (2) un mouvement ? (" << getNbUndo() << " restants) ";
-        std::cin >> choixUndo;
-        if (choixUndo == 1) {
-            annulerMouvement();
-            plateau.afficher();
-        }
-    }
 
     j->Jouer(getPlateau(),gC);  // Joue le mouvement
 
