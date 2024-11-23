@@ -22,7 +22,7 @@ std::vector<Pion*> GestionnaireVoisins::getVoisins(Pion& p, Plateau& plateau){
         int newLigne = ligne + direction.first;
         int newColonne = colonne + direction.second;
         if (plateau.estValide(newLigne, newColonne, z)) {
-            voisins.push_back(plateau.grille[newLigne][newColonne][z]);
+            voisins.push_back(plateau.getGrille()[newLigne][newColonne][z]);
         }
         else {
             voisins.push_back(nullptr);
@@ -50,7 +50,7 @@ std::vector<Pion*> GestionnaireVoisins::getVoisins(int ligne, int colonne, Plate
         int newLigne = ligne + direction.first;
         int newColonne = colonne + direction.second;
         if (plateau.estValide(newLigne, newColonne, z)) {
-            voisins.push_back(plateau.grille[newLigne][newColonne][z]);
+            voisins.push_back(plateau.getGrille()[newLigne][newColonne][z]);
         }
         else {
             voisins.push_back(nullptr);

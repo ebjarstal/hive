@@ -9,5 +9,4 @@ class GestionnaireCommand {
 public:
 	static void executeCommand(Partie& partie, Command* cmd);
 	static void undoCommand(Partie& partie);
-
 };

@@ -34,7 +34,6 @@ private:
     unsigned int nombreTour;
     unsigned int nbUndo;
 
-    friend class JoueurIA;
 public:
 
     string nomPartie;

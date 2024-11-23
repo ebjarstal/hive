@@ -16,18 +16,20 @@ private:
     static std::map<int, Pion*> pions;
     string type;
     string couleur;
+
     static int prochainId;
     int id;
+
     int ligne = -1;
     int colonne = -1;
     int z = -1;  // dimension verticale dans le plateau
+
 public:
     Pion(int id, string t, string c) : id(id), type(t), couleur(c) {}
     Pion(string t, string c) : id(prochainId++), type(t), couleur(c) {}
 
     static void ajouterPion(Pion* pion) { pions[pion->getId()] = pion; }
     static Pion* getPionById(int id) { return pions[id]; }
-    static void getPion() { for (const auto& paire : pions) { std::cout << "Clé: " << paire.first << ", Valeur: " << paire.second->getLigne() << paire.second->getColonne() << paire.second->getZ() << std::endl; } }
     static void resetPion(Pion* p, int id) { pions[id] = p; }
 
     void reset() { ligne = -1; colonne = -1; z = -1; }

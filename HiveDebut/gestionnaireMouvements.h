@@ -28,9 +28,5 @@ public:
     
     static std::vector<Mouvement*> genererTousLesMouvements(Plateau& p, Joueur& joueur);
     static bool deplacementCasseRuche(Pion* pion, int newLigne, int newColonne, int newZ, Plateau& plateau);     // Verifier si le deplacement casse la ruche
-
-private:
-    friend class Joueur;
-    friend class Plateau;
 };
 

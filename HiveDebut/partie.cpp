@@ -312,7 +312,7 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
 
 std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
     std::vector<Pion*> pions;
-    Usinedepions usine;
+    UsineDePions usine;
 
     // Créer les pions et les ajouter via la méthode Pion::ajouterPion
     Pion* pionR = usine.creerPion("Reine", couleur);
@@ -452,7 +452,7 @@ void Partie::sauvegarde() {
     fichier << "Type: " << (dynamic_cast<JoueurHumain*>(joueur1) ? "Humain" : "IA") << std::endl;
     fichier << "Couleur: " << joueur1->getCouleur() << std::endl;
     fichier << "Pions en main:" << std::endl;
-    for (Pion* pion : joueur1->pionsEnMain) {
+    for (Pion* pion : joueur1->getPionsEnMain()) {
         fichier << "  ID: " << pion->getId() << "  Type: " << pion->getType() << ", Couleur: " << pion->getCouleur() << std::endl;
     }
 
@@ -460,14 +460,14 @@ void Partie::sauvegarde() {
     fichier << "Type: " << (dynamic_cast<JoueurHumain*>(joueur2) ? "Humain" : "IA") << std::endl;
     fichier << "Couleur: " << joueur2->getCouleur() << std::endl;
     fichier << "Pions en main:" << std::endl;
-    for (Pion* pion : joueur2->pionsEnMain) {
+    for (Pion* pion : joueur2->getPionsEnMain()) {
         fichier << "  ID: " << pion->getId() << "  Type: " << pion->getType() << ", Couleur: " << pion->getCouleur() << std::endl;
     }
 
     fichier << "Plateau:" << std::endl;
-    for (unsigned int l = 0; l < plateau.nb_lignes; ++l) {
-        for (unsigned int c = 0; c < plateau.nb_colonnes; ++c) {
-            for (unsigned int z = 0; z < plateau.nb_couches; ++z) {
+    for (unsigned int l = 0; l < plateau.getNbLignes(); ++l) {
+        for (unsigned int c = 0; c < plateau.getNbColonnes(); ++c) {
+            for (unsigned int z = 0; z < plateau.getNbCouches(); ++z) {
                 Pion* pion = GestionnairePions::getPion(l, c, plateau, z);
                 if (pion != nullptr) {
                     fichier << "  Position: (" << c << ", " << l << ", " << z << "), ";

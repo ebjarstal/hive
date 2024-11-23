@@ -23,9 +23,6 @@ class Partie;
 
 class Joueur {
 protected:
-    friend class Partie;
-    friend class PoserPionCommand;
-    friend class DeplacerPionCommand;
     Partie& partie;
     vector<Pion*> pionsEnMain;
     string couleur;

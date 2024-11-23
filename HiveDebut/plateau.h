@@ -29,32 +29,21 @@ using namespace std;
 
 class Plateau {
 public:
-    Plateau(unsigned int l, unsigned int c, unsigned int z, GestionnairePions& gP, GestionnaireMouvements& gM, GestionnaireVoisins& gV);
+    Plateau(unsigned int l, unsigned int c, unsigned int z);
     ~Plateau();
 
-    void afficher() const;
+    void afficher();
     bool isVide() const;
     void redimensionnerPlateau();
     bool estValide(int ligne, int colonne, int z = 0) const;  // Méthode non statique car elle dépend des dimensions du Plateau
 
-    GestionnairePions& getGestionnairePions() const { return gestionnairePions; }
-    GestionnaireVoisins& getGestionnaireVoisins() const { return gestionnaireVoisins; }
-    GestionnaireMouvements& getGestionnaireMouvements() const { return gestionnaireMouvements; }
+    unsigned int getNbLignes() const { return nb_lignes; }
+    unsigned int getNbColonnes() const { return nb_colonnes; }
+    unsigned int getNbCouches() const { return nb_couches; }
+    std::vector<std::vector<std::vector<Pion*>>>& getGrille() { return grille; }
 
 private:
     unsigned int nb_lignes, nb_colonnes, nb_couches;
     std::vector<std::vector<std::vector<Pion*>>> grille;
-    GestionnairePions& gestionnairePions;
-    GestionnaireVoisins& gestionnaireVoisins;
-    GestionnaireMouvements& gestionnaireMouvements;
 
-    // Accès aux attributs privés pour Partie, GestionnairePions, GestionnaireVoisins, GestionnaireMouvements, JoueurHumain
-    friend class Partie;
-    friend class GestionnairePions;
-    friend class GestionnaireVoisins;
-    friend class GestionnaireMouvements;
-    friend class JoueurHumain;
-    friend class JoueurIA;
-    friend class PoserPionCommand;
-    friend class DeplacerPionCommand;
 };

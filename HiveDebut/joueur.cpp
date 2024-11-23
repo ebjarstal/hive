@@ -268,7 +268,7 @@ Mouvement* JoueurIA::trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCo
 int JoueurIA::calculerBlocageAbeille(Plateau& plateau, Joueur& joueur, bool isMaximizingPlayer) {
     Pion* reineAdverse = nullptr;
     Pion* reineJoueur = nullptr;
-    std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = plateau.gestionnairePions.getPions(plateau);
+    std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = GestionnairePions::getPions(plateau);
 
     for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
         Pion* pion = std::get<0>(pionsSurPlateau[i]);
@@ -288,8 +288,8 @@ int JoueurIA::calculerBlocageAbeille(Plateau& plateau, Joueur& joueur, bool isMa
     // Si une des reines manque, retourne un score neutre
     if (!reineJoueur || !reineAdverse) return 0;
 
-    int score = 10 * plateau.gestionnaireVoisins.nombreVoisins(*reineAdverse, plateau) -
-        10 * plateau.gestionnaireVoisins.nombreVoisins(*reineJoueur, plateau);
+    int score = 10 * GestionnaireVoisins::nombreVoisins(*reineAdverse, plateau) -
+        10 * GestionnaireVoisins::nombreVoisins(*reineJoueur, plateau);
 
     return isMaximizingPlayer ? score : -score;
 }
@@ -320,7 +320,7 @@ int JoueurIA::calculerScoreBlocage(Plateau& plateau, Joueur& joueur, bool isMaxi
     int score = 0;
 
     // Récupère tous les pions sur le plateau
-    std::vector<std::tuple<Pion*, int, int, int>> pionsBougeables = plateau.gestionnaireMouvements.getPionsBougeables(plateau, joueur);
+    std::vector<std::tuple<Pion*, int, int, int>> pionsBougeables = GestionnaireMouvements::getPionsBougeables(plateau, joueur);
 
     for (std::tuple<Pion*, int, int, int> pionBougeable : pionsBougeables) {
         Pion* pion = std::get<0>(pionBougeable);
@@ -343,7 +343,7 @@ int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, b
     int meilleurScore = isMaximizingPlayer ? -10000 : 10000;
 
     // Parcourir tous les mouvements possibles pour le joueur courant
-    std::vector<Mouvement*> mouvementsPossibles = plateau.gestionnaireMouvements.genererTousLesMouvements(plateau, joueurCourant);
+    std::vector<Mouvement*> mouvementsPossibles = GestionnaireMouvements::genererTousLesMouvements(plateau, joueurCourant);
 
     for (Mouvement* mouvement : mouvementsPossibles) {
 

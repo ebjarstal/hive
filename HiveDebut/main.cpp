@@ -10,12 +10,9 @@
 using namespace std;
 
 int main() {
-    GestionnairePions gP;
-    GestionnaireMouvements gM;
-    GestionnaireVoisins gV;
     unsigned int length = 20;
 
-    Plateau plateau(length, length, 5, gP, gM, gV);
+    Plateau plateau(length, length, 5);
     Partie partie(plateau);
     partie.setup();
     while (partie.partieTerminee() != true) {

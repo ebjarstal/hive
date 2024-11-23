@@ -14,12 +14,12 @@ PoserPionCommand::PoserPionCommand(Partie& p, Mouvement* mouv) : partie(p), mouv
 
 void PoserPionCommand::execute() {
     GestionnairePions::setPion(mouv->getLigne(), mouv->getColonne(), mouv->getZ(), pion, plateau);
-	joueur->pionsEnMain.erase(std::remove_if(joueur->pionsEnMain.begin(), joueur->pionsEnMain.end(), [&](Pion* p) { return p->getId() == pion->getId(); }), joueur->pionsEnMain.end()); // Ne supprime rien
+	joueur->getPionsEnMain().erase(std::remove_if(joueur->getPionsEnMain().begin(), joueur->getPionsEnMain().end(), [&](Pion* p) { return p->getId() == pion->getId(); }), joueur->getPionsEnMain().end()); // Ne supprime rien
 }
 
 void PoserPionCommand::undo() {
     GestionnairePions::deletePion(*pion, plateau);
-    joueur->pionsEnMain.push_back(pion);
+    joueur->getPionsEnMain().push_back(pion);
 }
 
 std::string PoserPionCommand::getDescription() const {

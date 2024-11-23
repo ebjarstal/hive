@@ -27,8 +27,5 @@ public:
     static bool sontVoisin(Pion& p1, Pion& p2, Plateau& plateau);  // booleen si les pions sont voisins
 
     static std::vector<Pion*> getRuche(Pion* p, Plateau& plateau);  // Recuperer l'entierete de la ruche du pion p
-private:
-
-    friend class Plateau;
 };
 
