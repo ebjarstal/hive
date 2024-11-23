@@ -1,5 +1,7 @@
 ﻿#include "partie.h"
 
+std::stack<Command*> Partie::historique;
+
 Partie::~Partie() {
     delete joueur1;  // Libère la mémoire allouée pour joueur1
     delete joueur2;  // Libère la mémoire allouée pour joueur2
@@ -249,11 +251,11 @@ bool Partie::chargerPartie() {
 
         if (oldLigne == -1 && oldColonne == -1 && oldZ == -1) {
             auto poserPionCommand = new PoserPionCommand(*this, mvt);
-            gC.historique.push(poserPionCommand);
+            historique.push(poserPionCommand);
         }
         else {
             auto deplacerPionCommand = new DeplacerPionCommand(*this, mvt);
-            gC.historique.push(deplacerPionCommand);
+            historique.push(deplacerPionCommand);
         }
     }
     fichier.close();
@@ -363,7 +365,7 @@ std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
 void Partie::jouerUnTour(Joueur* j) {
     // Le joueur joue son tour
 
-    j->Jouer(getPlateau(),gC);  // Joue le mouvement
+    j->Jouer(getPlateau());  // Joue le mouvement
 
     if (j == getJoueur2()) {
         nombreTour += 1;
@@ -384,9 +386,9 @@ void Partie::jouerUnTour(Joueur* j) {
 }
 
 void Partie::annulerMouvement() {
-    if (gC.historique.size() >= 2) {
-        gC.undoCommand();
-        gC.undoCommand();
+    if (historique.size() >= 2) {
+        GestionnaireCommand::undoCommand(*this);
+        GestionnaireCommand::undoCommand(*this);
         nbUndo--;
     }
     else {
@@ -476,7 +478,6 @@ void Partie::sauvegarde() {
     }
     
     fichier << "Historique des mouvements:" << std::endl;
-    std::stack<Command*> historique = gC.historique;
     std::stack<Command*> historiqueInversee;  // Pile temporaire pour inverser l'ordre
 
     // Copier les éléments dans une pile temporaire (ce qui inverse l'ordre)

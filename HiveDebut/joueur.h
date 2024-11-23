@@ -36,7 +36,7 @@ public:
     bool peutBougerPions();
     bool isMainVide();
     virtual bool estIA() const = 0;
-    virtual void Jouer(Plateau& plateau, GestionnaireCommand& gC) = 0; // Methode virtuelle pure
+    virtual void Jouer(Plateau& plateau) = 0; // Methode virtuelle pure
     virtual ~Joueur(); // Destructeur virtuel pour eviter des fuites memoire
 };
 
@@ -53,12 +53,12 @@ private:
     void afficherEmplacements(const std::vector<Mouvement*>& emplacements); // Afficher les emplacements
     void afficherPionsSurPlateau(Plateau& plateau); // Afficher les pions sur le plateau
 
-    Mouvement* poserPionHumain(Plateau& plateau, GestionnaireCommand& gC);  // Poser un pion
-    Mouvement* deplacerPionHumain(Plateau& plateau, GestionnaireCommand& gC);  // Deplacer un pion
+    Mouvement* poserPionHumain(Plateau& plateau);  // Poser un pion
+    Mouvement* deplacerPionHumain(Plateau& plateau);  // Deplacer un pion
 
 public:
     JoueurHumain(std::vector<Pion*> pionsEnMain, string couleur, Partie& p) : Joueur(pionsEnMain, couleur, p) {}
-    void Jouer(Plateau& plateau, GestionnaireCommand& gC) override;
+    void Jouer(Plateau& plateau) override;
     bool estIA() const override { return false; }
     ~JoueurHumain() override = default;
 };
@@ -67,7 +67,7 @@ public:
 class JoueurIA : public Joueur {
 public:
     JoueurIA(std::vector<Pion*> pionsEnMain, string couleur, Partie& p) : Joueur(pionsEnMain, couleur, p) {}
-    void Jouer(Plateau& plateau, GestionnaireCommand& gC) override {
+    void Jouer(Plateau& plateau) override {
         // Implementation specifique pour un joueur IA
         std::cout << "L intelligence artificielle joue son tour." << std::endl;
         return;

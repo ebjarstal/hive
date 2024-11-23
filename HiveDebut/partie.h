@@ -28,7 +28,7 @@ using namespace std;
 class Partie {
 private:
     Plateau& plateau;
-    GestionnaireCommand& gC;
+    static std::stack<Command*> historique;
     Joueur* joueur1;
     Joueur* joueur2;
     unsigned int nombreTour;
@@ -39,7 +39,7 @@ public:
 
     string nomPartie;
 
-    Partie(Plateau& p, GestionnaireCommand& gC) : joueur1(nullptr), joueur2(nullptr), nombreTour(1), nbUndo(0), plateau(p), gC(gC) {}
+    Partie(Plateau& p) : joueur1(nullptr), joueur2(nullptr), nombreTour(1), nbUndo(0), plateau(p) {}
     ~Partie();
     Plateau& getPlateau() { return plateau; }
     unsigned int getNombreTour() const { return nombreTour; }
@@ -47,8 +47,9 @@ public:
     Joueur* getJoueur2() const { return joueur2; }
     unsigned int getNbUndo() const { return nbUndo; }
     Joueur& joueurAdverse(Joueur& joueur) { return (&joueur == joueur1) ? *joueur2 : *joueur1; }
+    std::stack<Command*>& getHistorique() const { return historique; }
 
-    bool canUndo() { return !gC.historique.empty() && gC.historique.size() >= 2 && getNbUndo() >= 1; }
+    bool canUndo() { return !historique.empty() && historique.size() >= 2 && getNbUndo() >= 1; }
 
     void setup(); // Met en place une partie
     static void creerDossierSiInexistant(const std::string& cheminDossier);

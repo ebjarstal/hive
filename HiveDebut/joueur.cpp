@@ -133,7 +133,7 @@ void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau) {
     }
 }
 
-void JoueurHumain::Jouer(Plateau& plateau, GestionnaireCommand& gC) {
+void JoueurHumain::Jouer(Plateau& plateau) {
 
     int choix;
     if (isMainVide()) {
@@ -156,10 +156,10 @@ void JoueurHumain::Jouer(Plateau& plateau, GestionnaireCommand& gC) {
     }
 
     if (choix == 1) {
-        poserPionHumain(plateau, gC);  // Appel de la m thode pour poser un pion
+        poserPionHumain(plateau);  // Appel de la m thode pour poser un pion
     }
     else if (choix == 2 && !plateau.isVide()) {
-        deplacerPionHumain(plateau, gC);  // Appel de la m thode pour d placer un pion
+        deplacerPionHumain(plateau);  // Appel de la m thode pour d placer un pion
     }
     else if (choix == 3 && partie.canUndo()){
         partie.annulerMouvement();
@@ -170,7 +170,7 @@ void JoueurHumain::Jouer(Plateau& plateau, GestionnaireCommand& gC) {
     }
 }
 
-Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau, GestionnaireCommand& gC) {
+Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
 
     afficherPions(pionsEnMain);
     Pion* pionChoisi = choisirPion(pionsEnMain);
@@ -186,7 +186,7 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau, GestionnaireCommand& 
 
     Pion* pionAPoser = new Pion(pionChoisi->getId(), pionChoisi->getType(), pionChoisi->getCouleur());
     auto poserPionCommand = new PoserPionCommand(partie, emplacementChoisi);
-    gC.executeCommand(std::move(poserPionCommand));
+    GestionnaireCommand::executeCommand(partie, poserPionCommand);
 
     for (Mouvement* m : emplacements) {
         if (m != emplacementChoisi) {
@@ -196,7 +196,7 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau, GestionnaireCommand& 
     return emplacementChoisi;
 }
 
-Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau, GestionnaireCommand& gC) {
+Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
     std::vector<std::tuple<Pion*, int, int, int>> pionsBougeable = GestionnaireMouvements::getPionsBougeables(plateau, *this);
     if (pionsBougeable.empty()) {
         std::cout << "Aucun pion peut etre bouge\n";
@@ -217,7 +217,7 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau, GestionnaireComman
     Mouvement* deplacementChoisi = choisirEmplacement(deplacementsValides);
 
     auto deplacerPionCommand = new DeplacerPionCommand(partie, deplacementChoisi);
-    gC.executeCommand(std::move(deplacerPionCommand));
+    GestionnaireCommand::executeCommand(partie, deplacerPionCommand);
 
     for (Mouvement* m : deplacementsValides) {
         if (m != deplacementChoisi) {
@@ -237,18 +237,18 @@ Mouvement* JoueurIA::trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCo
         // Appliquer le mouvement
         if (mouvement->getOldLigne() == -1) {
             Command* commande = new PoserPionCommand(partie, mouvement);
-            partie.gC.executeCommand(commande);
+            GestionnaireCommand::executeCommand(partie,commande);
         }
         else {
             Command* commande = new DeplacerPionCommand(partie, mouvement);
-            partie.gC.executeCommand(commande);
+            GestionnaireCommand::executeCommand(partie,commande);
         }
 
         // Évaluer avec minimax
         int score = minimax(plateau, profondeurMax - 1, partie.joueurAdverse(joueurCourant), false, -10000, 10000);
 
         // Annuler le mouvement
-        partie.gC.undoCommand();
+        GestionnaireCommand::undoCommand(partie);
 
         // Vérifier si ce mouvement est le meilleur
         if (score > meilleurScore) {
@@ -350,18 +350,18 @@ int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, b
         // Appliquer le mouvement
         if (mouvement->getOldLigne() == -1) {
             Command* commande = new PoserPionCommand(partie, mouvement);
-            partie.gC.executeCommand(commande);
+            GestionnaireCommand::executeCommand(partie,commande);
         }
         else {
             Command* commande = new DeplacerPionCommand(partie, mouvement);
-            partie.gC.executeCommand(commande);
+            GestionnaireCommand::executeCommand(partie,commande);
         }
 
         // Appeler récursivement minimax
         int score = minimax(plateau, profondeur - 1, partie.joueurAdverse(joueurCourant), !isMaximizingPlayer, alpha, beta);
 
         // Annuler le mouvement
-        partie.gC.undoCommand();
+        GestionnaireCommand::undoCommand(partie);
 
         if (isMaximizingPlayer) {
             meilleurScore = std::max(meilleurScore, score);

@@ -13,11 +13,10 @@ int main() {
     GestionnairePions gP;
     GestionnaireMouvements gM;
     GestionnaireVoisins gV;
-    GestionnaireCommand gC;
     unsigned int length = 20;
 
     Plateau plateau(length, length, 5, gP, gM, gV);
-    Partie partie(plateau, gC);
+    Partie partie(plateau);
     partie.setup();
     while (partie.partieTerminee() != true) {
         partie.sauvegarde();

@@ -3,12 +3,11 @@
 #include <stack>
 #include "command.h"
 
+class Partie;
+
 class GestionnaireCommand {
 public:
-	void executeCommand(Command* cmd);
-	void undoCommand();
+	static void executeCommand(Partie& partie, Command* cmd);
+	static void undoCommand(Partie& partie);
 
-private:
-	static std::stack<Command*> historique;
-	friend class Partie;
 };
