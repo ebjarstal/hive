@@ -75,12 +75,8 @@ std::list<Mouvement*> GestionnaireMouvements::emplacementsPossibles(Pion& p, Pla
                 int v_colonne = std::get<1>(voisinCoord);
                 int v_z = std::get<2>(voisinCoord);
 
-                int distCarree = (v_ligne - ligne) * (v_ligne - ligne) +
-                    (v_colonne - colonne) * (v_colonne - colonne) +
-                    (v_z - z) * (v_z - z);
-
                 // Vérifier si la case voisine est vide et que le déplacement ne casse pas la ruche
-                if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr && distCarree == 9 && !deplacementCasseRuche(&p, v_ligne, v_colonne, v_z, plateau)) {
+                if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr) {
                     // Vérifier si cet emplacement a déjà été visité
                     if (emplacementsVisites.find({ v_ligne, v_colonne, v_z }) == emplacementsVisites.end()) {
                         // Ajouter l'emplacement au set pour éviter les doublons
