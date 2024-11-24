@@ -52,6 +52,10 @@ std::list<Mouvement*> GestionnaireMouvements::emplacementsPossibles(Pion& p, Pla
     std::set<std::tuple<int, int, int>> emplacementsVisites;  // Set pour éviter les doublons
 
     if (plateau.isVide()) {
+        // Ajouter la case du milieu du plateau à mouvementsPossibles
+        int milieuLigne = plateau.getNbLignes() / 2 - 1;
+        int milieuColonne = plateau.getNbColonnes() / 2 - 1;
+        mouvementsPossibles.push_back(new Mouvement(p.getId(), milieuLigne, milieuColonne, 0, -1, -1, -1));
         return mouvementsPossibles;
     }
     else {
