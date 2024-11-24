@@ -2,7 +2,22 @@
 #include "pions.h"
 #include "pionstype.h"
 
-Pion* Usinedepions::creerPion(const std::string& type, const std::string& couleur) {
+UsineDePions::UsineDePions() {
+    // Initialisation des nombres de pions pour chaque type de pion standard
+    nombreDePions["Reine"] = 1;
+    nombreDePions["Sauterelle"] = 3;
+    nombreDePions["Fourmi"] = 3;
+    nombreDePions["Scarabee"] = 2;
+    nombreDePions["Araignee"] = 3;
+
+    nombreDePions["Coccinelle"] = 1;
+    nombreDePions["Cloporte"] = 1;
+    nombreDePions["Moustique"] = 1;
+
+    //ajoute des types si besoin de plus
+}
+
+Pion* UsineDePions::creerPion(const std::string& type, const std::string& couleur) {
     if (getNombreDePions()[type] > 0) {
         // Décrémente le nombre de pions restants pour ce type
         nombreDePions[type]--;

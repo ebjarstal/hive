@@ -128,7 +128,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="commande.cpp" />
+    <ClCompile Include="command.cpp" />
+    <ClCompile Include="gestionnaireCommand.cpp" />
     <ClCompile Include="gestionnaireMouvements.cpp" />
     <ClCompile Include="gestionnairePions.cpp" />
     <ClCompile Include="gestionnaireVoisins.cpp" />
@@ -141,7 +142,8 @@
     <ClCompile Include="usine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="commande.h" />
+    <ClInclude Include="command.h" />
+    <ClInclude Include="gestionnaireCommand.h" />
     <ClInclude Include="gestionnaireMouvements.h" />
     <ClInclude Include="gestionnairePions.h" />
     <ClInclude Include="gestionnaireVoisins.h" />
@@ -149,6 +151,7 @@
     <ClInclude Include="mouvement.h" />
     <ClInclude Include="partie.h" />
     <ClInclude Include="pions.h" />
+    <ClInclude Include="pionstype.h" />
     <ClInclude Include="plateau.h" />
     <ClInclude Include="usine.h" />
   </ItemGroup>

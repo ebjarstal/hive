@@ -18,17 +18,14 @@ class Plateau;
 
 class GestionnaireVoisins {
 public:
-    std::vector<Pion*> getVoisins(Pion& p, Plateau& plateau) const;  // Recuperer les voisins d'un pion avec une reference Pion
-    std::vector<Pion*> getVoisins(int ligne, int colonne, Plateau& plateau, int z = 0) const;  // Recuperer les voisins d'un pion avec ses coordonnees
-    std::vector<std::tuple<int, int, int>> getVoisinsCoords(int ligne, int colonne, Plateau& plateau, int z = 0) const;  // Recuperer les coordonnees des voisins d'un pion avec ses coordonnees
+    static std::vector<Pion*> getVoisins(Pion& p, Plateau& plateau);  // Recuperer les voisins d'un pion avec une reference Pion
+    static std::vector<Pion*> getVoisins(int ligne, int colonne, Plateau& plateau, int z = 0);  // Recuperer les voisins d'un pion avec ses coordonnees
+    static std::vector<std::tuple<int, int, int>> getVoisinsCoords(int ligne, int colonne, Plateau& plateau, int z = 0);  // Recuperer les coordonnees des voisins d'un pion avec ses coordonnees
 
-    int nombreVoisins(Pion& p, Plateau& plateau) const;  // Recuperer le nombre de voisin d'un pion
-    bool hasVoisin(Pion& p, Plateau& plateau) const;  // Booleen si le pion a des voisins
-    bool sontVoisin(Pion& p1, Pion& p2, Plateau& plateau) const;  // booleen si les pions sont voisins
+    static int nombreVoisins(Pion& p, Plateau& plateau);  // Recuperer le nombre de voisin d'un pion
+    static bool hasVoisin(Pion& p, Plateau& plateau);  // Booleen si le pion a des voisins
+    static bool sontVoisin(Pion& p1, Pion& p2, Plateau& plateau);  // booleen si les pions sont voisins
 
-    std::vector<Pion*> getRuche(Pion* p, Plateau& plateau) const;  // Recuperer l'entierete de la ruche du pion p
-private:
-
-    friend class Plateau;
+    static std::vector<Pion*> getRuche(Pion* p, Plateau& plateau);  // Recuperer l'entierete de la ruche du pion p
 };
 

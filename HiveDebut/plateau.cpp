@@ -1,7 +1,7 @@
 #include "plateau.h"
 
 // Constructeur pour initialiser la grille avec les lignes et colonnes donn es
-Plateau::Plateau(unsigned int l, unsigned int c, unsigned int z, GestionnairePions& gP, GestionnaireMouvements& gM, GestionnaireVoisins& gV) : nb_lignes(l), nb_colonnes(c), nb_couches(z), gestionnairePions(gP), gestionnaireMouvements(gM), gestionnaireVoisins(gV) {
+Plateau::Plateau(unsigned int l, unsigned int c, unsigned int z) : nb_lignes(l), nb_colonnes(c), nb_couches(z) {
     grille.resize(l, std::vector<std::vector<Pion*>>(c, std::vector<Pion*>(z, nullptr))); // Initialiser la grille avec des nullptr
     std::cout << "Plateau cree avec " << l << " lignes, " << c << " colonnes et " << z << " couches." << std::endl;
 }
@@ -18,7 +18,7 @@ Plateau::~Plateau() {
     std::cout << "Pions du plateau supprimes" << std::endl;
 }
 
-void Plateau::afficher() const {
+void Plateau::afficher() {
     // Calculer la largeur maximale necessaire pour le numero de ligne
     size_t largeurLigne = std::to_string(nb_lignes - 1).size();
 
@@ -36,7 +36,7 @@ void Plateau::afficher() const {
                 std::cout << RESET << ". ";
             }
             else {
-                std::cout << gestionnairePions.getPion(ligne, colonne, *this)->getCouleur()
+                std::cout << GestionnairePions::getPion(ligne, colonne, *this)->getCouleur()
                     << grille[ligne][colonne][0]->getType() << " ";
             }
         }

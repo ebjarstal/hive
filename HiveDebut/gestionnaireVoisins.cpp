@@ -2,7 +2,7 @@
 #include "plateau.h"
 
 // Obtenir un vecteur de Pion* contenant les voisins du pion aux coordonn es sp cifi es. Sens horaire en commen ant par en haut   droite.
-std::vector<Pion*> GestionnaireVoisins::getVoisins(Pion& p, Plateau& plateau) const {
+std::vector<Pion*> GestionnaireVoisins::getVoisins(Pion& p, Plateau& plateau){
     int ligne = p.getLigne();
     int colonne = p.getColonne();
     int z = p.getZ();
@@ -22,7 +22,7 @@ std::vector<Pion*> GestionnaireVoisins::getVoisins(Pion& p, Plateau& plateau) co
         int newLigne = ligne + direction.first;
         int newColonne = colonne + direction.second;
         if (plateau.estValide(newLigne, newColonne, z)) {
-            voisins.push_back(plateau.grille[newLigne][newColonne][z]);
+            voisins.push_back(plateau.getGrille()[newLigne][newColonne][z]);
         }
         else {
             voisins.push_back(nullptr);
@@ -33,7 +33,7 @@ std::vector<Pion*> GestionnaireVoisins::getVoisins(Pion& p, Plateau& plateau) co
 }
 
 // Surcharge de la m thode ci-dessus sans la structure pion
-std::vector<Pion*> GestionnaireVoisins::getVoisins(int ligne, int colonne, Plateau& plateau, int z) const {
+std::vector<Pion*> GestionnaireVoisins::getVoisins(int ligne, int colonne, Plateau& plateau, int z){
     std::vector<Pion*> voisins;
     // Directions si la ligne est paire
     static const std::vector<std::pair<int, int>> directions_pair = {
@@ -50,7 +50,7 @@ std::vector<Pion*> GestionnaireVoisins::getVoisins(int ligne, int colonne, Plate
         int newLigne = ligne + direction.first;
         int newColonne = colonne + direction.second;
         if (plateau.estValide(newLigne, newColonne, z)) {
-            voisins.push_back(plateau.grille[newLigne][newColonne][z]);
+            voisins.push_back(plateau.getGrille()[newLigne][newColonne][z]);
         }
         else {
             voisins.push_back(nullptr);
@@ -60,7 +60,7 @@ std::vector<Pion*> GestionnaireVoisins::getVoisins(int ligne, int colonne, Plate
     return voisins;
 }
 
-std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getVoisinsCoords(int ligne, int colonne, Plateau& plateau, int z) const {
+std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getVoisinsCoords(int ligne, int colonne, Plateau& plateau, int z){
     std::vector<std::tuple<int, int, int>> voisinsCoords;
 
     // Directions pour les lignes paires
@@ -89,7 +89,7 @@ std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getVoisinsCoords(int
     return voisinsCoords;
 }
 
-int GestionnaireVoisins::nombreVoisins(Pion& p, Plateau& plateau) const {
+int GestionnaireVoisins::nombreVoisins(Pion& p, Plateau& plateau){
     std::vector<Pion*> voisins = getVoisins(p, plateau);
     int nbrVoisin = 0;
     for (auto voisin : voisins) {
@@ -98,12 +98,12 @@ int GestionnaireVoisins::nombreVoisins(Pion& p, Plateau& plateau) const {
     return nbrVoisin;
 }
 
-bool GestionnaireVoisins::hasVoisin(Pion& p, Plateau& plateau) const {
+bool GestionnaireVoisins::hasVoisin(Pion& p, Plateau& plateau){
     return nombreVoisins(p, plateau) == 0;
 }
 
-bool GestionnaireVoisins::sontVoisin(Pion& p1, Pion& p2, Plateau& plateau) const {
-    if (!plateau.gestionnairePions.estPose(p1) || !plateau.gestionnairePions.estPose(p2)) {
+bool GestionnaireVoisins::sontVoisin(Pion& p1, Pion& p2, Plateau& plateau){
+    if (!GestionnairePions::estPose(p1) || !GestionnairePions::estPose(p2)) {
         std::cout << "Au moins l'un des deux pions n'est pas pose sur le plateau\n";
         return false;
     }
@@ -121,7 +121,7 @@ bool GestionnaireVoisins::sontVoisin(Pion& p1, Pion& p2, Plateau& plateau) const
 }
 
 // Obtenir l'enti ret  de la ruche (voisins des voisins des voisins ... de (ligne, colonne))
-std::vector<Pion*> GestionnaireVoisins::getRuche(Pion* p, Plateau& plateau) const {
+std::vector<Pion*> GestionnaireVoisins::getRuche(Pion* p, Plateau& plateau){
     std::deque<Pion*> tests; // Queue contenant les pions a tester
     Pion* test; // Pion a tester
     std::vector<Pion*> voisins = getVoisins(*p, plateau); // Voisins du pion a tester
