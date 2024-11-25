@@ -24,9 +24,6 @@ public:
     static std::vector<std::tuple<Pion*, int, int, int>> getPionsBougeables(Plateau& plateau, Joueur& joueur);
     static std::vector<Mouvement*> emplacementsPossibles(Pion& p, Plateau& plateau); // quand pose le pion sur le plateau
     static std::vector<Mouvement*> deplacementsPossibles(Pion& p, Plateau& plateau); // deplacement
-
-    static std::vector<Mouvement*> deplacementsPossiblesAraignee(Pion& p, Plateau& plateau);
-    static std::vector<Mouvement*> deplacementsPossiblesReine(Pion& p, Plateau& plateau);
     
     static std::vector<Mouvement*> genererTousLesMouvements(Plateau& p, Joueur& joueur);
     static bool deplacementCasseRuche(Pion* pion, int newLigne, int newColonne, int newZ, Plateau& plateau);     // Verifier si le deplacement casse la ruche

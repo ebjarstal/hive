@@ -16,6 +16,7 @@ public:
 
     // Méthode pour créer un pion en fonction de son type
     Pion* creerPion(const std::string& type, const std::string& couleur);
+    Pion* creerPion(int id, const std::string& type, const std::string& couleur);
 
     // Méthode pour ajouter un nouveau type de pion (ex. pour des extensions)
     void ajouterExtension(const std::string& type, unsigned int nombre) {

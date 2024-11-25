@@ -151,7 +151,6 @@
     <ClInclude Include="mouvement.h" />
     <ClInclude Include="partie.h" />
     <ClInclude Include="pions.h" />
-    <ClInclude Include="pionstype.h" />
     <ClInclude Include="plateau.h" />
     <ClInclude Include="usine.h" />
   </ItemGroup>

@@ -129,7 +129,7 @@ void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau) {
         int colonne = std::get<2>(pionsSurPlateau[i]);
         int z = std::get<3>(pionsSurPlateau[i]);
 
-        std::cout << i << ": " << pion->getType() << " en (" << colonne << ", " << ligne << ", " << z << ")" << std::endl;
+        std::cout << i << ": " << pion->getType() << " en (" << ligne << ", " << colonne << ", " << z << ")" << std::endl;
     }
 }
 
@@ -187,7 +187,6 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
     afficherEmplacements(emplacements);
     Mouvement* emplacementChoisi = choisirEmplacement(emplacements);
 
-    Pion* pionAPoser = new Pion(pionChoisi->getId(), pionChoisi->getType(), pionChoisi->getCouleur());
     auto poserPionCommand = new MouvementCommand(partie, emplacementChoisi);
     GestionnaireCommand::executeCommand(partie, poserPionCommand);
 
