@@ -46,47 +46,90 @@ bool GestionnaireMouvements::cassageRuche(Pion& p, Plateau& plateau) {
     return false;
 }
 
+std::vector<Mouvement*> GestionnaireMouvements::emplacementsPossibles(Pion& p, Plateau& plateau) {
+    std::vector<Mouvement*> mouvementsPossibles;
+    std::set<std::tuple<int, int, int>> emplacementsUniques;
 
-std::list<Mouvement*> GestionnaireMouvements::emplacementsPossibles(Pion& p, Plateau& plateau) {
-    std::list<Mouvement*> mouvementsPossibles;
-    std::set<std::tuple<int, int, int>> emplacementsVisites;  // Set pour éviter les doublons
-
+    // Vérifier si le plateau est vide
     if (plateau.isVide()) {
-        // Ajouter la case du milieu du plateau à mouvementsPossibles
-        int milieuLigne = plateau.getNbLignes() / 2 - 1;
-        int milieuColonne = plateau.getNbColonnes() / 2 - 1;
-        mouvementsPossibles.push_back(new Mouvement(p.getId(), milieuLigne, milieuColonne, 0, -1, -1, -1));
-        return mouvementsPossibles;
+        // Si le plateau est vide, ajouter seulement le centre comme emplacement possible
+        emplacementsUniques.insert({ (plateau.getNbLignes() - 1) / 2, (plateau.getNbColonnes() - 1) / 2, 0 });
     }
     else {
         // Récupérer tous les pions présents sur le plateau
         std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = GestionnairePions::getPions(plateau);
 
-        for (const auto& pionTuple : pionsSurPlateau) {
-            Pion* pionActuel = std::get<0>(pionTuple);
-            int ligne = std::get<1>(pionTuple);
-            int colonne = std::get<2>(pionTuple);
-            int z = std::get<3>(pionTuple);
+        // Vérifier si c'est le deuxième tour (un seul pion sur le plateau)
+        if (pionsSurPlateau.size() == 1) {
+            // Ajouter tous les voisins du pion existant comme emplacements possibles
+            int ligne = std::get<1>(pionsSurPlateau[0]);
+            int colonne = std::get<2>(pionsSurPlateau[0]);
+            int z = std::get<3>(pionsSurPlateau[0]);
 
             std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
-
             for (const auto& voisinCoord : voisinsCoords) {
                 int v_ligne = std::get<0>(voisinCoord);
                 int v_colonne = std::get<1>(voisinCoord);
                 int v_z = std::get<2>(voisinCoord);
 
-                // Vérifier si la case voisine est vide et que le déplacement ne casse pas la ruche
                 if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr) {
-                    // Vérifier si cet emplacement a déjà été visité
-                    if (emplacementsVisites.find({ v_ligne, v_colonne, v_z }) == emplacementsVisites.end()) {
-                        // Ajouter l'emplacement au set pour éviter les doublons
-                        emplacementsVisites.insert({ v_ligne, v_colonne, v_z });
-                        // Ajouter le mouvement à la liste des mouvements possibles
-                        mouvementsPossibles.push_back(new Mouvement(p.getId(), v_ligne, v_colonne, v_z, ligne, colonne, z));
+                    emplacementsUniques.insert({ v_ligne, v_colonne, v_z });
+                }
+            }
+        }
+        else {
+            // Parcourir tous les pions sur le plateau
+            for (const auto& pionTuple : pionsSurPlateau) {
+                Pion* pionActuel = std::get<0>(pionTuple);
+                int ligne = std::get<1>(pionTuple);
+                int colonne = std::get<2>(pionTuple);
+                int z = std::get<3>(pionTuple);
+
+                // Vérifier que le pion est de la même couleur que le pion courant
+                if (pionActuel->getCouleur() == p.getCouleur()) {
+                    // Obtenir les coordonnées des cases voisines de ce pion
+                    std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
+
+                    for (const auto& voisinCoord : voisinsCoords) {
+                        int v_ligne = std::get<0>(voisinCoord);
+                        int v_colonne = std::get<1>(voisinCoord);
+                        int v_z = std::get<2>(voisinCoord);
+
+                        // Vérifier si la case voisine est vide
+                        if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr) {
+                            // Vérifier que cette case n'est pas voisine d'un pion adverse
+                            std::vector<std::tuple<int, int, int>> voisinsAdversaires =
+                                GestionnaireVoisins::getVoisinsCoords(v_ligne, v_colonne, plateau, v_z);
+
+                            bool voisinAdverse = false;
+                            for (const auto& voisinAdverseCoord : voisinsAdversaires) {
+                                int adv_ligne = std::get<0>(voisinAdverseCoord);
+                                int adv_colonne = std::get<1>(voisinAdverseCoord);
+                                int adv_z = std::get<2>(voisinAdverseCoord);
+
+                                Pion* pionVoisin = GestionnairePions::getPion(adv_ligne, adv_colonne, plateau, adv_z);
+                                if (pionVoisin != nullptr && pionVoisin->getCouleur() != p.getCouleur()) {
+                                    voisinAdverse = true;
+                                    break;
+                                }
+                            }
+
+                            // Si ce n'est pas un voisin d'un pion adverse, ajouter l'emplacement
+                            if (!voisinAdverse) {
+                                emplacementsUniques.insert({ v_ligne, v_colonne, v_z });
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+    // Convertir les emplacements uniques en objets Mouvement et les ajouter à la liste des mouvements possibles
+    for (const auto& emplacement : emplacementsUniques) {
+        int ligne = std::get<0>(emplacement);
+        int colonne = std::get<1>(emplacement);
+        int z = std::get<2>(emplacement);
+        mouvementsPossibles.push_back(new Mouvement(p.getId(), ligne, colonne, z, -1, -1, -1));
     }
 
     return mouvementsPossibles;
@@ -135,7 +178,7 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
 
     for (Pion* pion : pionsEnMain) {
         // Obtenir les emplacements valides pour poser ce pion
-        std::list<Mouvement*> placementsPossibles = emplacementsPossibles(*pion, p);
+        std::vector<Mouvement*> placementsPossibles = emplacementsPossibles(*pion, p);
         std::cout << "Nombre placements possibles de mouvements générés : " << placementsPossibles.size() << std::endl;
         // Ajouter les mouvements de placement à la liste des mouvements possibles
         mouvements.insert(mouvements.end(), placementsPossibles.begin(), placementsPossibles.end());
@@ -147,7 +190,7 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
         // Cas normal : générer les mouvements pour les pions déjà en jeu
         for (Pion* pion : pionsJoueur) {
             // Obtenir les emplacements possibles pour ce pion
-            std::list<Mouvement*> deplacementsValides = deplacementsPossibles(*pion, p);
+            std::vector<Mouvement*> deplacementsValides = deplacementsPossibles(*pion, p);
 
             // Ajouter les déplacements valides à la liste des mouvements possibles
             mouvements.insert(mouvements.end(), deplacementsValides.begin(), deplacementsValides.end());
@@ -166,8 +209,8 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
 }
 
 
-std::list<Mouvement*> GestionnaireMouvements::deplacementsPossiblesAraignee(Pion& p, Plateau& plateau) {
-    std::list<Mouvement*> mouvementsPossibles;
+std::vector<Mouvement*> GestionnaireMouvements::deplacementsPossiblesAraignee(Pion& p, Plateau& plateau) {
+    std::vector<Mouvement*> mouvementsPossibles;
     std::set<std::tuple<int, int, int>> emplacementsVisites;  // Set pour éviter les doublons
 
     if (plateau.isVide()) {
@@ -211,8 +254,8 @@ std::list<Mouvement*> GestionnaireMouvements::deplacementsPossiblesAraignee(Pion
     return mouvementsPossibles;
 }
 
-std::list<Mouvement*> GestionnaireMouvements::deplacementsPossiblesReine(Pion& p, Plateau& plateau) {
-    std::list<Mouvement*> mouvementsPossibles;
+std::vector<Mouvement*> GestionnaireMouvements::deplacementsPossiblesReine(Pion& p, Plateau& plateau) {
+    std::vector<Mouvement*> mouvementsPossibles;
     std::set<std::tuple<int, int, int>> emplacementsVisites;
 
     // Si le plateau est vide, aucun mouvement possible
@@ -263,8 +306,8 @@ std::list<Mouvement*> GestionnaireMouvements::deplacementsPossiblesReine(Pion& p
 }
 
 
-std::list<Mouvement*> GestionnaireMouvements::deplacementsPossibles(Pion& p, Plateau& plateau) {
-    std::list<Mouvement*> mouvementsPossibles;
+std::vector<Mouvement*> GestionnaireMouvements::deplacementsPossibles(Pion& p, Plateau& plateau) {
+    std::vector<Mouvement*> mouvementsPossibles;
     std::set<std::tuple<int, int, int>> emplacementsVisites;  // Set pour éviter les doublons
 
     if (plateau.isVide()) {

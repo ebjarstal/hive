@@ -7,11 +7,6 @@ public:
     Reine(const string& couleur) : Pion("R", couleur) {}
 };
 
-class Sauterelle : public Pion {
-public:
-    Sauterelle(const string& couleur) : Pion("S", couleur) {}
-};
-
 class Fourmi : public Pion {
 public:
     Fourmi(const string& couleur) : Pion("F", couleur) {}

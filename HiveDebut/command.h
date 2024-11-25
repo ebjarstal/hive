@@ -16,27 +16,13 @@ public:
 	virtual std::string getDescription() const = 0;  // Méthode pour la description
 };
 
-class PoserPionCommand : public Command {
+class MouvementCommand : public Command {
 public:
-	PoserPionCommand(Partie& p, Mouvement* mouv);
+	MouvementCommand(Partie& p, Mouvement* mouv);
 	virtual void execute() override;
 	virtual void undo() override;
 	virtual std::string getDescription() const override;
 
-private:
-	Partie& partie;
-	Plateau& plateau;
-	Mouvement* mouv;
-	Pion* pion;
-	Joueur* joueur;
-};
-
-class DeplacerPionCommand : public Command {
-public:
-	DeplacerPionCommand(Partie& p, Mouvement* mouv);
-	virtual void execute() override;
-	virtual void undo() override;
-	virtual std::string getDescription() const override;
 private:
 	Partie& partie;
 	Plateau& plateau;

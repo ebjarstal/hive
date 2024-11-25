@@ -249,14 +249,8 @@ bool Partie::chargerPartie() {
             Joueur& j = *joueur1;
         }
 
-        if (oldLigne == -1 && oldColonne == -1 && oldZ == -1) {
-            auto poserPionCommand = new PoserPionCommand(*this, mvt);
-            historique.push(poserPionCommand);
-        }
-        else {
-            auto deplacerPionCommand = new DeplacerPionCommand(*this, mvt);
-            historique.push(deplacerPionCommand);
-        }
+        auto mouvementCommand = new MouvementCommand(*this, mvt);
+        historique.push(mouvementCommand);
     }
     fichier.close();
     return true;
@@ -364,6 +358,8 @@ std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
 
 void Partie::jouerUnTour(Joueur* j) {
     // Le joueur joue son tour
+
+    plateau.afficher();
 
     j->Jouer(getPlateau());  // Joue le mouvement
 

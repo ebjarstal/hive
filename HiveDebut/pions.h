@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
+#include "mouvement.h"
 
 // Permet d'utiliser les couleurs dans la console
 #define RED "\033[31m"
@@ -11,8 +13,10 @@
 
 using namespace std;
 
+class Plateau;
+
 class Pion {
-private:
+protected:
     static std::map<int, Pion*> pions;
     string type;
     string couleur;
@@ -43,5 +47,12 @@ public:
     void setColonne(int new_colonne) { colonne = new_colonne; }
     int getZ() const { return z; }
     void setZ(int new_z) { z = new_z; }
+};
 
+class Sauterelle : public Pion {
+public:
+    Sauterelle(int id, string t, string c) : Pion(id, t, c) {}
+    Sauterelle(string c) : Pion("S", c) {}
+    Sauterelle(string t, string c) : Pion(prochainId++, t, c) {}
+    std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau);
 };
