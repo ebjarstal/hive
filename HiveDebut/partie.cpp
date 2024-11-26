@@ -89,6 +89,9 @@ bool Partie::chargementSauvegardePartie(const std::string dossierSauvegarde) {
 }
 
 bool Partie::chargerPartie() {
+    UsineDePions usine_j1;
+    UsineDePions usine_j2;
+
     std::string nomFichier = "sauvegardes/" + nomPartie + ".txt"; // Utiliser nomPartie pour le fichier
     std::ifstream fichier(nomFichier);
     if (!fichier) {
@@ -129,7 +132,7 @@ bool Partie::chargerPartie() {
         // Extraire la couleur
         std::string couleur = ligne.substr(posCouleur + 11);
 
-        Pion* pion = new Pion(id, type, couleur); // Création avec ID
+        Pion* pion = usine_j1.creerPion(id, type, couleur); // Création avec ID
         Pion::ajouterPion(pion);
         pionsJ1.push_back(pion); // Ajouter aux pions du joueur
     }
@@ -162,8 +165,7 @@ bool Partie::chargerPartie() {
 
         // Extraire la couleur
         std::string couleur = ligne.substr(posCouleur + 11);
-
-        Pion* pion = new Pion(id, type, couleur); // Création avec ID
+        Pion* pion = usine_j2.creerPion(id, type, couleur); // Création avec ID
         Pion::ajouterPion(pion);
         pionsJ2.push_back(pion);                  // Ajouter aux pions du joueur
     }
@@ -199,9 +201,16 @@ bool Partie::chargerPartie() {
 
         std::string couleur = ligne.substr(posCouleur + 11);
         // Créer ou récupérer le pion et le placer sur le plateau
-        Pion* pion = new Pion(id, type, couleur); // Avec ID
-        Pion::ajouterPion(pion);
-        GestionnairePions::setPion(lignePlateau, colonne, couche, pion, plateau);
+        if (couleur == joueur1->getCouleur()) {
+            Pion* pion = usine_j1.creerPion(id, type, couleur); // Avec ID
+            Pion::ajouterPion(pion);
+            GestionnairePions::setPion(lignePlateau, colonne, couche, pion, plateau);
+        }
+        else {
+            Pion* pion = usine_j2.creerPion(id, type, couleur); // Avec ID
+            Pion::ajouterPion(pion);
+            GestionnairePions::setPion(lignePlateau, colonne, couche, pion, plateau);
+        }
     }
 
     // Charger l'historique des mouvements
@@ -249,14 +258,8 @@ bool Partie::chargerPartie() {
             Joueur& j = *joueur1;
         }
 
-        if (oldLigne == -1 && oldColonne == -1 && oldZ == -1) {
-            auto poserPionCommand = new PoserPionCommand(*this, mvt);
-            historique.push(poserPionCommand);
-        }
-        else {
-            auto deplacerPionCommand = new DeplacerPionCommand(*this, mvt);
-            historique.push(deplacerPionCommand);
-        }
+        auto mouvementCommand = new MouvementCommand(*this, mvt);
+        historique.push(mouvementCommand);
     }
     fichier.close();
     return true;
@@ -315,47 +318,46 @@ std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
     UsineDePions usine;
 
     // Créer les pions et les ajouter via la méthode Pion::ajouterPion
-    Pion* pionR = usine.creerPion("Reine", couleur);
+    // Reine
+    Pion* pionR = usine.creerPion("R", couleur);
     Pion::ajouterPion(pionR);  // Appel de Pion::ajouterPion pour ajouter le pion au gestionnaire
     pions.push_back(pionR);  // Si vous avez besoin de garder une copie locale du pion
 
-    Pion* pionS1 = usine.creerPion("Sauterelle", couleur);
+    // Sauterelle
+    Pion* pionS1 = usine.creerPion("S", couleur);
     Pion::ajouterPion(pionS1);
     pions.push_back(pionS1);
-
-    Pion* pionS2 = usine.creerPion("Sauterelle", couleur);
+    Pion* pionS2 = usine.creerPion("S", couleur);
     Pion::ajouterPion(pionS2);
     pions.push_back(pionS2);
-
-    Pion* pionS3 = usine.creerPion("Sauterelle", couleur);
+    Pion* pionS3 = usine.creerPion("S", couleur);
     Pion::ajouterPion(pionS3);
     pions.push_back(pionS3);
 
-    Pion* pionF1 = usine.creerPion("Fourmi", couleur);
+    // Fourmi
+    Pion* pionF1 = usine.creerPion("F", couleur);
     Pion::ajouterPion(pionF1);
     pions.push_back(pionF1);
-
-    Pion* pionF2 = usine.creerPion("Fourmi", couleur);
+    Pion* pionF2 = usine.creerPion("F", couleur);
     Pion::ajouterPion(pionF2);
     pions.push_back(pionF2);
-
-    Pion* pionF3 = usine.creerPion("Fourmi", couleur);
+    Pion* pionF3 = usine.creerPion("F", couleur);
     Pion::ajouterPion(pionF3);
     pions.push_back(pionF3);
 
-    Pion* pionC1 = usine.creerPion("Scarabee", couleur);
-    Pion::ajouterPion(pionC1);
-    pions.push_back(pionC1);
-
-    Pion* pionC2 = usine.creerPion("Scarabee", couleur);
-    Pion::ajouterPion(pionC2);
-    pions.push_back(pionC2);
-
-    Pion* pionA1 = usine.creerPion("Araignee", couleur);
+    // Scarabee
+    Pion* pionK1 = usine.creerPion("K", couleur);
+    Pion::ajouterPion(pionK1);
+    pions.push_back(pionK1);
+    Pion* pionK2 = usine.creerPion("K", couleur);
+    Pion::ajouterPion(pionK2);
+    pions.push_back(pionK2);
+    
+    // Araignee
+    Pion* pionA1 = usine.creerPion("A", couleur);
     Pion::ajouterPion(pionA1);
     pions.push_back(pionA1);
-
-    Pion* pionA2 = usine.creerPion("Araignee", couleur);
+    Pion* pionA2 = usine.creerPion("A", couleur);
     Pion::ajouterPion(pionA2);
     pions.push_back(pionA2);
 
@@ -364,6 +366,8 @@ std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
 
 void Partie::jouerUnTour(Joueur* j) {
     // Le joueur joue son tour
+
+    plateau.afficher();
 
     j->Jouer(getPlateau());  // Joue le mouvement
 

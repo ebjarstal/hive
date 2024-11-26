@@ -4,7 +4,7 @@
 #include "joueur.h"
 #include "mouvement.h"
 
-PoserPionCommand::PoserPionCommand(Partie& p, Mouvement* mouv) : partie(p), mouv(mouv), plateau(partie.getPlateau()) {
+MouvementCommand::MouvementCommand(Partie& p, Mouvement* mouv) : partie(p), mouv(mouv), plateau(partie.getPlateau()) {
 	pion = Pion::getPionById(mouv->getPionId());
 	joueur = partie.getJoueur1();
 	if (joueur->getCouleur() != pion->getCouleur()) {
@@ -12,47 +12,27 @@ PoserPionCommand::PoserPionCommand(Partie& p, Mouvement* mouv) : partie(p), mouv
 	}
 }
 
-void PoserPionCommand::execute() {
-    GestionnairePions::setPion(mouv->getLigne(), mouv->getColonne(), mouv->getZ(), pion, plateau);
-	joueur->getPionsEnMain().erase(std::remove_if(joueur->getPionsEnMain().begin(), joueur->getPionsEnMain().end(), [&](Pion* p) { return p->getId() == pion->getId(); }), joueur->getPionsEnMain().end()); // Ne supprime rien
-}
-
-void PoserPionCommand::undo() {
-    GestionnairePions::deletePion(*pion, plateau);
-    joueur->getPionsEnMain().push_back(pion);
-}
-
-std::string PoserPionCommand::getDescription() const {
-	std::ostringstream oss;
-	int j = 1;
-	if (joueur == partie.getJoueur2()) {
-		j = 2;
+void MouvementCommand::execute() {
+	if (mouv->getOldLigne() == -1 && mouv->getOldColonne() == -1 && mouv->getOldZ() == -1) {
+		GestionnairePions::setPion(mouv->getLigne(), mouv->getColonne(), mouv->getZ(), pion, plateau);
+		joueur->getPionsEnMain().erase(std::remove_if(joueur->getPionsEnMain().begin(), joueur->getPionsEnMain().end(), [&](Pion* p) { return p->getId() == pion->getId(); }), joueur->getPionsEnMain().end()); // Ne supprime rien
 	}
-	oss << "Pion ID: " << pion->getId()
-		<< " De (" << mouv->getOldLigne() << ", " << mouv->getOldColonne() << ", " << mouv->getOldZ() << ")"
-		<< " A (" << mouv->getLigne() << ", " << mouv->getColonne() << ", " << mouv->getZ() << ") "
-		<< j;
-	return oss.str();
-}
-
-DeplacerPionCommand::DeplacerPionCommand(Partie& p, Mouvement* mouv) : partie(p), mouv(mouv), plateau(partie.getPlateau()) {
-	pion = Pion::getPionById(mouv->getPionId());
-	joueur = partie.getJoueur1();
-	if (joueur->getCouleur() != pion->getCouleur()) {
-		joueur = partie.getJoueur2();
+	else {
+		GestionnairePions::movePion(mouv->getLigne(), mouv->getColonne(), mouv->getZ(), pion, plateau);
 	}
 }
 
-void DeplacerPionCommand::execute() {
-    GestionnairePions::movePion(mouv->getLigne(), mouv->getColonne(), mouv->getZ(), pion, plateau);
-
+void MouvementCommand::undo() {
+	if (mouv->getOldLigne() == -1 && mouv->getOldColonne() == -1 && mouv->getOldZ() == -1) {
+		GestionnairePions::deletePion(*pion, plateau);
+		joueur->getPionsEnMain().push_back(pion);
+	}
+	else {
+		GestionnairePions::movePion(mouv->getOldLigne(), mouv->getOldColonne(), mouv->getOldZ(), pion, plateau);
+	}
 }
 
-void DeplacerPionCommand::undo() {
-    GestionnairePions::movePion(mouv->getOldLigne(), mouv->getOldColonne(), mouv->getOldZ(), pion, plateau);
-}
-
-std::string DeplacerPionCommand::getDescription() const {
+std::string MouvementCommand::getDescription() const {
 	std::ostringstream oss;
 	int j = 1;
 	if (joueur == partie.getJoueur2()) {
