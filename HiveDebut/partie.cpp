@@ -361,6 +361,11 @@ std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
     Pion::ajouterPion(pionA2);
     pions.push_back(pionA2);
 
+    // Coccinelle
+    Pion* pionX = usine.creerPion("X", couleur);
+    Pion::ajouterPion(pionX);
+    pions.push_back(pionX);
+
     return pions;
 }
 
