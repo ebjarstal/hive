@@ -20,6 +20,12 @@ void MouvementCommand::execute() {
 	else {
 		GestionnairePions::movePion(mouv->getLigne(), mouv->getColonne(), mouv->getZ(), pion, plateau);
 	}
+
+	bool estSurBordure = (mouv->getLigne() == 0 || mouv->getColonne() == 0 || mouv->getLigne() == plateau.getNbLignes() - 1 || mouv->getColonne() == plateau.getNbColonnes() - 1);
+	if (estSurBordure) {
+		// Redimensionner le plateau pour ajouter de l'espace autour
+		plateau.redimensionnerPlateau();
+	}
 }
 
 void MouvementCommand::undo() {

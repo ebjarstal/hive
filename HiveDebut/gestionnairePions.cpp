@@ -40,12 +40,6 @@ void GestionnairePions::setPion(int ligne, int colonne, int z, Pion* pion, Plate
     else {
         throw std::out_of_range("Position de grille invalide"); // Lancer une exception si la position est invalide
     }
-
-    bool estSurBordure = (ligne == 0 || colonne == 0 || ligne == plateau.getNbLignes() - 1 || colonne == plateau.getNbColonnes() - 1);
-    if (estSurBordure) {
-        // Redimensionner le plateau pour ajouter de l'espace autour
-        plateau.redimensionnerPlateau();
-    }
 }
 
 // Supprimer le pion aux coordonnees specifiees pour  viter une fuite de memoire
