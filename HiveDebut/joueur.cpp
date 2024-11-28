@@ -216,7 +216,7 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
 
     Pion* pionChoisi = choisirPionSurPlateau(plateau);
 
-    std::vector<Mouvement*> deplacementsValidesList = GestionnaireMouvements::deplacementsPossibles(*pionChoisi, plateau);
+    std::vector<Mouvement*> deplacementsValidesList = pionChoisi->deplacementsPossibles(*pionChoisi, *this, plateau);
     std::vector<Mouvement*> deplacementsValides(deplacementsValidesList.begin(), deplacementsValidesList.end());
 
     if (deplacementsValides.empty()) {
@@ -309,7 +309,7 @@ int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& joueur, bool isMaximizingP
 
         // Évaluer la mobilité et les types de pions
         if (!GestionnaireMouvements::cassageRuche(*pion, plateau)) {
-            auto mouvements = GestionnaireMouvements::deplacementsPossibles(*pion, plateau);
+            auto mouvements = pion->deplacementsPossibles(*pion, joueur, plateau);
             int options = mouvements.size();
 
             if (estJoueur) {

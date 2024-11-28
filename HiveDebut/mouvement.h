@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <tuple>
+#include <functional>
 
 // Permet d'utiliser les couleurs dans la console
 #define RED "\033[31m"

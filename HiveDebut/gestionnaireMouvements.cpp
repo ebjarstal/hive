@@ -101,7 +101,7 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
         // Cas normal : générer les mouvements pour les pions déjà en jeu
         for (Pion* pion : pionsJoueur) {
             // Obtenir les emplacements possibles pour ce pion
-            std::vector<Mouvement*> deplacementsValides = deplacementsPossibles(*pion, p);
+            std::vector<Mouvement*> deplacementsValides = pion->deplacementsPossibles(*pion, joueur, p);
 
             // Ajouter les déplacements valides à la liste des mouvements possibles
             mouvements.insert(mouvements.end(), deplacementsValides.begin(), deplacementsValides.end());
@@ -117,19 +117,5 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
     std::cout << "Nombre total de mouvements générés : " << mouvements.size() << std::endl;
 
     return mouvements;
-}
-
-std::vector<Mouvement*> GestionnaireMouvements::deplacementsPossibles(Pion& p, Plateau& plateau) {
-    std::vector<Mouvement*> mouvementsPossibles;
-    std::set<std::tuple<int, int, int>> emplacementsVisites;  // Set pour éviter les doublons
-
-    if (plateau.isVide()) {
-        return mouvementsPossibles;
-    }
-    else {
-        return p.deplacementsPossibles(plateau);
-    }
-
-    return mouvementsPossibles;
 }
 
