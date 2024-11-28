@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <functional>
 #include "mouvement.h"
 
 // Permet d'utiliser les couleurs dans la console
@@ -14,6 +15,7 @@
 using namespace std;
 
 class Plateau;
+class Joueur;
 
 class Pion {
 protected:
@@ -48,28 +50,29 @@ public:
     int getZ() const { return z; }
     void setZ(int new_z) { z = new_z; }
 
-    virtual std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau) = 0;
+    virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) = 0;
+    virtual std::vector<Mouvement*> emplacementsPossibles(Pion& p, Plateau& plateau);
 };
 
 class Reine : public Pion {
 public:
     Reine(int id, string c) : Pion(id, "R", c) {}
     Reine(string c) : Pion("R", c) {}
-    virtual std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau) override;
+    virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Sauterelle : public Pion {
 public:
     Sauterelle(int id, string c) : Pion(id, "S", c) {}
     Sauterelle(string c) : Pion("S", c) {}
-    virtual std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau) override;
+    virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Araignee : public Pion {
 public:
     Araignee(int id, string c) : Pion(id, "A", c) {}
     Araignee(string c) : Pion("A", c) {}
-    virtual std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau) override;
+    virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 
@@ -77,33 +80,33 @@ class Fourmi : public Pion {
 public:
     Fourmi(int id, string c) : Pion(id, "F", c) {}
     Fourmi(string c) : Pion("F", c) {}
-    virtual std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau) override;
+    virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Scarabee : public Pion {
 public:
     Scarabee(int id, string c) : Pion(id, "K", c) {}
     Scarabee(string c) : Pion("K", c) {}
-    virtual std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau) override;
+    virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Coccinelle : public Pion {
 public:
     Coccinelle(int id, string c) : Pion(id, "X", c) {}
     Coccinelle(string c) : Pion("X", c) {}
-    virtual std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau) override;
+    virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Cloporte : public Pion {
 public:
     Cloporte(int id, string c) : Pion(id, "C", c) {}
     Cloporte(string c) : Pion("C", c) {}
-    virtual std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau) override;
+    virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Moustique : public Pion {
 public:
     Moustique(int id, string c) : Pion(id, "M", c) {}
     Moustique(string c) : Pion("M", c) {}
-    virtual std::vector<Mouvement*> deplacementsPossibles(Plateau& plateau) override;
+    virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };

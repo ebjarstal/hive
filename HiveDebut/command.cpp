@@ -14,6 +14,7 @@ MouvementCommand::MouvementCommand(Partie& p, Mouvement* mouv) : partie(p), mouv
 
 void MouvementCommand::execute() {
 	if (mouv->getOldLigne() == -1 && mouv->getOldColonne() == -1 && mouv->getOldZ() == -1) {
+		mouv->executeCallback();
 		GestionnairePions::setPion(mouv->getLigne(), mouv->getColonne(), mouv->getZ(), pion, plateau);
 		joueur->getPionsEnMain().erase(std::remove_if(joueur->getPionsEnMain().begin(), joueur->getPionsEnMain().end(), [&](Pion* p) { return p->getId() == pion->getId(); }), joueur->getPionsEnMain().end()); // Ne supprime rien
 	}

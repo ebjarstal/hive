@@ -133,6 +133,12 @@ void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau) {
     }
 }
 
+void JoueurIA::Jouer(Plateau& plateau) {
+    Mouvement* mvt = trouverMeilleurMouvement(plateau, *this, 2);
+    Command* commande = new MouvementCommand(partie, mvt);
+    GestionnaireCommand::executeCommand(partie, commande);
+}
+
 void JoueurHumain::Jouer(Plateau& plateau) {
 
     int choix;
@@ -177,10 +183,11 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
     afficherPions(pionsEnMain);
     Pion* pionChoisi = choisirPion(pionsEnMain);
 
-    std::vector<Mouvement*> emplacements = GestionnaireMouvements::emplacementsPossibles(*pionChoisi, plateau);
+    std::vector<Mouvement*> emplacements = pionChoisi->emplacementsPossibles(*pionChoisi, plateau);
 
     if (emplacements.empty()) {
         std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer." << std::endl;
+        Jouer(plateau);
         return nullptr;
     }
 
@@ -214,6 +221,7 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
 
     if (deplacementsValides.empty()) {
         std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer." << std::endl;
+        Jouer(plateau);
         return nullptr;
     }
 
@@ -242,7 +250,7 @@ Mouvement* JoueurIA::trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCo
         GestionnaireCommand::executeCommand(partie, command);
 
         // Évaluer avec minimax
-        int score = minimax(plateau, profondeurMax - 1, partie.joueurAdverse(joueurCourant), false, -10000, 10000);
+        int score = minimax(plateau, profondeurMax - 1, partie.joueurAdverse(joueurCourant), true, -10000, 10000);
 
         // Annuler le mouvement
         GestionnaireCommand::undoCommand(partie);
@@ -262,74 +270,87 @@ Mouvement* JoueurIA::trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCo
 
     return meilleurMouvement;
 }
-int JoueurIA::calculerBlocageAbeille(Plateau& plateau, Joueur& joueur, bool isMaximizingPlayer) {
-    Pion* reineAdverse = nullptr;
-    Pion* reineJoueur = nullptr;
-    std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = GestionnairePions::getPions(plateau);
 
-    for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
-        Pion* pion = std::get<0>(pionsSurPlateau[i]);
-        if (pion->getType() == "R") { // Si le pion est une reine
-            if (pion->getCouleur() == joueur.getCouleur()) {
-                reineJoueur = pion;
-            }
-            else {
-                reineAdverse = pion;
-            }
-
-            // Sortie anticipée si les deux reines sont trouvées
-            if (reineJoueur && reineAdverse) break;
-        }
-    }
-
-    // Si une des reines manque, retourne un score neutre
-    if (!reineJoueur || !reineAdverse) return 0;
-
-    int score = 10 * GestionnaireVoisins::nombreVoisins(*reineAdverse, plateau) -
-        10 * GestionnaireVoisins::nombreVoisins(*reineJoueur, plateau);
-
-    return isMaximizingPlayer ? score : -score;
-}
-
-int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& j, bool isMaximizingPlayer) {
-    // Évalue l'état du plateau pour l'IA ou l'adversaire
+int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& joueur, bool isMaximizingPlayer) {
     int score = 0;
 
-    // Exemple : favorise l'encerclement de l'abeille ennemie
+    // 1. Vérifier si la partie est terminée
     if (partie.partieTerminee()) {
         Joueur* gagnant = partie.determinerGagnant();
-        if (gagnant == &j) {
-            return isMaximizingPlayer ? 1000 : -1000;
+        if (gagnant == &joueur) {
+            return isMaximizingPlayer ? 1000 : -1000; // Victoire ou défaite
         }
         else {
             return isMaximizingPlayer ? -1000 : 1000;
         }
     }
 
-    // Ajoute une heuristique basique :
-    // Par exemple : favorise un plus grand nombre de pions bloquant
-    score += calculerBlocageAbeille(plateau, j, isMaximizingPlayer);
-    score += calculerScoreBlocage(plateau, j, isMaximizingPlayer);
-    return score;
-}
+    // 2. Obtenir tous les pions sur le plateau
+    const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau = GestionnairePions::getPions(plateau);
 
-int JoueurIA::calculerScoreBlocage(Plateau& plateau, Joueur& joueur, bool isMaximizingPlayer) {
-    int score = 0;
+    int optionsJoueur = 0, optionsAdversaire = 0;
+    int voisinsReineJoueur = 0, voisinsReineAdverse = 0;
+    Pion* reineJoueur = nullptr;
+    Pion* reineAdverse = nullptr;
 
-    // Récupère tous les pions sur le plateau
-    std::vector<std::tuple<Pion*, int, int, int>> pionsBougeables = GestionnaireMouvements::getPionsBougeables(plateau, joueur);
+    for (const auto& pionTuple : pionsSurPlateau) {
+        Pion* pion = std::get<0>(pionTuple);
+        int ligne = std::get<1>(pionTuple);
+        int colonne = std::get<2>(pionTuple);
+        int z = std::get<3>(pionTuple);
 
-    for (std::tuple<Pion*, int, int, int> pionBougeable : pionsBougeables) {
-        Pion* pion = std::get<0>(pionBougeable);
-        if (pion->getCouleur() == joueur.getCouleur()) {
-            score += 3; // Pion du joueur bloqué
+        bool estJoueur = (pion->getCouleur() == joueur.getCouleur());
+
+        // Identifier les reines
+        if (pion->getType() == "R") {
+            if (estJoueur) reineJoueur = pion;
+            else reineAdverse = pion;
         }
-        else {
-            score -= 3; // Pion adverse bloqué
+
+        // Évaluer la mobilité et les types de pions
+        if (!GestionnaireMouvements::cassageRuche(*pion, plateau)) {
+            auto mouvements = GestionnaireMouvements::deplacementsPossibles(*pion, plateau);
+            int options = mouvements.size();
+
+            if (estJoueur) {
+                optionsJoueur += options;
+
+                // Bonus basé sur le type de pion
+                score += (isMaximizingPlayer ? 1 : -1) * (pion->getType() == "Fourmi" ? 5
+                    : pion->getType() == "Scarabée" ? 10
+                    : pion->getType() == "Araignée" ? 3
+                    : 0);
+            }
+            else {
+                optionsAdversaire += options;
+
+                // Pénalité basée sur le type de pion adverse
+                score -= (isMaximizingPlayer ? 1 : -1) * (pion->getType() == "Fourmi" ? 5
+                    : pion->getType() == "Scarabée" ? 10
+                    : pion->getType() == "Araignée" ? 3
+                    : 0);
+            }
         }
     }
 
-    return isMaximizingPlayer ? score : -score;
+    // 3. Blocage des reines
+    if (reineJoueur) {
+        voisinsReineJoueur = GestionnaireVoisins::nombreVoisins(*reineJoueur, plateau);
+    }
+
+    if (reineAdverse) {
+        voisinsReineAdverse = GestionnaireVoisins::nombreVoisins(*reineAdverse, plateau);
+    }
+
+    // Bonus ou pénalité pour le blocage des reines
+    score += (isMaximizingPlayer ? 1 : -1) * ((10 - voisinsReineAdverse) * 10); // Bonus pour bloquer la reine adverse
+    score -= (isMaximizingPlayer ? 1 : -1) * (voisinsReineJoueur * 10);         // Pénalité si la reine du joueur est bloquée
+
+    // 4. Ajouter les scores de mobilité
+    score += (isMaximizingPlayer ? 1 : -1) * (optionsJoueur * 2);
+    score -= (isMaximizingPlayer ? 1 : -1) * (optionsAdversaire * 2);
+
+    return score;
 }
 
 int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, bool isMaximizingPlayer, int alpha, int beta) {
