@@ -138,17 +138,36 @@ std::vector<Mouvement*> GestionnaireMouvements::emplacementsPossibles(Pion& p, P
 std::vector<std::tuple<Pion*, int, int, int>> GestionnaireMouvements::getPionsBougeables(Plateau& plateau, Joueur& j) {
     const std::vector<std::tuple<Pion*, int, int, int>>& pionsSurPlateau = GestionnairePions::getPions(plateau);
     std::vector<std::tuple<Pion*, int, int, int>> pionsBougeables;
-    // Pour chaque pion sur le plateau, on regarde s'il peut bouger
-    for (std::tuple<Pion*, int, int, int> pions : pionsSurPlateau) {
-        Pion* pion = std::get<0>(pions);
-        // Un pion ne casse pas la ruche s'il est au dessus d'un autre (scarabee)
-        if ((pion->getZ() > 0) || !(GestionnaireMouvements::cassageRuche(*pion, plateau))) {
-            //std::cout << "Le pion suivant ne casse pas la ruche : " << pion->getColonne() << " " << pion->getLigne() << " " << pion->getZ() << "\n";
-            pionsBougeables.push_back(pions);
+
+    // Parcourir toutes les cases possibles du plateau
+    for (unsigned int ligne = 0; ligne < plateau.getNbLignes(); ++ligne) {
+        for (unsigned int colonne = 0; colonne < plateau.getNbColonnes(); ++colonne) {
+            Pion* pionSommet = nullptr;
+            int zMax = -1;
+
+            // Parcourir les niveaux de z sur cette case (ligne, colonne)
+            for (int z = 0; z < plateau.getNbCouches(); ++z) {
+                Pion* pion = GestionnairePions::getPion(ligne, colonne, plateau ,z);
+                if (pion != nullptr) {
+                    if (z > zMax) { // Si le z est plus grand, on met à jour le pionSommet
+                        pionSommet = pion;
+                        zMax = z;
+                    }
+                }
+            }
+
+            // Si un pionSommet existe, vérifier s'il peut bouger
+            if (pionSommet != nullptr) {
+                if (zMax > 0 || !GestionnaireMouvements::cassageRuche(*pionSommet, plateau)) {
+                    pionsBougeables.push_back({ pionSommet, ligne, colonne, zMax });
+                }
+            }
         }
     }
+
     return pionsBougeables;
 }
+
 
 // Booléen si le déplacement casse la ruche ou non
 bool GestionnaireMouvements::deplacementCasseRuche(Pion* pion, int newLigne, int newColonne, int newZ, Plateau& plateau) {

@@ -163,7 +163,6 @@ std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(
 
     int ligne = p.getLigne();
     int colonne = p.getColonne();
-    int z = p.getZ();
 
     // Liste des déplacements possibles pour un hexagone, dépendant de la parité de la ligne
     std::vector<std::tuple<int, int, int>> directions;
@@ -183,14 +182,12 @@ std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(
     for (const auto& direction : directions) {
         int voisinLigne = ligne + std::get<0>(direction);
         int voisinColonne = colonne + std::get<1>(direction);
-        int voisinZ = z + std::get<2>(direction);
 
         // Vérifie si la case voisine est vide
-        if (GestionnairePions::getPion(voisinLigne, voisinColonne, plateau, voisinZ) == nullptr) {
-            casesVides.emplace_back(voisinLigne, voisinColonne, voisinZ);
+        if (GestionnairePions::getPion(voisinLigne, voisinColonne, plateau) == nullptr) {
+            casesVides.emplace_back(voisinLigne, voisinColonne, 0);
         }
     }
-
     return casesVides;
 }
 
@@ -216,11 +213,10 @@ std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(
     for (const auto& direction : directions) {
         int voisinLigne = ligne + std::get<0>(direction);
         int voisinColonne = colonne + std::get<1>(direction);
-        int voisinZ = z + std::get<2>(direction);
 
         // Vérifie si la case voisine est vide
-        if (GestionnairePions::getPion(voisinLigne, voisinColonne, plateau, voisinZ) == nullptr) {
-            casesVides.emplace_back(voisinLigne, voisinColonne, voisinZ);
+        if (GestionnairePions::getPion(voisinLigne, voisinColonne, plateau, 0) == nullptr) {
+            casesVides.emplace_back(voisinLigne, voisinColonne, 0);
         }
     }
 

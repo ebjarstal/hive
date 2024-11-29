@@ -19,11 +19,14 @@ Plateau::~Plateau() {
 }
 
 void Plateau::afficher() {
-    // Calculer la largeur maximale necessaire pour le numero de ligne
+    // Calculer la largeur maximale nécessaire pour le numéro de ligne
     size_t largeurLigne = std::to_string(nb_lignes - 1).size();
 
+    // Stocker les informations des cases avec plusieurs pions (pile)
+    std::vector<std::string> casesEmpilees;
+
     for (unsigned int ligne = 0; ligne < nb_lignes; ++ligne) {
-        // Afficher le numero de ligne avec un espace reserve
+        // Afficher le numéro de ligne avec un espace réservé
         std::cout << std::setw(largeurLigne) << ligne << " ";
 
         // Imprimer les espaces seulement pour une ligne sur deux
@@ -33,16 +36,54 @@ void Plateau::afficher() {
 
         for (unsigned int colonne = 0; colonne < nb_colonnes; ++colonne) {
             if (grille[ligne][colonne][0] == nullptr) {
+                // Si la case est vide (aucun pion), afficher un point
                 std::cout << RESET << ". ";
             }
             else {
-                std::cout << GestionnairePions::getPion(ligne, colonne, *this)->getCouleur()
-                    << grille[ligne][colonne][0]->getType() << " ";
+                int z = 0;
+                std::vector<std::string> pionsEmpiles;
+
+                // Parcourir tous les niveaux z de cette case
+                while (grille[ligne][colonne][z] != nullptr) {
+                    Pion* pion = grille[ligne][colonne][z];
+                    if (pion != nullptr) {
+                        // Ajouter le type et la couleur du pion dans la pile
+                        pionsEmpiles.push_back(
+                            pion->getCouleur() + pion->getType()
+                        );
+                    }
+                    ++z;
+                }
+
+                // Afficher uniquement le pion situé au niveau z le plus élevé (dernier dans le vecteur)
+                if (!pionsEmpiles.empty()) {
+                    std::cout << pionsEmpiles.back() << " "; // Pion au sommet
+                }
+
+                // Ajouter les autres pions (recouverts) dans la légende
+                if (pionsEmpiles.size() > 1) {
+                    std::ostringstream details;
+                    details << "Case (" << ligne << ", " << colonne << "): ";
+                    for (size_t i = 0; i < pionsEmpiles.size() - 1; ++i) {
+                        details << pionsEmpiles[i] << " ";
+                    }
+                    casesEmpilees.push_back(details.str());
+                }
             }
         }
         std::cout << std::endl;
     }
+
+    // Afficher la légende des cases avec des pions empilés
+    if (!casesEmpilees.empty()) {
+        std::cout << "\nPions empiles :\n";
+        for (const auto& ligne : casesEmpilees) {
+            std::cout << ligne << RESET << std::endl;
+        }
+    }
 }
+
+
 
 bool Plateau::isVide() const {
     for (const auto& ligne : grille) {
