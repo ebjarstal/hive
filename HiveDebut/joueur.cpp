@@ -205,18 +205,19 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
         std::cout << "Aucun pion peut etre bouge\n";
         return nullptr;
     }
-    afficherPionsSurPlateau(plateau);
+    std::vector<Mouvement*> deplacementsValides;
+    while (deplacementsValides.empty()) {
 
-    Pion* pionChoisi = choisirPionSurPlateau(plateau);
+        afficherPionsSurPlateau(plateau);
 
-    std::vector<Mouvement*> deplacementsValidesList = GestionnaireMouvements::deplacementsPossibles(*pionChoisi, plateau);
-    std::vector<Mouvement*> deplacementsValides(deplacementsValidesList.begin(), deplacementsValidesList.end());
+        Pion* pionChoisi = choisirPionSurPlateau(plateau);
 
-    if (deplacementsValides.empty()) {
-        std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer." << std::endl;
-        return nullptr;
+        deplacementsValides = GestionnaireMouvements::deplacementsPossibles(*pionChoisi, plateau);
+
+        if (deplacementsValides.empty()) {
+            std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer.\n" << std::endl;
+        }
     }
-
     afficherEmplacements(deplacementsValides);
     Mouvement* deplacementChoisi = choisirEmplacement(deplacementsValides);
 

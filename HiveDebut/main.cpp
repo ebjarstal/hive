@@ -17,11 +17,10 @@ int main() {
     partie.setup();
     while (partie.partieTerminee() != true) {
         partie.sauvegarde();
-        partie.jouerUnTour(partie.getJoueur1());
-        partie.jouerUnTour(partie.getJoueur2());
-
         partie.getPlateau().afficher();
-
+        partie.jouerUnTour(partie.getJoueur1());
+        partie.getPlateau().afficher();
+        partie.jouerUnTour(partie.getJoueur2());
     }
     return 0;
 }

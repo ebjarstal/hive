@@ -11,16 +11,22 @@ void Partie::setup() {
     // Créer le dossier "sauvegardes" s'il n'existe pas
     const std::string dossierSauvegarde = "sauvegardes";
     Partie::creerDossierSiInexistant(dossierSauvegarde);
-
-    int choix = choixChargementOuCreationPartie();
-
-    if (choix == 1) {
-        bool partie_chargee = chargementSauvegardePartie(dossierSauvegarde);
-        if (partie_chargee) {
-            return;
+    int choix = -1;
+    while (choix != 1 && choix != 2) {
+        choix = choixChargementOuCreationPartie();
+        if (choix == 1) {
+            bool partie_chargee = chargementSauvegardePartie(dossierSauvegarde);
+            if (partie_chargee) {
+                return;
+            }
+        }
+        else if (choix == 2) {
+            creationPartie(dossierSauvegarde);
+        }
+        else {
+            cout << "ERREUR : Chiffre invalide.\n\n";
         }
     }
-    creationPartie(dossierSauvegarde);
 }
 
 void Partie::creerDossierSiInexistant(const std::string& cheminDossier) {
@@ -361,14 +367,16 @@ std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
     Pion::ajouterPion(pionA2);
     pions.push_back(pionA2);
 
+    // Coccinelle
+    Pion* pionX = usine.creerPion("X", couleur);
+    Pion::ajouterPion(pionX);
+    pions.push_back(pionX);
+
     return pions;
 }
 
 void Partie::jouerUnTour(Joueur* j) {
     // Le joueur joue son tour
-
-    plateau.afficher();
-
     j->Jouer(getPlateau());  // Joue le mouvement
 
     if (j == getJoueur2()) {
