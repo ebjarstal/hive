@@ -456,10 +456,11 @@ void Partie::sauvegarde() {
         return;
     }
 
-    // Sauvegarder les données comme avant...
+    // Sauvegarder les données de base
     fichier << "Nombre de tour: " << nombreTour << std::endl;
     fichier << "Nombre d'undo: " << nbUndo << std::endl;
 
+    // Sauvegarde des joueurs
     fichier << "Joueur 1:" << std::endl;
     fichier << "Type: " << (dynamic_cast<JoueurHumain*>(joueur1) ? "Humain" : "IA") << std::endl;
     fichier << "Couleur: " << joueur1->getCouleur() << std::endl;
@@ -476,6 +477,7 @@ void Partie::sauvegarde() {
         fichier << "  ID: " << pion->getId() << "  Type: " << pion->getType() << ", Couleur: " << pion->getCouleur() << std::endl;
     }
 
+    // Sauvegarde du plateau
     fichier << "Plateau:" << std::endl;
     for (unsigned int l = 0; l < plateau.getNbLignes(); ++l) {
         for (unsigned int c = 0; c < plateau.getNbColonnes(); ++c) {
@@ -488,28 +490,44 @@ void Partie::sauvegarde() {
             }
         }
     }
-    
-    fichier << "Historique des mouvements:" << std::endl;
-    std::stack<Command*> historiqueInversee;  // Pile temporaire pour inverser l'ordre
 
-    // Copier les éléments dans une pile temporaire (ce qui inverse l'ordre)
+    // Vérification de la présence de callback dans l'historique
+    fichier << "Historique des mouvements:" << std::endl;
+    bool callbackDetected = false;
+    std::stack<Command*> historiqueInversee;
+
     while (!historique.empty()) {
-        historiqueInversee.push(historique.top());
+        Command* cmd = historique.top();
+        MouvementCommand* mouvCmd = dynamic_cast<MouvementCommand*>(cmd);
+
+        if (mouvCmd && mouvCmd->getMouvement()->hasCallback()) {
+            callbackDetected = true;
+        }
+
+        historiqueInversee.push(cmd);
         historique.pop();
     }
 
-    // Écrire les éléments depuis la pile temporaire
-    while (!historiqueInversee.empty()) {
-        Command* cmd = historiqueInversee.top();
-        historiqueInversee.pop();
+    // Si une callback est détectée, ne pas sauvegarder les détails des mouvements
+    if (!callbackDetected) {
+        while (!historiqueInversee.empty()) {
+            Command* cmd = historiqueInversee.top();
+            fichier << cmd->getDescription() << std::endl;
+            historique.push(historiqueInversee.top());
+            historiqueInversee.pop();
+        }
+    }
 
-        fichier << cmd->getDescription() << std::endl;
-        historique.push(cmd);
+    // Restaurer l'historique original
+    while (!historiqueInversee.empty()) {
+        historique.push(historiqueInversee.top());
+        historiqueInversee.pop();
     }
 
     fichier.close();
-    std::cout << "Sauvegarde de la partie reussie dans '" << nomFichier << "'." << std::endl;
+    std::cout << "Sauvegarde de la partie réussie dans '" << nomFichier << "'." << std::endl;
 }
+
 
 std::vector<std::string> Partie::listerSauvegardes() {
     std::vector<std::string> sauvegardes;

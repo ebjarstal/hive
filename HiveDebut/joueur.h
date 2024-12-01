@@ -64,16 +64,10 @@ public:
 class JoueurIA : public Joueur {
 public:
     JoueurIA(std::vector<Pion*> pionsEnMain, string couleur, Partie& p) : Joueur(pionsEnMain, couleur, p) {}
-    void Jouer(Plateau& plateau) override {
-        // Implementation specifique pour un joueur IA
-        std::cout << "L intelligence artificielle joue son tour." << std::endl;
-        return;
-    }
+    void Jouer(Plateau& plateau) override;
 
     Mouvement* trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCourant, int profondeurMax);
-    int calculerBlocageAbeille(Plateau& plateau, Joueur& joueur, bool isMaximizingPlayer);
     int evaluerPartie(Plateau& plateau, Joueur& j, bool isMaximizingPlayer);
-    int calculerScoreBlocage(Plateau& plateau, Joueur& joueur, bool isMaximizingPlayer);
     int minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, bool isMaximizingPlayer, int alpha, int beta);
 
     bool estIA() const override { return true; }
