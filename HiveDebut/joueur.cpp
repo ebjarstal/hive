@@ -219,7 +219,7 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
 
         Pion* pionChoisi = choisirPionSurPlateau(plateau);
 
-        deplacementsValides = GestionnaireMouvements::deplacementsPossibles(*pionChoisi, plateau);
+        deplacementsValides = pionChoisi->deplacementsPossibles(*pionChoisi, *this, plateau);
 
         if (deplacementsValides.empty()) {
             std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer.\n" << std::endl;

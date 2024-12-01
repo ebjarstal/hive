@@ -94,6 +94,10 @@ std::vector<Mouvement*> Pion::emplacementsPossibles(Pion& p, Plateau& plateau) {
     return mouvementsPossibles;
 }
 
+std::vector<Mouvement*> Pion::deplacementsPossibles(Joueur& j, Plateau& plateau) {
+    return this->deplacementsPossibles(*this, j, plateau);
+}
+
 std::vector<Mouvement*> Reine::deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) {
     std::vector<Mouvement*> mouvementsPossibles;
     std::set<std::tuple<int, int, int>> emplacementsVisites;

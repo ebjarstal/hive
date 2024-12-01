@@ -51,6 +51,7 @@ public:
     void setZ(int new_z) { z = new_z; }
 
     virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) = 0;
+    std::vector<Mouvement*> deplacementsPossibles(Joueur& j, Plateau& plateau);
     virtual std::vector<Mouvement*> emplacementsPossibles(Pion& p, Plateau& plateau);
 };
 
