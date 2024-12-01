@@ -297,58 +297,34 @@ std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plat
     }
 
     // Déplacements comme une Reine 
-    // Récupérer les voisins directs du Scarabée
-    std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau);
+    // Récupérer les cases vides autour
+    std::vector<std::tuple<int, int, int>> casesVidesCoords = GestionnaireVoisins::getCasesVidesAutour(p, plateau);
 
-    // Récupérer les cases vides accessibles autour de la position actuelle
-    std::vector<std::tuple<int, int, int>> casesVidesCoords = GestionnaireVoisins::getCasesVidesAutour(*this, plateau);
+    // Vérifier si le déplacement est valide (ne casse pas la ruche)
+    for (std::tuple<int, int, int> caseVide : casesVidesCoords) {
+        int new_ligne = std::get<0>(caseVide);
+        int new_colonne = std::get<1>(caseVide);
+        int new_z = 0;
 
-    // Explorer les voisins pour identifier les cases vides valides
-    for (const auto& voisin : voisinsCoords) {
-        int voisinLigne = std::get<0>(voisin);
-        int voisinColonne = std::get<1>(voisin);
-        int voisinZ = std::get<2>(voisin);
-        std::cout << voisinLigne << "," << voisinColonne << "," << voisinZ << "\n" << std::endl;
-        // Récupérer les cases vides autour de ce voisin
-        std::vector<std::tuple<int, int, int>> casesVidesAutourVoisin =
-            GestionnaireVoisins::getCasesVidesAutour(voisinLigne, voisinColonne, voisinZ, plateau);
-
-        // Filtrer les cases vides communes entre celles du Scarabée et les voisins
-        for (const auto& caseVide : casesVidesCoords) {
-            if (std::find(casesVidesAutourVoisin.begin(), casesVidesAutourVoisin.end(), caseVide) != casesVidesAutourVoisin.end()) {
-                int caseLigne = std::get<0>(caseVide);
-                int caseColonne = std::get<1>(caseVide);
-                int caseZ = std::get<2>(caseVide);
-
-                // Vérifier que le déplacement ne casse pas la ruche
-                if (!GestionnaireMouvements::deplacementCasseRuche(this, caseLigne, caseColonne, caseZ, plateau)) {
-                    // Ajouter le mouvement si ce n'est pas un doublon
-                    if (emplacementsVisites.find({ caseLigne, caseColonne, caseZ }) == emplacementsVisites.end()) {
-                        emplacementsVisites.insert({ caseLigne, caseColonne, caseZ });
-                        mouvementsPossibles.push_back(
-                            new Mouvement(this->getId(), caseLigne, caseColonne, caseZ, ligne, colonne, z)
-                        );
-                    }
-                }
+        if (z > 0 || !GestionnaireMouvements::deplacementCasseRuche(this, new_ligne, new_colonne, new_z, plateau)) {
+            // Éviter les doublons
+            if (emplacementsVisites.find({ new_ligne, new_colonne, new_z }) == emplacementsVisites.end()) {
+                emplacementsVisites.insert({ new_ligne, new_colonne, new_z });
+                mouvementsPossibles.push_back(new Mouvement(id, new_ligne, new_colonne, new_z, ligne, colonne, z));
             }
         }
     }
+ 
+    // Récupérer les voisins directs du Scarabée
+    std::vector<Pion*> voisins = GestionnaireVoisins::getVoisins(p, plateau);
 
-    // Superposition sur les voisins 
-    for (const auto& voisin : voisinsCoords) {
-        int voisinLigne = std::get<0>(voisin);
-        int voisinColonne = std::get<1>(voisin);
-        int voisinZ = std::get<2>(voisin) + 1;  // Monter au-dessus du voisin, ajoute donc une unité à z
-
-        // Vérifier que le déplacement ne casse pas la ruche
-        //if (!GestionnaireMouvements::deplacementCasseRuche(this, voisinLigne, voisinColonne, voisinZ, plateau)) {
-            // Ajouter le mouvement pour se superposer au voisin
-            if (emplacementsVisites.find({ voisinLigne, voisinColonne, voisinZ }) == emplacementsVisites.end()) {
-                emplacementsVisites.insert({ voisinLigne, voisinColonne, voisinZ });
-                mouvementsPossibles.push_back(
-                    new Mouvement(this->getId(), voisinLigne, voisinColonne, voisinZ, ligne, colonne, z)
-                );
-            
+    // Modification du Z pour monter dessus
+    for (Pion* voisin : voisins) {
+        if (voisin) {
+            while (plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1] != nullptr) {
+                voisin = plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1];
+            }
+            mouvementsPossibles.push_back(new Mouvement(id, voisin->getLigne(), voisin->getColonne(), voisin->getZ() + 1, ligne, colonne, z));
         }
     }
     return mouvementsPossibles;

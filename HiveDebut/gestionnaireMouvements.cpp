@@ -53,8 +53,7 @@ std::vector<std::tuple<Pion*, int, int, int>> GestionnaireMouvements::getPionsBo
     for (std::tuple<Pion*, int, int, int> pions : pionsSurPlateau) {
         Pion* pion = std::get<0>(pions);
 
-        if (!find(pions.begin(), pions.end(), std::make_tuple(pion, pion->getLigne(), pion->getColonne(), pion->getZ() + 1))) {
-
+        if (plateau.getGrille()[pion->getLigne()][pion->getColonne()][pion->getZ()+1] == nullptr) {
             if (pion->getCouleur() == j.getCouleur()) {
                 // Un pion ne casse pas la ruche s'il est au dessus d'un autre (scarabee)
                 if ((pion->getZ() > 0) || !(GestionnaireMouvements::cassageRuche(*pion, plateau))) {

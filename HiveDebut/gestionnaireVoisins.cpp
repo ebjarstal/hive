@@ -5,7 +5,7 @@
 std::vector<Pion*> GestionnaireVoisins::getVoisins(Pion& p, Plateau& plateau){
     int ligne = p.getLigne();
     int colonne = p.getColonne();
-    int z = p.getZ();
+    int z = 0;
     std::vector<Pion*> voisins;
     // Directions si la ligne est paire
     static const std::vector<std::pair<int, int>> directions_pair = {
@@ -22,6 +22,9 @@ std::vector<Pion*> GestionnaireVoisins::getVoisins(Pion& p, Plateau& plateau){
         int newLigne = ligne + direction.first;
         int newColonne = colonne + direction.second;
         if (plateau.estValide(newLigne, newColonne, z)) {
+            while (plateau.getGrille()[newLigne][newColonne][z + 1] != nullptr) {
+                z++;
+            }
             voisins.push_back(plateau.getGrille()[newLigne][newColonne][z]);
         }
         else {
