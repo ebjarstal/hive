@@ -22,6 +22,7 @@ public:
 	virtual void execute() override;
 	virtual void undo() override;
 	virtual std::string getDescription() const override;
+	Mouvement* getMouvement() const { return mouv; }
 
 private:
 	Partie& partie;

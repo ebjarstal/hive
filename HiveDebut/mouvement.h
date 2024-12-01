@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <tuple>
+#include <functional>
 
 // Permet d'utiliser les couleurs dans la console
 #define RED "\033[31m"
@@ -15,6 +16,7 @@ private:
     int pionId;
     tuple<int, int, int> coordDest;
     tuple<int, int, int> coordSrc;
+    std::function<void()> callback;
 public:
     Mouvement(int id, int ligne, int colonne, int z, int oldLigne, int oldColonne, int oldZ)
         : pionId(id), coordDest(make_tuple(ligne, colonne, z)), coordSrc(make_tuple(oldLigne, oldColonne, oldZ)) {}
@@ -29,4 +31,8 @@ public:
     void setCoordSrc(tuple<int, int, int> cSrc) { coordSrc = cSrc; }
     tuple<int, int, int> getCoordDest() { return coordDest; }
     tuple<int, int, int> getCoordSrc() { return coordSrc; }
+
+    void setCallback(std::function<void()> cb) { callback = cb; }
+    void executeCallback() { if (callback) callback(); }
+    bool hasCallback() const { return callback != nullptr; }
 };
