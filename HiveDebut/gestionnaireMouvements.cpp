@@ -19,6 +19,7 @@ bool GestionnaireMouvements::cassageRuche(Pion& p, Plateau& plateau) {
 
     // Verification de la rupture de la ruche
     std::vector<Pion*> voisins = GestionnaireVoisins::getVoisins(p, plateau);
+
     std::vector<Pion*> ruche_ref;
 
     // Sauvegarde des données du pion qui va etre supprimé
@@ -36,7 +37,6 @@ bool GestionnaireMouvements::cassageRuche(Pion& p, Plateau& plateau) {
             }
             // Verification si les ruches des voisins sont les m mes si on enl ve le pion
             else if (GestionnaireVoisins::getRuche(voisin, plateau) != ruche_ref) {
-                std::cout << "Le deplacement du pion casse la ruche !\n";
                 GestionnairePions::setPion(ref_l, ref_c, ref_z, &p, plateau); // On remet le pion apr s v rification
                 return true;
             }
@@ -97,12 +97,12 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
     for (Pion* pion : pionsEnMain) {
         // Obtenir les emplacements valides pour poser ce pion
         std::vector<Mouvement*> placementsPossibles = pion->emplacementsPossibles(*pion, p);
-        std::cout << "Nombre placements possibles de mouvements générés : " << placementsPossibles.size() << std::endl;
+        //std::cout << "Nombre placements possibles de mouvements générés : " << placementsPossibles.size() << std::endl;
         // Ajouter les mouvements de placement à la liste des mouvements possibles
         mouvements.insert(mouvements.end(), placementsPossibles.begin(), placementsPossibles.end());
     }
 
-    std::cout << "Nombre premiere etape de mouvements générés : " << mouvements.size() << std::endl;
+    //std::cout << "Nombre premiere etape de mouvements générés : " << mouvements.size() << std::endl;
     // Cas où le joueur n'a aucun pion sur le plateau : générer les placements possibles
     if (!pionsJoueur.empty()) {
         // Cas normal : générer les mouvements pour les pions déjà en jeu
@@ -121,7 +121,7 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
             }
         }
     }
-    std::cout << "Nombre total de mouvements générés : " << mouvements.size() << std::endl;
+    //std::cout << "Nombre total de mouvements générés : " << mouvements.size() << std::endl;
 
     return mouvements;
 }

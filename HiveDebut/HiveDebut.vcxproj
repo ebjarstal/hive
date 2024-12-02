@@ -132,6 +132,7 @@
     <ClCompile Include="gestionnaireCommand.cpp" />
     <ClCompile Include="gestionnaireMouvements.cpp" />
     <ClCompile Include="gestionnairePions.cpp" />
+    <ClCompile Include="gestionnaireSauvegarde.cpp" />
     <ClCompile Include="gestionnaireVoisins.cpp" />
     <ClCompile Include="joueur.cpp" />
     <ClCompile Include="main.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="gestionnaireCommand.h" />
     <ClInclude Include="gestionnaireMouvements.h" />
     <ClInclude Include="gestionnairePions.h" />
+    <ClInclude Include="gestionnaireSauvegarde.h" />
     <ClInclude Include="gestionnaireVoisins.h" />
     <ClInclude Include="joueur.h" />
     <ClInclude Include="mouvement.h" />

@@ -137,5 +137,5 @@ void Plateau::redimensionnerPlateau() {
 }
 
 bool Plateau::estValide(int ligne, int colonne, int z) const {
-    return ligne >= 0 && static_cast<unsigned int>(ligne) < nb_lignes && colonne >= 0 && static_cast<unsigned int>(colonne) < nb_colonnes && z >= 0;
+    return (ligne >= 0) && (static_cast<unsigned int>(ligne) < nb_lignes) && (colonne >= 0) && (static_cast<unsigned int>(colonne) < nb_colonnes) && z >= 0;
 }

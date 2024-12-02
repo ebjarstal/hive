@@ -37,45 +37,46 @@ std::vector<Mouvement*> Pion::emplacementsPossibles(Pion& p, Plateau& plateau) {
             }
         }
         else {
-            // Parcourir tous les pions sur le plateau
+            // Parcourir tous les pions sur le plateau qui sont pas empilés
             for (const auto& pionTuple : pionsSurPlateau) {
                 Pion* pionActuel = std::get<0>(pionTuple);
                 int ligne = std::get<1>(pionTuple);
                 int colonne = std::get<2>(pionTuple);
                 int z = std::get<3>(pionTuple);
+                if (plateau.getGrille()[ligne][colonne][z+1]==nullptr) {
+                    // Vérifier que le pion est de la même couleur que le pion courant
+                    if (pionActuel->getCouleur() == p.getCouleur()) {
+                        // Obtenir les coordonnées des cases voisines de ce pion
+                        std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
 
-                // Vérifier que le pion est de la même couleur que le pion courant
-                if (pionActuel->getCouleur() == p.getCouleur()) {
-                    // Obtenir les coordonnées des cases voisines de ce pion
-                    std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
+                        for (const auto& voisinCoord : voisinsCoords) {
+                            int v_ligne = std::get<0>(voisinCoord);
+                            int v_colonne = std::get<1>(voisinCoord);
+                            int v_z = std::get<2>(voisinCoord);
 
-                    for (const auto& voisinCoord : voisinsCoords) {
-                        int v_ligne = std::get<0>(voisinCoord);
-                        int v_colonne = std::get<1>(voisinCoord);
-                        int v_z = std::get<2>(voisinCoord);
+                            // Vérifier si la case voisine est vide
+                            if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr) {
+                                // Vérifier que cette case n'est pas voisine d'un pion adverse
+                                std::vector<std::tuple<int, int, int>> voisinsAdversaires =
+                                    GestionnaireVoisins::getVoisinsCoords(v_ligne, v_colonne, plateau, v_z);
 
-                        // Vérifier si la case voisine est vide
-                        if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr) {
-                            // Vérifier que cette case n'est pas voisine d'un pion adverse
-                            std::vector<std::tuple<int, int, int>> voisinsAdversaires =
-                                GestionnaireVoisins::getVoisinsCoords(v_ligne, v_colonne, plateau, v_z);
+                                bool voisinAdverse = false;
+                                for (const auto& voisinAdverseCoord : voisinsAdversaires) {
+                                    int adv_ligne = std::get<0>(voisinAdverseCoord);
+                                    int adv_colonne = std::get<1>(voisinAdverseCoord);
+                                    int adv_z = std::get<2>(voisinAdverseCoord);
 
-                            bool voisinAdverse = false;
-                            for (const auto& voisinAdverseCoord : voisinsAdversaires) {
-                                int adv_ligne = std::get<0>(voisinAdverseCoord);
-                                int adv_colonne = std::get<1>(voisinAdverseCoord);
-                                int adv_z = std::get<2>(voisinAdverseCoord);
-
-                                Pion* pionVoisin = GestionnairePions::getPion(adv_ligne, adv_colonne, plateau, adv_z);
-                                if (pionVoisin != nullptr && pionVoisin->getCouleur() != p.getCouleur()) {
-                                    voisinAdverse = true;
-                                    break;
+                                    Pion* pionVoisin = GestionnairePions::getPion(adv_ligne, adv_colonne, plateau, adv_z);
+                                    if (pionVoisin != nullptr && pionVoisin->getCouleur() != p.getCouleur()) {
+                                        voisinAdverse = true;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            // Si ce n'est pas un voisin d'un pion adverse, ajouter l'emplacement
-                            if (!voisinAdverse) {
-                                emplacementsUniques.insert({ v_ligne, v_colonne, v_z });
+                                // Si ce n'est pas un voisin d'un pion adverse, ajouter l'emplacement
+                                if (!voisinAdverse) {
+                                    emplacementsUniques.insert({ v_ligne, v_colonne, v_z });
+                                }
                             }
                         }
                     }
