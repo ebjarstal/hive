@@ -113,15 +113,15 @@ std::vector<Mouvement*> Reine::deplacementsPossibles(Pion& p, Joueur& j, Plateau
 
     // Vérifier si le déplacement est valide (ne casse pas la ruche)
     for (std::tuple<int, int, int> caseVide : casesVidesCoords) {
-        int ligne = std::get<0>(caseVide);
-        int colonne = std::get<1>(caseVide);
-        int z = std::get<2>(caseVide);
+        int new_ligne = std::get<0>(caseVide);
+        int new_colonne = std::get<1>(caseVide);
+        int new_z = std::get<2>(caseVide);
 
-        if (!GestionnaireMouvements::deplacementCasseRuche(this, ligne, colonne, z, plateau)) {
+        if (!GestionnaireMouvements::deplacementCasseRuche(this, new_ligne, new_colonne, new_z, plateau)) {
             // Éviter les doublons
-            if (emplacementsVisites.find({ ligne, colonne, z }) == emplacementsVisites.end()) {
-                emplacementsVisites.insert({ ligne, colonne, z });
-                mouvementsPossibles.push_back(new Mouvement(id, ligne, colonne, z, ligne, colonne, z));
+            if (emplacementsVisites.find({ new_ligne, new_colonne, new_z }) == emplacementsVisites.end()) {
+                emplacementsVisites.insert({ new_ligne, new_colonne, new_z });
+                mouvementsPossibles.push_back(new Mouvement(p.getId(), new_ligne, new_colonne, new_z, p.getLigne(), p.getColonne(), p.getZ()));
             }
         }
     }
@@ -165,7 +165,7 @@ std::vector<Mouvement*> Sauterelle::deplacementsPossibles(Pion& p, Joueur& j, Pl
                     ncolonne += dir[3];
                 }
             }
-            deplacements.push_back(new Mouvement(id, nligne, ncolonne, 0, l, c, 0));
+            deplacements.push_back(new Mouvement(p.getId(), nligne, ncolonne, 0, p.getLigne(), p.getColonne(), 0));
         }
     }
 
@@ -311,7 +311,7 @@ std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plat
             // Éviter les doublons
             if (emplacementsVisites.find({ new_ligne, new_colonne, new_z }) == emplacementsVisites.end()) {
                 emplacementsVisites.insert({ new_ligne, new_colonne, new_z });
-                mouvementsPossibles.push_back(new Mouvement(id, new_ligne, new_colonne, new_z, ligne, colonne, z));
+                mouvementsPossibles.push_back(new Mouvement(id, new_ligne, new_colonne, new_z, p.getLigne(), p.getColonne(), p.getZ()));
             }
         }
     }
@@ -325,7 +325,7 @@ std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plat
             while (plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1] != nullptr) {
                 voisin = plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1];
             }
-            mouvementsPossibles.push_back(new Mouvement(id, voisin->getLigne(), voisin->getColonne(), voisin->getZ() + 1, ligne, colonne, z));
+            mouvementsPossibles.push_back(new Mouvement(id, voisin->getLigne(), voisin->getColonne(), voisin->getZ() + 1, p.getLigne(), p.getColonne(), p.getZ()));
         }
     }
     return mouvementsPossibles;
@@ -334,7 +334,7 @@ std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plat
 std::vector<Mouvement*> Coccinelle::deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) {
     std::vector<Mouvement*> mouvementsPossibles;
     std::set<std::tuple<int, int, int>> emplacementsVisites;  // Set pour éviter les doublons
-    std::vector<Pion*> voisins = GestionnaireVoisins::getVoisins(*this, plateau);
+    std::vector<Pion*> voisins = GestionnaireVoisins::getVoisins(p, plateau);
     
 
     for (Pion* pion : voisins) {
@@ -347,7 +347,7 @@ std::vector<Mouvement*> Coccinelle::deplacementsPossibles(Pion& p, Joueur& j, Pl
                             int new_l = std::get<0>(case_vide);
                             int new_c = std::get<1>(case_vide);
                             int new_z = std::get<2>(case_vide);
-                            Mouvement* mouv = new Mouvement(id, new_l, new_c, new_z, ligne, colonne, z);
+                            Mouvement* mouv = new Mouvement(id, new_l, new_c, new_z, p.getLigne(), p.getColonne(), p.getZ());
                             mouvementsPossibles.push_back(mouv);
                         }
                     }
