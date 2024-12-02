@@ -28,7 +28,7 @@ bool Joueur::isMainVide() {
     else return false;
 }
 
-Joueur::Joueur(vector<Pion*> pEm, string c, Partie& p) : pionsEnMain(pEm), couleur(c), partie(p) {
+Joueur::Joueur(vector<Pion*> pEm, string c, Partie& p, string n) : pionsEnMain(pEm), couleur(c), partie(p), nom(n) {
 
 }
 
@@ -79,14 +79,14 @@ Mouvement* JoueurHumain::choisirEmplacement(const std::vector<Mouvement*>& empla
     }
 }
 
-Pion* JoueurHumain::choisirPionSurPlateau(Plateau& plateau) {
+Pion* JoueurHumain::choisirPionSurPlateau(Plateau& plateau, std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau) {
     int choixPion;
     while (true) {
         std::cout << "Choisissez un pion a deplacer (numero) : ";
         std::cin >> choixPion;
 
-        if (choixPion >= 0 && static_cast<size_t>(choixPion) < GestionnaireMouvements::getPionsBougeables(plateau, *this).size()) {
-            return std::get<0>(GestionnaireMouvements::getPionsBougeables(plateau, *this)[choixPion]);
+        if (choixPion >= 0 && static_cast<size_t>(choixPion) < pionsSurPlateau.size()) {
+            return std::get<0>(pionsSurPlateau[choixPion]);
         }
         else {
             std::cout << "Choix de pion invalide. Veuillez reessayer." << std::endl;
@@ -118,10 +118,8 @@ void JoueurHumain::afficherEmplacements(const std::vector<Mouvement*>& emplaceme
 }
 
 
-void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau) {
+void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau, std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau) {
     std::cout << "Pions pouvant etre deplaces sur le plateau : " << std::endl;
-
-    std::vector<std::tuple<Pion*,int,int,int>> pionsSurPlateau = GestionnaireMouvements::getPionsBougeables(plateau, *this);
 
     for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
         Pion* pion = std::get<0>(pionsSurPlateau[i]);
@@ -141,6 +139,7 @@ void JoueurIA::Jouer(Plateau& plateau) {
 
 void JoueurHumain::Jouer(Plateau& plateau) {
 
+    std::cout << "C'est a " << getNom() << " de jouer !" << endl;
     int choix;
     if (isMainVide()) {
         choix = 2; // Si la main est vide, le joueur ne peut que d placer un pion
@@ -215,9 +214,9 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
     std::vector<Mouvement*> deplacementsValides;
     while (deplacementsValides.empty()) {
 
-        afficherPionsSurPlateau(plateau);
+        afficherPionsSurPlateau(plateau, pionsBougeable);
 
-        Pion* pionChoisi = choisirPionSurPlateau(plateau);
+        Pion* pionChoisi = choisirPionSurPlateau(plateau, pionsBougeable);
 
         deplacementsValides = pionChoisi->deplacementsPossibles(*pionChoisi, *this, plateau);
 

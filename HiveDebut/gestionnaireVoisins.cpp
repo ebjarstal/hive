@@ -19,6 +19,7 @@ std::vector<Pion*> GestionnaireVoisins::getVoisins(Pion& p, Plateau& plateau){
     const auto& directions = (ligne % 2 == 0) ? directions_pair : directions_impair;
 
     for (const auto& direction : directions) {
+        z = 0;
         int newLigne = ligne + direction.first;
         int newColonne = colonne + direction.second;
         if (plateau.estValide(newLigne, newColonne, z)) {
@@ -50,9 +51,13 @@ std::vector<Pion*> GestionnaireVoisins::getVoisins(int ligne, int colonne, Plate
     const auto& directions = (ligne % 2 == 0) ? directions_pair : directions_impair;
 
     for (const auto& direction : directions) {
+        z = 0;
         int newLigne = ligne + direction.first;
         int newColonne = colonne + direction.second;
-        if (plateau.estValide(newLigne, newColonne, z)) {
+        if(plateau.estValide(newLigne, newColonne, z)) {
+            while (plateau.getGrille()[newLigne][newColonne][z + 1] != nullptr) {
+                z++;
+            }
             voisins.push_back(plateau.getGrille()[newLigne][newColonne][z]);
         }
         else {
@@ -80,15 +85,16 @@ std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getVoisinsCoords(int
 
     // Parcourir les directions pour obtenir les coordonn es des voisins
     for (const auto& direction : directions) {
+        z = 0;
         int newLigne = ligne + direction.first;
         int newColonne = colonne + direction.second;
-
-        // V rifier si la position voisine est dans les limites
         if (plateau.estValide(newLigne, newColonne, z)) {
+            while (plateau.getGrille()[newLigne][newColonne][z + 1] != nullptr) {
+                z++;
+            }
             voisinsCoords.push_back({ newLigne, newColonne, z });
         }
     }
-
     return voisinsCoords;
 }
 

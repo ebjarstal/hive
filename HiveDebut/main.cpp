@@ -4,6 +4,7 @@
 #include "gestionnaireMouvements.h"
 #include "gestionnairePions.h"
 #include "gestionnaireVoisins.h"
+#include "gestionnaireSauvegarde.h"
 #include "joueur.h"
 #include "mouvement.h"
 
@@ -16,7 +17,7 @@ int main() {
     Partie partie(plateau);
     partie.setup();
     while (partie.partieTerminee() != true) {
-        partie.sauvegarde();
+        GestionnaireSauvegarde::sauvegarde(partie);
         partie.getPlateau().afficher();
         partie.jouerUnTour(partie.getJoueur1());
         partie.getPlateau().afficher();
