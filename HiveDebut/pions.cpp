@@ -1,6 +1,7 @@
 #include "pions.h"
 #include "plateau.h"
 #include "joueur.h"
+#include <unordered_set>
 
 std::map<int, Pion*> Pion::pions;
 int Pion::prochainId = 1;
@@ -399,6 +400,104 @@ std::vector<Mouvement*> Cloporte::deplacementsPossibles(Pion& p, Joueur& j, Plat
 
 std::vector<Mouvement*> Moustique::deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) {
     std::vector<Mouvement*> mouvementsPossibles;
+    if (plateau.isVide() || j.getCouleur() != p.getCouleur()) {
+        return mouvementsPossibles;
+    }
+
+    int ligne = p.getLigne();
+    int colonne = p.getColonne();
+    int z = p.getZ();
+
+    if (z > 0) { // Déplacements comme une scarabe 
+        std::set<std::tuple<int, int, int>> emplacementsVisites;
+        // Récupérer les cases vides autour
+        std::vector<std::tuple<int, int, int>> casesVidesCoords = GestionnaireVoisins::getCasesVidesAutour(p, plateau);
+
+        // Vérifier si le déplacement est valide (ne casse pas la ruche)
+        for (std::tuple<int, int, int> caseVide : casesVidesCoords) {
+            int new_ligne = std::get<0>(caseVide);
+            int new_colonne = std::get<1>(caseVide);
+            int new_z = 0;
+
+            if (z > 0 || !GestionnaireMouvements::deplacementCasseRuche(this, new_ligne, new_colonne, new_z, plateau)) {
+                // Éviter les doublons
+                if (emplacementsVisites.find({ new_ligne, new_colonne, new_z }) == emplacementsVisites.end()) {
+                    emplacementsVisites.insert({ new_ligne, new_colonne, new_z });
+                    mouvementsPossibles.push_back(new Mouvement(id, new_ligne, new_colonne, new_z, ligne, colonne, z));
+                }
+            }
+        }
+
+        // Récupérer les voisins directs du Scarabée
+        std::vector<Pion*> voisins = GestionnaireVoisins::getVoisins(p, plateau);
+
+        // Modification du Z pour monter dessus
+        for (Pion* voisin : voisins) {
+            if (voisin) {
+                while (plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1] != nullptr) {
+                    voisin = plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1];
+                }
+                mouvementsPossibles.push_back(new Mouvement(id, voisin->getLigne(), voisin->getColonne(), voisin->getZ() + 1, ligne, colonne, z));
+            }
+        }
+        return mouvementsPossibles;
+    }
+
+
+    std::vector<Pion*> voisinsTypes = GestionnaireVoisins::getVoisins(ligne, colonne, plateau, z);
+
+    std::unordered_set<std::string> typesVus;
+    std::vector<Pion*> voisinsSansDoublon;
+
+   for (const auto& voisinType : voisinsTypes) {
+       if (voisinType != nullptr) {
+           string v_type = voisinType->getType();
+
+           // Vérifier si l'élément existe déjà
+           if (v_type == "Moustique") {
+               std::cout << "Moustique donc ajoute pas" << std::endl;
+           }
+           else if (typesVus.find(v_type) == typesVus.end()) {
+               typesVus.insert(v_type); // Marque le type comme vu
+ 
+               voisinsSansDoublon.push_back(voisinType); // Ajouter si l'élément n'existe pas
+           }
+           else {
+               std::cout << "Type deja present" << std::endl;
+           }
+       }    
+    }
+
+    for (const auto& voisin : voisinsSansDoublon) {
+        for (const auto mouv : voisin->deplacementsPossibles(p, j, plateau))
+            mouvementsPossibles.push_back(mouv);
+    }
+
+    return mouvementsPossibles;
+}
+  
+
+   /* for (std::size_t i = 0; i < voisinsSansDoublon.size(); ++i) {
+        std::cout << i << ": " << voisinsSansDoublon[i].getType() << std::endl;
+    }
+    std::cout << "Choississez le voisin a piqué (voler ses mouvements omg)\n";
+    std::size_t choix;
+    std::cin >> choix;
+
+    if (choix >= 0 && choix < voisinsSansDoublon.size()) {
+        std::cout << "Vous avez choisi : " << voisinsSansDoublon[choix].getType() << std::endl;
+    }
+    else {
+        std::cout << "Choix invalide. Aucune chaîne sélectionnée." << std::endl;
+    }
+    Pion& insectchoisie = voisinsSansDoublon[choix];*/
+
+
+
+ /*
+    
+
+    std::vector<Mouvement*> mouvementsPossibles;
     std::set<std::tuple<int, int, int>> emplacementsVisites;  // Set pour éviter les doublons
 
     if (plateau.isVide() || j.getCouleur() != p.getCouleur()) {
@@ -435,4 +534,4 @@ std::vector<Mouvement*> Moustique::deplacementsPossibles(Pion& p, Joueur& j, Pla
         }
         return mouvementsPossibles;
     }
-}
+}*/
