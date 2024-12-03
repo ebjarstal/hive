@@ -29,7 +29,7 @@ using namespace std;
 class Partie {
 private:
     Plateau& plateau;
-    static std::stack<Command*> historique;
+    std::stack<Command*> historique;
     Joueur* joueur1;
     Joueur* joueur2;
     unsigned int nombreTour;
@@ -46,7 +46,7 @@ public:
     Joueur* getJoueur1() const { return joueur1; }
     Joueur* getJoueur2() const { return joueur2; }
     unsigned int getNbUndo() const { return nbUndo; }
-    std::stack<Command*>& getHistorique() const { return historique; }
+    std::stack<Command*>& getHistorique() { return historique; }
 
     void setPlateau(Plateau& p) { plateau = p; }
     void setNombreTour(unsigned int nb) { nombreTour = nb; }

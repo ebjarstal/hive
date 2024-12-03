@@ -20,6 +20,7 @@ int main() {
         GestionnaireSauvegarde::sauvegarde(partie);
         partie.getPlateau().afficher();
         partie.jouerUnTour(partie.getJoueur1());
+        if (partie.partieTerminee() == true) break;
         partie.getPlateau().afficher();
         partie.jouerUnTour(partie.getJoueur2());
     }

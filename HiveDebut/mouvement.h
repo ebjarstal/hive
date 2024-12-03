@@ -17,6 +17,7 @@ private:
     tuple<int, int, int> coordDest;
     tuple<int, int, int> coordSrc;
     std::function<void()> callback;
+    std::function<void()> undoCallback;
 public:
     Mouvement(int id, int ligne, int colonne, int z, int oldLigne, int oldColonne, int oldZ)
         : pionId(id), coordDest(make_tuple(ligne, colonne, z)), coordSrc(make_tuple(oldLigne, oldColonne, oldZ)) {}
@@ -32,7 +33,9 @@ public:
     tuple<int, int, int> getCoordDest() { return coordDest; }
     tuple<int, int, int> getCoordSrc() { return coordSrc; }
 
+    std::function<void()> getCallback() const { return callback; }
+    std::function<void()> getUndoCallback() const { return undoCallback; }
     void setCallback(std::function<void()> cb) { callback = cb; }
-    void executeCallback() { if (callback) callback(); }
-    bool hasCallback() const { return callback != nullptr; }
+    void executeCallback(std::function<void()> cb) { if (cb) cb(); }
+    bool hasCallback() const { return callback != nullptr && undoCallback != nullptr; }
 };
