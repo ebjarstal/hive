@@ -1,11 +1,23 @@
 ﻿#include "partie.h"
 
-std::stack<Command*> Partie::historique;
-
 Partie::~Partie() {
-    delete joueur1;  // Libère la mémoire allouée pour joueur1
-    delete joueur2;  // Libère la mémoire allouée pour joueur2
+    // Si les joueurs ont été créés dynamiquement ailleurs, vérifiez et libérez la mémoire.
+    if (joueur1) {
+        delete joueur1;
+        joueur1 = nullptr;
+    }
+    if (joueur2) {
+        delete joueur2;
+        joueur2 = nullptr;
+    }
+
+    // Nettoyage de l'historique des commandes (pile de Commandes).
+    while (!historique.empty()) {
+        delete historique.top();  // Libère chaque commande.
+        historique.pop();         // Retire l'élément de la pile.
+    }
 }
+
 
 void Partie::setup() {
     // Créer le dossier "sauvegardes" s'il n'existe pas
@@ -158,10 +170,10 @@ void Partie::jouerUnTour(Joueur* j) {
     // Verification si la partie est terminee
     if (Partie::partieTerminee() == true) {
         if (getJoueur1() == Partie::determinerGagnant()) {
-            std::cout << "Joueur 1 gagne !! La partie s'est finie en " << Partie::getNombreTour() << " tours." << std::endl;
+            std::cout << getJoueur1()->getNom() << " gagne !! La partie s'est finie en " << Partie::getNombreTour() << " tours." << std::endl;
         }
         else if (getJoueur2() == Partie::determinerGagnant()) {
-            std::cout << "Joueur 2 gagne !! La partie s'est finie en " << Partie::getNombreTour() << " tours." << std::endl;
+            std::cout << getJoueur2()->getNom() << " gagne !! La partie s'est finie en " << Partie::getNombreTour() << " tours." << std::endl;
         }
         else {
             std::cout << "Egalite !! La partie s'est finie en " << Partie::getNombreTour() << " tours." << std::endl;
@@ -196,26 +208,35 @@ bool Partie::partieTerminee() const {
     return false;
 }
 
-Joueur* Partie::determinerGagnant() const
-{
+Joueur* Partie::determinerGagnant() const {
     std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = GestionnairePions::getPions(plateau);
+    std::vector<std::string> couleursReines; // Ensemble des couleurs des reines avec 6 voisins.
 
-    for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
-        Pion* pion = std::get<0>(pionsSurPlateau[i]);
-        if (pion->getType() == "R") {
-            // Vérifie si la reine a exactement 6 voisins
-            if (GestionnaireVoisins::nombreVoisins(*pion, plateau) == 6) {
-                string couleurGagnante = pion->getCouleur();
-
-                // Déterminer le joueur ayant cette couleur
-                if (joueur1 && joueur1->getCouleur() == couleurGagnante) {
-                    return joueur1;
-                }
-                else if (joueur2 && joueur2->getCouleur() == couleurGagnante) {
-                    return joueur2;
-                }
-            }
+    // Collecte des couleurs de toutes les reines avec exactement 6 voisins.
+    for (const auto& tuple : pionsSurPlateau) {
+        Pion* pion = std::get<0>(tuple);
+        if (pion->getType() == "R" && GestionnaireVoisins::nombreVoisins(*pion, plateau) == 6) {
+            couleursReines.push_back(pion->getCouleur());
         }
     }
+
+    // Analyse des couleurs trouvées.
+    if (couleursReines.size() == 1) {
+        // Si une seule couleur de reine a été trouvée.
+        std::string couleurReine = *couleursReines.begin();
+
+        if (joueur1 && joueur1->getCouleur() != couleurReine) {
+            return joueur1;
+        }
+        if (joueur2 && joueur2->getCouleur() != couleurReine) {
+            return joueur2;
+        }
+    }
+    else if (couleursReines.size() > 1) {
+        // Si au moins deux couleurs différentes de reines sont trouvées, égalité.
+        return nullptr;
+    }
+
+    // Aucun gagnant déterminé (pas de reine avec 6 voisins ou aucune couleur différente trouvée).
     return nullptr;
 }

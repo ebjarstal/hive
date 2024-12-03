@@ -31,6 +31,7 @@ protected:
     int z = -1;  // dimension verticale dans le plateau
 
 public:
+    virtual ~Pion() { auto it = pions.find(id); if (it != pions.end()) pions.erase(it); }
     Pion(int id, string t, string c) : id(id), type(t), couleur(c) {}
     Pion(string t, string c) : id(prochainId++), type(t), couleur(c) {}
 

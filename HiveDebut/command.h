@@ -23,6 +23,7 @@ public:
 	virtual void undo() override;
 	virtual std::string getDescription() const override;
 	Mouvement* getMouvement() const { return mouv; }
+	~MouvementCommand() { if (mouv) delete mouv; mouv = nullptr; }
 
 private:
 	Partie& partie;

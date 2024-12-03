@@ -315,18 +315,18 @@ int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& joueur, bool isMaximizingP
                 optionsJoueur += options;
 
                 // Bonus basé sur le type de pion
-                score += (isMaximizingPlayer ? 1 : -1) * (pion->getType() == "Fourmi" ? 5
-                    : pion->getType() == "Scarabée" ? 10
-                    : pion->getType() == "Araignée" ? 3
+                score += (isMaximizingPlayer ? 1 : -1) * (pion->getType() == "F" ? 5
+                    : pion->getType() == "K" ? 10
+                    : pion->getType() == "A" ? 3
                     : 0);
             }
             else {
                 optionsAdversaire += options;
 
                 // Pénalité basée sur le type de pion adverse
-                score -= (isMaximizingPlayer ? 1 : -1) * (pion->getType() == "Fourmi" ? 5
-                    : pion->getType() == "Scarabée" ? 10
-                    : pion->getType() == "Araignée" ? 3
+                score -= (isMaximizingPlayer ? 1 : -1) * (pion->getType() == "F" ? 5
+                    : pion->getType() == "K" ? 10
+                    : pion->getType() == "A" ? 3
                     : 0);
             }
         }
