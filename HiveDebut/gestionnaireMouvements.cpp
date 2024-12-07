@@ -91,7 +91,7 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
     std::vector<Mouvement*> mouvements;
 
     // Obtenir tous les pions du joueur sur le plateau
-    std::vector<Pion*> pionsJoueur = GestionnairePions::getPionsEnJeu(p, joueur.getCouleur());
+    std::vector<std::tuple<Pion*, int, int, int>> pionsJoueur = getPionsBougeables(p, joueur);
     std::vector<Pion*> pionsEnMain = joueur.getPionsEnMain();
 
     for (Pion* pion : pionsEnMain) {
@@ -106,7 +106,9 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
     // Cas où le joueur n'a aucun pion sur le plateau : générer les placements possibles
     if (!pionsJoueur.empty()) {
         // Cas normal : générer les mouvements pour les pions déjà en jeu
-        for (Pion* pion : pionsJoueur) {
+        for (std::tuple<Pion*, int, int, int> tuple : pionsJoueur) {
+            Pion* pion = get<0>(tuple);
+
             // Obtenir les emplacements possibles pour ce pion
             std::vector<Mouvement*> deplacementsValides = pion->deplacementsPossibles(*pion, joueur, p);
 
@@ -121,8 +123,35 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
             }
         }
     }
-    //std::cout << "Nombre total de mouvements générés : " << mouvements.size() << std::endl;
+    std::cout << "Nombre total de mouvements générés : " << mouvements.size() << std::endl;
 
     return mouvements;
 }
 
+bool GestionnaireMouvements::estPassageOuvert(int ligne1, int colonne1, int ligne2, int colonne2, Plateau& plateau) {
+    // Récupérer les voisins de la première case
+    std::vector<std::tuple<int, int, int>> voisins1 = GestionnaireVoisins::getVoisinsCoords(ligne1, colonne1, plateau, 0);
+    std::vector<std::tuple<int, int, int>> voisins2 = GestionnaireVoisins::getVoisinsCoords(ligne2, colonne2, plateau, 0);
+
+    // Trouver les voisins communs
+    std::set<std::tuple<int, int, int>> setVoisins1(voisins1.begin(), voisins1.end());
+    std::set<std::tuple<int, int, int>> setVoisins2(voisins2.begin(), voisins2.end());
+
+    std::vector<std::tuple<int, int, int>> voisinsCommuns;
+    std::set_intersection(setVoisins1.begin(), setVoisins1.end(),
+        setVoisins2.begin(), setVoisins2.end(),
+        std::back_inserter(voisinsCommuns));
+
+    // Vérifier si au moins un des voisins communs est vide
+    for (const auto& voisin : voisinsCommuns) {
+        int v_ligne = std::get<0>(voisin);
+        int v_colonne = std::get<1>(voisin);
+        int v_z = std::get<2>(voisin);
+
+        if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr) {
+            return true; // Un voisin commun est vide, passage ouvert
+        }
+    }
+
+    return false; // Aucun voisin commun vide, passage bloqué
+}
