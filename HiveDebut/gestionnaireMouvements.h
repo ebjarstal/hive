@@ -20,6 +20,7 @@ class Joueur;
 
 class GestionnaireMouvements {
 public:
+    static bool estPassageOuvert(int ligne1, int colonne1, int ligne2, int colonne2, Plateau& plateau);
     static bool cassageRuche(Pion& p, Plateau& plateau); // s'occupe du cassage de ruche
     static std::vector<std::tuple<Pion*, int, int, int>> getPionsBougeables(Plateau& plateau, Joueur& joueur);
     static std::vector<Mouvement*> genererTousLesMouvements(Plateau& p, Joueur& joueur);
