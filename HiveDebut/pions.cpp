@@ -175,54 +175,19 @@ std::vector<Mouvement*> Sauterelle::deplacementsPossibles(Pion& p, Joueur& j, Pl
 
 std::vector<Mouvement*> Araignee::deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) {
     std::vector<Mouvement*> mouvementsPossibles;
-    std::set<std::tuple<int, int, int>> emplacementsVisites;
+    std::set<std::tuple<int, int, int>> emplacementsVisites; // Set pour éviter les doublons
 
     if (plateau.isVide() || j.getCouleur() != p.getCouleur()) {
         return mouvementsPossibles;
     }
-    else {
 
-        // Fonction interne pour explorer récursivement 3 déplacements
-        std::function<void(int, int, int, int, int, int, int)> explorerDeplacements =
-            [&](int ligne, int colonne, int z, int profondeur, int   ligneInitiale, int colonneInitiale, int zInitial) {
-            if (profondeur == 3) {
-                // Si on a atteint 3 déplacements, on enregistre ce mouvement
-                mouvementsPossibles.push_back(new Mouvement(getId(), ligne, colonne, z, ligneInitiale, colonneInitiale, zInitial));
-                return;
-            }
+    // Fonction interne pour explorer récursivement jusqu'à 3 déplacements
+    std::function<void(int, int, int, int)> explorerDeplacements = [&](int ligne, int colonne, int z, int profondeur) {
+        if (profondeur == 3) { // Si on a atteint 3 déplacements, ajouter le mouvement et retourner
+            mouvementsPossibles.push_back(new Mouvement(p.getId(), ligne, colonne, z, p.getLigne(), p.getColonne(), p.getZ()));
+            return;
+        }
 
-            // Récupérer les voisins accessibles
-            std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
-
-            for (const auto& voisinCoord : voisinsCoords) {
-                int v_ligne = std::get<0>(voisinCoord);
-                int v_colonne = std::get<1>(voisinCoord);
-                int v_z = std::get<2>(voisinCoord);
-
-                // Vérifier si la case voisine est vide et que le déplacement ne casse pas la ruche
-                if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr &&
-                    !GestionnaireMouvements::deplacementCasseRuche(this, v_ligne, v_colonne, v_z, plateau)) {
-                    // Vérifier si cet emplacement n’a pas déjà été visité dans cette exploration
-                    if (emplacementsVisites.find({ v_ligne, v_colonne, v_z }) == emplacementsVisites.end()) {
-                        // Ajouter l'emplacement au set des emplacements visités
-                        emplacementsVisites.insert({ v_ligne, v_colonne, v_z });
-
-                        // Explorer récursivement pour le prochain déplacement
-                        explorerDeplacements(v_ligne, v_colonne, v_z, profondeur + 1, ligneInitiale, colonneInitiale, zInitial);
-
-                        // Nettoyer cet emplacement du set pour les autres chemins possibles
-                        emplacementsVisites.erase({ v_ligne, v_colonne, v_z });
-                    }
-                }
-            }
-            };
-
-        // Initialiser l'exploration depuis la position de l'araignée
-        int ligne = p.getLigne();
-        int colonne = p.getColonne();
-        int z = p.getZ();
-
-        // Récupérer les voisins initiaux
         std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
 
         for (const auto& voisinCoord : voisinsCoords) {
@@ -230,63 +195,98 @@ std::vector<Mouvement*> Araignee::deplacementsPossibles(Pion& p, Joueur& j, Plat
             int v_colonne = std::get<1>(voisinCoord);
             int v_z = std::get<2>(voisinCoord);
 
-            // Vérifier si la case voisine est vide et que le déplacement ne casse pas la ruche
-            if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr &&
-                !GestionnaireMouvements::deplacementCasseRuche(this, v_ligne, v_colonne, v_z, plateau)) {
+            if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr && // Case vide
+                !GestionnaireMouvements::deplacementCasseRuche(&p, v_ligne, v_colonne, v_z, plateau) && // Ne casse pas la ruche
+                emplacementsVisites.find({ v_ligne, v_colonne, v_z }) == emplacementsVisites.end() && // Non visité
+                GestionnaireMouvements::estPassageOuvert(ligne, colonne, v_ligne, v_colonne, plateau)) { // Passage entre les deux cases ouvert
+
                 // Ajouter au set des emplacements visités
                 emplacementsVisites.insert({ v_ligne, v_colonne, v_z });
 
-                // Explorer récursivement pour 3 déplacements
-                explorerDeplacements(v_ligne, v_colonne, v_z, 1, ligne, colonne, z);
+                // Explorer récursivement cette nouvelle position avec profondeur + 1
+                explorerDeplacements(v_ligne, v_colonne, v_z, profondeur + 1);
 
-                // Nettoyer cet emplacement du set après exploration
+                // Nettoyer l'emplacement visité après retour de la récursion
                 emplacementsVisites.erase({ v_ligne, v_colonne, v_z });
             }
+        }
+        };
+
+    // Démarrer l'exploration à partir de la position actuelle de l'araignée
+    int ligne = p.getLigne();
+    int colonne = p.getColonne();
+    int z = p.getZ();
+
+    emplacementsVisites.insert({ ligne, colonne, z }); // Ajouter la position initiale pour éviter de revenir dessus
+    std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
+
+    for (const auto& voisinCoord : voisinsCoords) {
+        int v_ligne = std::get<0>(voisinCoord);
+        int v_colonne = std::get<1>(voisinCoord);
+        int v_z = std::get<2>(voisinCoord);
+
+        if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr && // Case vide
+            !GestionnaireMouvements::deplacementCasseRuche(&p, v_ligne, v_colonne, v_z, plateau) && // Ne casse pas la ruche
+            GestionnaireMouvements::estPassageOuvert(ligne, colonne, v_ligne, v_colonne, plateau)) { // Passage entre les deux cases ouvert
+
+            // Ajouter au set des emplacements visités
+            emplacementsVisites.insert({ v_ligne, v_colonne, v_z });
+
+            // Explorer récursivement pour 3 déplacements
+            explorerDeplacements(v_ligne, v_colonne, v_z, 1);
+
+            // Nettoyer l'emplacement visité après exploration
+            emplacementsVisites.erase({ v_ligne, v_colonne, v_z });
         }
     }
 
     return mouvementsPossibles;
 }
 
-
 std::vector<Mouvement*> Fourmi::deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) {
     std::vector<Mouvement*> mouvementsPossibles;
-    std::set<std::tuple<int, int, int>> emplacementsVisites;  // Set pour éviter les doublons
+    std::set<std::tuple<int, int, int>> emplacementsVisites; // Set pour éviter les doublons
 
     if (plateau.isVide() || j.getCouleur() != p.getCouleur()) {
         return mouvementsPossibles;
     }
-    else {
-        // Récupérer tous les pions présents sur le plateau
-        std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = GestionnairePions::getPions(plateau);
 
-        for (const auto& pionTuple : pionsSurPlateau) {
-            Pion* pionActuel = std::get<0>(pionTuple);
-            int ligne = std::get<1>(pionTuple);
-            int colonne = std::get<2>(pionTuple);
-            int z = std::get<3>(pionTuple);
+    // Fonction interne pour explorer récursivement les déplacements
+    std::function<void(int, int, int)> explorerDeplacements = [&](int ligne, int colonne, int z) {
+        std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
 
-            std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
+        for (const auto& voisinCoord : voisinsCoords) {
+            int v_ligne = std::get<0>(voisinCoord);
+            int v_colonne = std::get<1>(voisinCoord);
+            int v_z = std::get<2>(voisinCoord);
 
-            for (const auto& voisinCoord : voisinsCoords) {
-                int v_ligne = std::get<0>(voisinCoord);
-                int v_colonne = std::get<1>(voisinCoord);
-                int v_z = std::get<2>(voisinCoord);
+            if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr && // Case vide
+                !GestionnaireMouvements::deplacementCasseRuche(&p, v_ligne, v_colonne, v_z, plateau) && // Ne casse pas la ruche
+                emplacementsVisites.find({ v_ligne, v_colonne, v_z }) == emplacementsVisites.end() && // Non visité
+                GestionnaireMouvements::estPassageOuvert(ligne, colonne, v_ligne, v_colonne, plateau)) { // Passage entre les deux cases ouvert
 
-                // Vérifier si la case voisine est vide et que le déplacement ne casse pas la ruche
-                if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr && !GestionnaireMouvements::deplacementCasseRuche(&p, v_ligne, v_colonne, v_z, plateau)) {
-                    // Vérifier si cet emplacement a déjà été visité
-                    if (emplacementsVisites.find({ v_ligne, v_colonne, v_z }) == emplacementsVisites.end()) {
-                        // Ajouter l'emplacement au set pour éviter les doublons
-                        emplacementsVisites.insert({ v_ligne, v_colonne, v_z });
-                        // Ajouter le mouvement à la liste des mouvements possibles
-                        mouvementsPossibles.push_back(new Mouvement(p.getId(), v_ligne, v_colonne, v_z, p.getLigne(), p.getColonne(), p.getZ()));
-                    }
-                }
+
+                // Ajouter au set des emplacements visités
+                emplacementsVisites.insert({ v_ligne, v_colonne, v_z });
+
+                // Ajouter le mouvement à la liste des mouvements possibles
+                mouvementsPossibles.push_back(new Mouvement(p.getId(), v_ligne, v_colonne, v_z, p.getLigne(), p.getColonne(), p.getZ()));
+
+                // Explorer récursivement cette nouvelle position
+                explorerDeplacements(v_ligne, v_colonne, v_z);
             }
         }
-        return mouvementsPossibles;
-    }
+        };
+
+    // Démarrer l'exploration à partir de la position actuelle de la fourmi
+    int ligne = p.getLigne();
+    int colonne = p.getColonne();
+    int z = p.getZ();
+
+    emplacementsVisites.insert({ ligne, colonne, z }); // Ajouter la position initiale pour éviter de revenir dessus
+    explorerDeplacements(ligne, colonne, z);
+
+    return mouvementsPossibles;
 }
 
 std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) {

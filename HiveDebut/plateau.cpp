@@ -12,6 +12,7 @@ Plateau::~Plateau() {
         for (auto& ligne : couche) {
             for (Pion* pion : ligne) {
                 delete pion;
+                pion = nullptr;
             }
         }
     }
