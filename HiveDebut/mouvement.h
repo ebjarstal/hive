@@ -3,6 +3,7 @@
 #include <iostream>
 #include <tuple>
 #include <functional>
+#include <vector>
 
 // Permet d'utiliser les couleurs dans la console
 #define RED "\033[31m"
@@ -38,4 +39,6 @@ public:
     void setCallback(std::function<void()> cb) { callback = cb; }
     void executeCallback(std::function<void()> cb) { if (cb) cb(); }
     bool hasCallback() const { return callback != nullptr && undoCallback != nullptr; }
+
+    void ajouterMouvementManuel(std::vector<Mouvement*>& mouvementsPossibles, Mouvement* nouveauMouvement);
 };

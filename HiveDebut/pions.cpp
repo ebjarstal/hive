@@ -118,7 +118,7 @@ std::vector<Mouvement*> Reine::deplacementsPossibles(Pion& p, Joueur& j, Plateau
         int new_colonne = std::get<1>(caseVide);
         int new_z = std::get<2>(caseVide);
 
-        if (!GestionnaireMouvements::deplacementCasseRuche(this, new_ligne, new_colonne, new_z, plateau)) {
+        if (!GestionnaireMouvements::deplacementCasseRuche(&p, new_ligne, new_colonne, new_z, plateau)) {
             // Éviter les doublons
             if (emplacementsVisites.find({ new_ligne, new_colonne, new_z }) == emplacementsVisites.end()) {
                 emplacementsVisites.insert({ new_ligne, new_colonne, new_z });
@@ -294,7 +294,7 @@ std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plat
     std::set<std::tuple<int, int, int>> emplacementsVisites;
 
     // Si le plateau est vide, aucun mouvement n'est possible
-    if (plateau.isVide()) {
+    if (plateau.isVide() || j.getCouleur() != p.getCouleur()) {
         return mouvementsPossibles;
     }
 
@@ -308,11 +308,11 @@ std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plat
         int new_colonne = std::get<1>(caseVide);
         int new_z = 0;
 
-        if (z > 0 || !GestionnaireMouvements::deplacementCasseRuche(this, new_ligne, new_colonne, new_z, plateau)) {
+        if (z > 0 || !GestionnaireMouvements::deplacementCasseRuche(&p, new_ligne, new_colonne, new_z, plateau)) {
             // Éviter les doublons
             if (emplacementsVisites.find({ new_ligne, new_colonne, new_z }) == emplacementsVisites.end()) {
                 emplacementsVisites.insert({ new_ligne, new_colonne, new_z });
-                mouvementsPossibles.push_back(new Mouvement(id, new_ligne, new_colonne, new_z, p.getLigne(), p.getColonne(), p.getZ()));
+                mouvementsPossibles.push_back(new Mouvement(p.getId(), new_ligne, new_colonne, new_z, p.getLigne(), p.getColonne(), p.getZ()));
             }
         }
     }
@@ -326,7 +326,7 @@ std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plat
             while (plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1] != nullptr) {
                 voisin = plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1];
             }
-            mouvementsPossibles.push_back(new Mouvement(id, voisin->getLigne(), voisin->getColonne(), voisin->getZ() + 1, p.getLigne(), p.getColonne(), p.getZ()));
+            mouvementsPossibles.push_back(new Mouvement(p.getId(), voisin->getLigne(), voisin->getColonne(), voisin->getZ() + 1, p.getLigne(), p.getColonne(), p.getZ()));
         }
     }
     return mouvementsPossibles;
@@ -411,6 +411,8 @@ std::vector<Mouvement*> Moustique::deplacementsPossibles(Pion& p, Joueur& j, Pla
 
     if (z > 0) { // Déplacements comme une scarabe 
         std::set<std::tuple<int, int, int>> emplacementsVisites;
+
+        // Déplacements comme une Reine 
         // Récupérer les cases vides autour
         std::vector<std::tuple<int, int, int>> casesVidesCoords = GestionnaireVoisins::getCasesVidesAutour(p, plateau);
 
@@ -420,11 +422,11 @@ std::vector<Mouvement*> Moustique::deplacementsPossibles(Pion& p, Joueur& j, Pla
             int new_colonne = std::get<1>(caseVide);
             int new_z = 0;
 
-            if (z > 0 || !GestionnaireMouvements::deplacementCasseRuche(this, new_ligne, new_colonne, new_z, plateau)) {
+            if (z > 0 || !GestionnaireMouvements::deplacementCasseRuche(&p, new_ligne, new_colonne, new_z, plateau)) {
                 // Éviter les doublons
                 if (emplacementsVisites.find({ new_ligne, new_colonne, new_z }) == emplacementsVisites.end()) {
                     emplacementsVisites.insert({ new_ligne, new_colonne, new_z });
-                    mouvementsPossibles.push_back(new Mouvement(id, new_ligne, new_colonne, new_z, ligne, colonne, z));
+                    mouvementsPossibles.push_back(new Mouvement(p.getId(), new_ligne, new_colonne, new_z, p.getLigne(), p.getColonne(), p.getZ()));
                 }
             }
         }
@@ -438,7 +440,7 @@ std::vector<Mouvement*> Moustique::deplacementsPossibles(Pion& p, Joueur& j, Pla
                 while (plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1] != nullptr) {
                     voisin = plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1];
                 }
-                mouvementsPossibles.push_back(new Mouvement(id, voisin->getLigne(), voisin->getColonne(), voisin->getZ() + 1, ligne, colonne, z));
+                mouvementsPossibles.push_back(new Mouvement(p.getId(), voisin->getLigne(), voisin->getColonne(), voisin->getZ() + 1, p.getLigne(), p.getColonne(), p.getZ()));
             }
         }
         return mouvementsPossibles;
@@ -448,6 +450,7 @@ std::vector<Mouvement*> Moustique::deplacementsPossibles(Pion& p, Joueur& j, Pla
     std::vector<Pion*> voisinsTypes = GestionnaireVoisins::getVoisins(ligne, colonne, plateau, z);
 
     std::unordered_set<std::string> typesVus;
+    typesVus.insert("M"); //pour ne pas avoir de mouvement de moustique
     std::vector<Pion*> voisinsSansDoublon;
 
    for (const auto& voisinType : voisinsTypes) {
@@ -455,84 +458,34 @@ std::vector<Mouvement*> Moustique::deplacementsPossibles(Pion& p, Joueur& j, Pla
            string v_type = voisinType->getType();
 
            // Vérifier si l'élément existe déjà
-           if (v_type == "Moustique") {
-               std::cout << "Moustique donc ajoute pas" << std::endl;
-           }
-           else if (typesVus.find(v_type) == typesVus.end()) {
+           if (typesVus.find(v_type) == typesVus.end()) {
+               std::cout << "On ajoute " << v_type << std::endl;
                typesVus.insert(v_type); // Marque le type comme vu
  
                voisinsSansDoublon.push_back(voisinType); // Ajouter si l'élément n'existe pas
            }
            else {
-               std::cout << "Type deja present" << std::endl;
+               std::cout << "Type deja present ou Moustique" << std::endl;
            }
        }    
     }
 
     for (const auto& voisin : voisinsSansDoublon) {
-        for (const auto mouv : voisin->deplacementsPossibles(p, j, plateau))
-            mouvementsPossibles.push_back(mouv);
-    }
+        for (const auto& NouvMouv : voisin->deplacementsPossibles(p, j, plateau)) {
+            bool estDejaPresent = false;
+            for (const auto& mouvement : mouvementsPossibles) {
+                if (mouvement->getPionId() == NouvMouv->getPionId() &&
+                    mouvement->getCoordDest() == NouvMouv->getCoordDest() &&
+                    mouvement->getCoordSrc() == NouvMouv->getCoordSrc()) {
+                    estDejaPresent = true;
+                    break;
+                }
+            }
+            if (!estDejaPresent) {
+                mouvementsPossibles.push_back(NouvMouv);
+            }
+        }
+    } 
 
     return mouvementsPossibles;
 }
-  
-
-   /* for (std::size_t i = 0; i < voisinsSansDoublon.size(); ++i) {
-        std::cout << i << ": " << voisinsSansDoublon[i].getType() << std::endl;
-    }
-    std::cout << "Choississez le voisin a piqué (voler ses mouvements omg)\n";
-    std::size_t choix;
-    std::cin >> choix;
-
-    if (choix >= 0 && choix < voisinsSansDoublon.size()) {
-        std::cout << "Vous avez choisi : " << voisinsSansDoublon[choix].getType() << std::endl;
-    }
-    else {
-        std::cout << "Choix invalide. Aucune chaîne sélectionnée." << std::endl;
-    }
-    Pion& insectchoisie = voisinsSansDoublon[choix];*/
-
-
-
- /*
-    
-
-    std::vector<Mouvement*> mouvementsPossibles;
-    std::set<std::tuple<int, int, int>> emplacementsVisites;  // Set pour éviter les doublons
-
-    if (plateau.isVide() || j.getCouleur() != p.getCouleur()) {
-        return mouvementsPossibles;
-    }
-    else {
-        // Récupérer tous les pions présents sur le plateau
-        std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = GestionnairePions::getPions(plateau);
-
-        for (const auto& pionTuple : pionsSurPlateau) {
-            Pion* pionActuel = std::get<0>(pionTuple);
-            int ligne = std::get<1>(pionTuple);
-            int colonne = std::get<2>(pionTuple);
-            int z = std::get<3>(pionTuple);
-
-            std::vector<std::tuple<int, int, int>> voisinsCoords = GestionnaireVoisins::getVoisinsCoords(ligne, colonne, plateau, z);
-
-            for (const auto& voisinCoord : voisinsCoords) {
-                int v_ligne = std::get<0>(voisinCoord);
-                int v_colonne = std::get<1>(voisinCoord);
-                int v_z = std::get<2>(voisinCoord);
-
-                // Vérifier si la case voisine est vide et que le déplacement ne casse pas la ruche
-                if (GestionnairePions::getPion(v_ligne, v_colonne, plateau, v_z) == nullptr && !GestionnaireMouvements::deplacementCasseRuche(&p, v_ligne, v_colonne, v_z, plateau)) {
-                    // Vérifier si cet emplacement a déjà été visité
-                    if (emplacementsVisites.find({ v_ligne, v_colonne, v_z }) == emplacementsVisites.end()) {
-                        // Ajouter l'emplacement au set pour éviter les doublons
-                        emplacementsVisites.insert({ v_ligne, v_colonne, v_z });
-                        // Ajouter le mouvement à la liste des mouvements possibles
-                        mouvementsPossibles.push_back(new Mouvement(p.getId(), v_ligne, v_colonne, v_z, p.getLigne(), p.getColonne(), p.getZ()));
-                    }
-                }
-            }
-        }
-        return mouvementsPossibles;
-    }
-}*/
