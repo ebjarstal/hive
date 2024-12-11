@@ -1,5 +1,5 @@
-#ifndef PLATEAU_H
-#define PLATEAU_H
+#ifndef VUE_PLATEAU_H
+#define VUE_PLATEAU_H
 
 #include <QList>
 #include "VuePion.h"
@@ -22,4 +22,4 @@ private:
 	QList<VuePion*> pions;
 };
 
-#endif // PLATEAU_H
+#endif // VUE_PLATEAU_H

@@ -1,5 +1,5 @@
-#ifndef PION_H
-#define PION_H
+#ifndef VUE_PION_H
+#define VUE_PION_H
 
 #include <QGraphicsPolygonItem>
 #include <QGraphicsSceneMouseEvent>
@@ -35,4 +35,4 @@ private:
 	QString type;
 };
 
-#endif // PION_H
+#endif // VUE_PION_H
