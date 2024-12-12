@@ -4,7 +4,9 @@
 
 const int    INDEX_MENU = 0;
 const int    INDEX_NOUVELLE_PARTIE = 1;
-const int    INDEX_CHARGER_PARTIE = 2;
+const int    INDEX_JOUER_CONTRE_IA = 2;
+const int    INDEX_JOUER_DEUX_JOUEURS = 3;
+const int    INDEX_CHARGER_PARTIE = 4;
 
 const int    SCALE_BY = 26;
 const int    TAILLE_PLATEAU = 12;

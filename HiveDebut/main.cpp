@@ -1,4 +1,4 @@
-#include "partie.h"
+﻿#include "partie.h"
 #include "plateau.h"
 #include "pions.h"
 #include "gestionnaireMouvements.h"
