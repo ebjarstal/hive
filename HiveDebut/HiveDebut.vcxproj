@@ -167,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="command.h" />
     <QtMoc Include="FenetrePrincipale.h" />
+    <ClInclude Include="Constantes.h" />
     <ClInclude Include="gestionnaireCommand.h" />
     <ClInclude Include="gestionnaireMouvements.h" />
     <ClInclude Include="gestionnairePions.h" />
