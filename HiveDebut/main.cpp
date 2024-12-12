@@ -8,9 +8,12 @@
 #include "joueur.h"
 #include "mouvement.h"
 
+#include <QApplication>
+#include "FenetrePrincipale.h"
+
 using namespace std;
 
-int main() {
+int main(int argc, char* argv[]) {
     int choix = 0;
     cout << "Interface console (0) ou interface Qt (1) ?" << endl;
     cin >> choix;
@@ -30,7 +33,10 @@ int main() {
         }
     }
     else if (choix == 1) {
-        cout << "Un peu de patience..." << endl;
+        QApplication app(argc, argv);
+        FenetrePrincipale fenetre;
+        fenetre.show();
+        return app.exec();
     }
     else {
         cout << "Choix invalide" << endl;
