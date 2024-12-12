@@ -7,6 +7,8 @@
 #include <QStackedWidget>
 #include <QButtonGroup>
 #include <QFileDialog>
+#include <QLineEdit>
+#include <QCheckBox>
 #include "Constantes.h"
 
 class FenetrePrincipale : public QMainWindow {
@@ -33,6 +35,11 @@ private:
 
     void ouvrirFileDialog();
 
+    QWidget* creerPage(const QString& title, QPushButton*& boutonRetour);
+    void ajouterLabelAvecLineEdit(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth = 400);
+    void ajouterCheckbox(QVBoxLayout* layout, const QString& labelText, QCheckBox*& checkBox, int maxWidth = 400);
+    void ajouterBouton(QVBoxLayout* layout, const QString& buttonText, QPushButton*& button, int minWidth = 200, int minHeight = 50, int maxWidth = 400);
+
     QGridLayout* gridLayout;
     QStackedWidget* stackedWidget;
     QWidget* widgetCentral;
@@ -46,6 +53,15 @@ private:
 
     QLabel* labelFichierCharge;
     QPushButton* boutonLancerJeu;
+
+    QLineEdit* champNomJoueur1;
+    QLineEdit* champNomJoueur2;
+    QLineEdit* champNomSauvegarde;
+    QLineEdit* champNombreRetours;
+    QCheckBox* checkboxExtensionMoustique;
+    QCheckBox* checkboxExtensionCoccinelle;
+    QCheckBox* checkboxExtensionAraignee;
+    QPushButton* boutonCommencerPartie;
 
     QPushButton* boutonRetourNouvellePartie;
     QPushButton* boutonRetourJouerContreIA;

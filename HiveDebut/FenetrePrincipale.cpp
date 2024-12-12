@@ -1,4 +1,5 @@
-﻿#include "FenetrePrincipale.h"
+﻿// FenetrePrincipale.cpp
+#include "FenetrePrincipale.h"
 
 FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     setWindowTitle("Hive (version Qt)");
@@ -32,36 +33,57 @@ FenetrePrincipale::~FenetrePrincipale() {
     // TODO
 }
 
+QWidget* FenetrePrincipale::creerPage(const QString& title, QPushButton*& boutonRetour) {
+    QWidget* page = new QWidget(this);
+    QVBoxLayout* layout = new QVBoxLayout(page);
+    boutonRetour = new QPushButton("Retour", this);
+    QLabel* labelTitle = new QLabel(title, this);
+    labelTitle->setAlignment(Qt::AlignCenter);
+    labelTitle->setStyleSheet("font-size: 24px; font-weight: bold;");
+
+    QHBoxLayout* topLayout = new QHBoxLayout();
+    topLayout->addWidget(boutonRetour);
+    topLayout->addStretch(1);
+
+    layout->addLayout(topLayout);
+    layout->addWidget(labelTitle);
+    layout->setAlignment(labelTitle, Qt::AlignTop | Qt::AlignHCenter);
+    layout->addStretch(1);
+
+    return page;
+}
+
+void FenetrePrincipale::ajouterLabelAvecLineEdit(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth) {
+    QLabel* label = new QLabel(labelText, this);
+    lineEdit = new QLineEdit(this);
+    label->setMaximumWidth(maxWidth);
+    lineEdit->setMaximumWidth(maxWidth);
+    layout->addWidget(label, 0, Qt::AlignCenter);
+    layout->addWidget(lineEdit, 0, Qt::AlignCenter);
+}
+
+void FenetrePrincipale::ajouterCheckbox(QVBoxLayout* layout, const QString& labelText, QCheckBox*& checkBox, int maxWidth) {
+    checkBox = new QCheckBox(labelText, this);
+    checkBox->setMaximumWidth(maxWidth);
+    layout->addWidget(checkBox, 0, Qt::AlignCenter);
+}
+
+void FenetrePrincipale::ajouterBouton(QVBoxLayout* layout, const QString& buttonText, QPushButton*& button, int minWidth, int minHeight, int maxWidth) {
+    button = new QPushButton(buttonText, this);
+    button->setMinimumSize(minWidth, minHeight);
+    button->setMaximumWidth(maxWidth);
+    layout->addWidget(button, 0, Qt::AlignCenter);
+}
+
 void FenetrePrincipale::initPageMenu() {
-    QWidget* pageMenu = new QWidget(this);
-    QVBoxLayout* layoutAccueil = new QVBoxLayout(pageMenu);
-    labelEtat = new QLabel("Bienvenue dans le jeu Hive!", this);
-    boutonNouvellePartie = new QPushButton("Nouvelle partie", this);
-    boutonChargerPartie = new QPushButton("Charger une sauvegarde", this);
-    boutonQuitter = new QPushButton("Quitter", this);
+    QWidget* pageMenu = creerPage("Bienvenue dans le jeu Hive!", boutonRetourNouvellePartie);
+    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pageMenu->layout());
 
-    // Centrer le labelEtat en haut et augmenter la taille de la police
-    labelEtat->setAlignment(Qt::AlignCenter);
-    labelEtat->setStyleSheet("font-size: 24px; font-weight: bold;");
+    ajouterBouton(layout, "Nouvelle partie", boutonNouvellePartie);
+    ajouterBouton(layout, "Charger une sauvegarde", boutonChargerPartie);
+    ajouterBouton(layout, "Quitter", boutonQuitter);
 
-    // Définir la taille minimale des boutons pour qu'ils soient de la même taille
-    QSize buttonSize(200, 50);
-    boutonNouvellePartie->setMinimumSize(buttonSize);
-    boutonChargerPartie->setMinimumSize(buttonSize);
-    boutonQuitter->setMinimumSize(buttonSize);
-
-    // Ajouter les widgets à la page d'accueil
-    layoutAccueil->addWidget(labelEtat);
-    layoutAccueil->setAlignment(labelEtat, Qt::AlignTop | Qt::AlignHCenter);
-    layoutAccueil->addStretch(1);
-    layoutAccueil->addWidget(boutonNouvellePartie);
-    layoutAccueil->setAlignment(boutonNouvellePartie, Qt::AlignCenter);
-    layoutAccueil->addWidget(boutonChargerPartie);
-    layoutAccueil->setAlignment(boutonChargerPartie, Qt::AlignCenter);
-    layoutAccueil->addWidget(boutonQuitter);
-    layoutAccueil->setAlignment(boutonQuitter, Qt::AlignCenter);
-    layoutAccueil->addStretch(1);
-
+    layout->addStretch(1);
     stackedWidget->addWidget(pageMenu);
 
     connect(boutonNouvellePartie, &QPushButton::clicked, this, &FenetrePrincipale::afficherNouvellePartie);
@@ -69,39 +91,13 @@ void FenetrePrincipale::initPageMenu() {
 }
 
 void FenetrePrincipale::initPageNouvellePartie() {
-    QWidget* pageNouvellePartie = new QWidget(this);
-    QVBoxLayout* layoutNouvellePartie = new QVBoxLayout(pageNouvellePartie);
-    boutonRetourNouvellePartie = new QPushButton("Retour", this);
-    QLabel* labelNouvellePartie = new QLabel("Nouvelle partie", this);
-    labelNouvellePartie->setAlignment(Qt::AlignCenter);
-    labelNouvellePartie->setStyleSheet("font-size: 24px; font-weight: bold;");
+    QWidget* pageNouvellePartie = creerPage("Nouvelle partie", boutonRetourNouvellePartie);
+    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pageNouvellePartie->layout());
 
-    // Ajouter le bouton retour en haut à gauche
-    QHBoxLayout* topLayout = new QHBoxLayout();
-    topLayout->addWidget(boutonRetourNouvellePartie);
-    topLayout->addStretch(1);
+    ajouterBouton(layout, "Jouer contre une IA", boutonJouerContreIA);
+    ajouterBouton(layout, "Jouer à deux en local", boutonJouerDeuxJoueurs);
 
-    // Créer les boutons pour sélectionner le mode de jeu
-    boutonJouerContreIA = new QPushButton("Jouer contre une IA", this);
-    boutonJouerDeuxJoueurs = new QPushButton("Jouer à deux en local", this);
-
-    // Définir la taille minimale des boutons pour qu'ils soient de la même taille
-    boutonJouerContreIA->setMinimumSize(200, 50);
-    boutonJouerDeuxJoueurs->setMinimumSize(200, 50);
-
-    // Ajouter les boutons au layout
-    QVBoxLayout* layoutModeJeu = new QVBoxLayout();
-    layoutModeJeu->addWidget(boutonJouerContreIA);
-    layoutModeJeu->addWidget(boutonJouerDeuxJoueurs);
-    layoutModeJeu->setAlignment(Qt::AlignCenter);
-
-    layoutNouvellePartie->addLayout(topLayout);
-    layoutNouvellePartie->addWidget(labelNouvellePartie);
-    layoutNouvellePartie->setAlignment(labelNouvellePartie, Qt::AlignTop | Qt::AlignHCenter);
-    layoutNouvellePartie->addStretch(1);
-    layoutNouvellePartie->addLayout(layoutModeJeu);
-    layoutNouvellePartie->addStretch(1);
-
+    layout->addStretch(1);
     stackedWidget->addWidget(pageNouvellePartie);
 
     connect(boutonRetourNouvellePartie, &QPushButton::clicked, this, &FenetrePrincipale::retourMenu);
@@ -110,90 +106,59 @@ void FenetrePrincipale::initPageNouvellePartie() {
 }
 
 void FenetrePrincipale::initPageJouerContreIA() {
-    QWidget* pageJouerContreIA = new QWidget(this);
-    QVBoxLayout* layoutJouerContreIA = new QVBoxLayout(pageJouerContreIA);
-    boutonRetourJouerContreIA = new QPushButton("Retour", this);
-    QLabel* labelJouerContreIA = new QLabel("Jouer contre une IA", this);
-    labelJouerContreIA->setAlignment(Qt::AlignCenter);
-    labelJouerContreIA->setStyleSheet("font-size: 24px; font-weight: bold;");
+    QWidget* pageJouerContreIA = creerPage("Jouer contre une IA", boutonRetourJouerContreIA);
+    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pageJouerContreIA->layout());
 
-    // Ajouter le bouton retour en haut à gauche
-    QHBoxLayout* topLayout = new QHBoxLayout();
-    topLayout->addWidget(boutonRetourJouerContreIA);
-    topLayout->addStretch(1);
+    ajouterLabelAvecLineEdit(layout, "Nom du joueur:", champNomJoueur1);
+    ajouterLabelAvecLineEdit(layout, "Nom de la sauvegarde:", champNomSauvegarde);
+    ajouterLabelAvecLineEdit(layout, "Nombre de retours en arrière possibles:", champNombreRetours);
+    ajouterCheckbox(layout, "Extension Moustique", checkboxExtensionMoustique);
+    ajouterCheckbox(layout, "Extension Coccinelle", checkboxExtensionCoccinelle);
+    ajouterCheckbox(layout, "Extension Araignée", checkboxExtensionAraignee);
+    ajouterBouton(layout, "Commencer la partie", boutonCommencerPartie);
 
-    layoutJouerContreIA->addLayout(topLayout);
-    layoutJouerContreIA->addWidget(labelJouerContreIA);
-    layoutJouerContreIA->setAlignment(labelJouerContreIA, Qt::AlignTop | Qt::AlignHCenter);
-
+    layout->addStretch(1);
     stackedWidget->addWidget(pageJouerContreIA);
 
     connect(boutonRetourJouerContreIA, &QPushButton::clicked, this, &FenetrePrincipale::retourNouvellePartie);
 }
 
 void FenetrePrincipale::initPageJouerDeuxJoueurs() {
-    QWidget* pageJouerDeuxJoueurs = new QWidget(this);
-    QVBoxLayout* layoutJouerDeuxJoueurs = new QVBoxLayout(pageJouerDeuxJoueurs);
-    boutonRetourJouerDeuxJoueurs = new QPushButton("Retour", this);
-    QLabel* labelJouerDeuxJoueurs = new QLabel("Jouer à deux en local", this);
-    labelJouerDeuxJoueurs->setAlignment(Qt::AlignCenter);
-    labelJouerDeuxJoueurs->setStyleSheet("font-size: 24px; font-weight: bold;");
+    QWidget* pageJouerDeuxJoueurs = creerPage("Jouer à deux en local", boutonRetourJouerDeuxJoueurs);
+    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pageJouerDeuxJoueurs->layout());
 
-    // Ajouter le bouton retour en haut à gauche
-    QHBoxLayout* topLayout = new QHBoxLayout();
-    topLayout->addWidget(boutonRetourJouerDeuxJoueurs);
-    topLayout->addStretch(1);
+    ajouterLabelAvecLineEdit(layout, "Nom du joueur 1:", champNomJoueur1);
+    ajouterLabelAvecLineEdit(layout, "Nom du joueur 2:", champNomJoueur2);
+    ajouterLabelAvecLineEdit(layout, "Nom de la sauvegarde:", champNomSauvegarde);
+    ajouterLabelAvecLineEdit(layout, "Nombre de retours en arrière possibles:", champNombreRetours);
+    ajouterCheckbox(layout, "Extension Moustique", checkboxExtensionMoustique);
+    ajouterCheckbox(layout, "Extension Coccinelle", checkboxExtensionCoccinelle);
+    ajouterCheckbox(layout, "Extension Araignée", checkboxExtensionAraignee);
+    ajouterBouton(layout, "Commencer la partie", boutonCommencerPartie);
 
-    layoutJouerDeuxJoueurs->addLayout(topLayout);
-    layoutJouerDeuxJoueurs->addWidget(labelJouerDeuxJoueurs);
-    layoutJouerDeuxJoueurs->setAlignment(labelJouerDeuxJoueurs, Qt::AlignTop | Qt::AlignHCenter);
-
+    layout->addStretch(1);
     stackedWidget->addWidget(pageJouerDeuxJoueurs);
 
     connect(boutonRetourJouerDeuxJoueurs, &QPushButton::clicked, this, &FenetrePrincipale::retourNouvellePartie);
 }
 
 void FenetrePrincipale::initPageChargerPartie() {
-    QWidget* pageChargerPartie = new QWidget(this);
-    QVBoxLayout* layoutChargerPartie = new QVBoxLayout(pageChargerPartie);
-    boutonRetourChargerPartie = new QPushButton("Retour", this);
-    QLabel* labelChargerPartie = new QLabel("Charger partie", this);
-    labelChargerPartie->setAlignment(Qt::AlignCenter);
-    labelChargerPartie->setStyleSheet("font-size: 24px; font-weight: bold;");
+    QWidget* pageChargerPartie = creerPage("Charger partie", boutonRetourChargerPartie);
+    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pageChargerPartie->layout());
 
-    // Ajouter le bouton retour en haut à gauche
-    QHBoxLayout* topLayout = new QHBoxLayout();
-    topLayout->addWidget(boutonRetourChargerPartie);
-    topLayout->addStretch(1);
-
-    // Ajouter le bouton pour ouvrir le QFileDialog
-    boutonOuvrirFichier = new QPushButton("Sélectionner une sauvegarde", this);
-    boutonOuvrirFichier->setMinimumSize(200, 50);
+    ajouterBouton(layout, "Sélectionner une sauvegarde", boutonOuvrirFichier);
     labelCheminFichier = new QLabel(this);
     labelCheminFichier->setAlignment(Qt::AlignCenter);
+    layout->addWidget(labelCheminFichier, 0, Qt::AlignCenter);
 
-    // Ajouter le label pour indiquer que le fichier est chargé
     labelFichierCharge = new QLabel(this);
     labelFichierCharge->setAlignment(Qt::AlignCenter);
     labelFichierCharge->setStyleSheet("color: green; font-weight: bold;");
+    layout->addWidget(labelFichierCharge, 0, Qt::AlignCenter);
 
-    // Ajouter le bouton "Lancer le jeu"
-    boutonLancerJeu = new QPushButton("Lancer le jeu", this);
-    boutonLancerJeu->setMinimumSize(200, 50);
+    ajouterBouton(layout, "Lancer le jeu", boutonLancerJeu);
 
-    layoutChargerPartie->addLayout(topLayout);
-    layoutChargerPartie->addWidget(labelChargerPartie);
-    layoutChargerPartie->setAlignment(labelChargerPartie, Qt::AlignTop | Qt::AlignHCenter);
-    layoutChargerPartie->addStretch(1);
-    layoutChargerPartie->addWidget(boutonOuvrirFichier);
-    layoutChargerPartie->setAlignment(boutonOuvrirFichier, Qt::AlignCenter);
-    layoutChargerPartie->addWidget(labelCheminFichier);
-    layoutChargerPartie->addWidget(labelFichierCharge);
-    layoutChargerPartie->setAlignment(labelFichierCharge, Qt::AlignCenter);
-    layoutChargerPartie->addWidget(boutonLancerJeu);
-    layoutChargerPartie->setAlignment(boutonLancerJeu, Qt::AlignCenter);
-    layoutChargerPartie->addStretch(1);
-
+    layout->addStretch(1);
     stackedWidget->addWidget(pageChargerPartie);
 
     connect(boutonRetourChargerPartie, &QPushButton::clicked, this, &FenetrePrincipale::retourMenu);
