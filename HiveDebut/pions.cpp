@@ -459,7 +459,6 @@ std::vector<Mouvement*> Moustique::deplacementsPossibles(Pion& p, Joueur& j, Pla
 
            // Vérifier si l'élément existe déjà
            if (typesVus.find(v_type) == typesVus.end()) {
-               std::cout << "On ajoute " << v_type << std::endl;
                typesVus.insert(v_type); // Marque le type comme vu
  
                voisinsSansDoublon.push_back(voisinType); // Ajouter si l'élément n'existe pas
