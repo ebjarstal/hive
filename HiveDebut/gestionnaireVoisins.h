@@ -24,6 +24,7 @@ public:
 
     static std::vector<std::tuple<int, int, int>> getCasesVidesAutour(Pion& p, Plateau& plateau); // Recuperer les cases vides autour d'un pion avec une référence Pion
     static std::vector<std::tuple<int, int, int>> getCasesVidesAutour(int ligne, int colonne, int z, Plateau& plateau); // Recuperer les cases vides autour d'un pion avec ses coordonnées
+    static std::vector<std::tuple<int, int, int>> getCasesVidesCommunes(Pion& p, Plateau& plateau); //Recuperer les cases vides communes à un pion et ses voisins directs
 
     static int nombreVoisins(Pion& p, Plateau& plateau);  // Recuperer le nombre de voisin d'un pion
     static bool hasVoisin(Pion& p, Plateau& plateau);  // Booleen si le pion a des voisins
