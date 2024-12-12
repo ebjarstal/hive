@@ -123,7 +123,6 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
             }
         }
     }
-    std::cout << "Nombre total de mouvements générés : " << mouvements.size() << std::endl;
 
     return mouvements;
 }

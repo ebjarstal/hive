@@ -166,7 +166,7 @@ std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
 
 void Partie::jouerUnTour(Joueur* j) {
     // Le joueur joue son tour
-    j->Jouer(getPlateau());  // Joue le mouvement
+    j->Jouer(getPlateau(),*this);  // Joue le mouvement
 
     if (j == getJoueur2()) {
         nombreTour += 1;

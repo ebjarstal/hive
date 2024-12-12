@@ -131,18 +131,22 @@ void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau, std::vector<std::tu
     }
 }
 
-void JoueurIA::Jouer(Plateau& plateau) {
+void JoueurIA::Jouer(Plateau& plateau, Partie& partie) {
     Mouvement* mvt = trouverMeilleurMouvement(plateau, *this, 2);
     Command* commande = new MouvementCommand(partie, mvt);
     GestionnaireCommand::executeCommand(partie, commande);
 }
 
-void JoueurHumain::Jouer(Plateau& plateau) {
+void JoueurHumain::Jouer(Plateau& plateau, Partie& partie) {
 
     std::cout << "C'est a " << getNom() << " de jouer !" << endl;
     int choix;
     if (isMainVide()) {
         choix = 2; // Si la main est vide, le joueur ne peut que d placer un pion
+    }
+    else if (partie.getNombreTour() == 4 && !peutBougerPions()) { //peutBougerPions renvoie false si la Reine est toujours en main
+        std::cout << "Vous devez poser votre pion Reine\n";
+        choix = 4;
     }
     else if (partie.canUndo() && peutBougerPions()) {
         std::cout << "Voulez-vous poser (1), deplacer (2) ou annuler un mouvement (" << partie.getNbUndo() << " restants) (3) ? ";
@@ -161,7 +165,10 @@ void JoueurHumain::Jouer(Plateau& plateau) {
     }
 
     if (choix == 1) {
-        poserPionHumain(plateau);  // Appel de la m thode pour poser un pion
+        poserPionHumain(plateau, partie);  // Appel de la m thode pour poser un pion
+    }
+    else if (choix == 4) {
+        poserReineHumain(plateau);
     }
     else if (choix == 2 && !plateau.isVide()) {
         deplacerPionHumain(plateau);  // Appel de la m thode pour d placer un pion
@@ -169,7 +176,7 @@ void JoueurHumain::Jouer(Plateau& plateau) {
     else if (choix == 3 && partie.canUndo()){
         partie.annulerMouvement();
         plateau.afficher();
-        Jouer(plateau);
+        Jouer(plateau,partie);
     }
     else {
         std::cout << "Choix invalide." << std::endl;
@@ -177,7 +184,7 @@ void JoueurHumain::Jouer(Plateau& plateau) {
     }
 }
 
-Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
+Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau,Partie& partie) {
 
     afficherPions(pionsEnMain);
     Pion* pionChoisi = choisirPion(pionsEnMain);
@@ -186,7 +193,7 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
 
     if (emplacements.empty()) {
         std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer." << std::endl;
-        Jouer(plateau);
+        Jouer(plateau,partie);
         return nullptr;
     }
 
@@ -395,4 +402,38 @@ int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, b
     }
 
     return meilleurScore;
+}
+
+Mouvement* JoueurHumain::poserReineHumain(Plateau& plateau) {
+    Pion* pionReine = nullptr;  // Initialisation à nullptr
+
+    // Récupère le pion Reine en main
+    for (Pion* pion : pionsEnMain) {
+        if (pion->getType() == "R") {
+            pionReine = pion;
+            break;  // Pas besoin de continuer la boucle une fois la Reine trouvée
+        }
+    }
+
+    // Vérifier si la Reine a été trouvée
+    if (pionReine == nullptr) {
+        std::cerr << "Erreur : Aucun pion de type 'R' n'est disponible dans la main !" << std::endl;
+        return nullptr;  // Gestion du cas d'erreur
+    }
+
+    std::vector<Mouvement*> emplacements = pionReine->emplacementsPossibles(*pionReine, plateau);
+
+    // Affiche les déplacements de la Reine
+    afficherEmplacements(emplacements);
+    Mouvement* emplacementChoisi = choisirEmplacement(emplacements);
+
+    auto poserPionCommand = new MouvementCommand(partie, emplacementChoisi);
+    GestionnaireCommand::executeCommand(partie, poserPionCommand);
+
+    for (Mouvement* m : emplacements) {
+        if (m != emplacementChoisi) {
+            delete m;
+        }
+    }
+    return emplacementChoisi;
 }
