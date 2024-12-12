@@ -1,5 +1,4 @@
-﻿// FenetrePrincipale.cpp
-#include "FenetrePrincipale.h"
+﻿#include "FenetrePrincipale.h"
 
 FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     setWindowTitle("Hive (version Qt)");
@@ -7,12 +6,6 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
 
     widgetCentral = new QWidget(this);
     setCentralWidget(widgetCentral);
-
-    // Initialiser les widgets pour la page de chargement de partie
-    labelFichierCharge = new QLabel(this);
-    labelFichierCharge->setVisible(false);
-    boutonLancerJeu = new QPushButton("Lancer le jeu", this);
-    boutonLancerJeu->setVisible(false);
 
     stackedWidget = new QStackedWidget(this);
 
@@ -27,25 +20,50 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     mainLayout->addWidget(stackedWidget);
 
     connect(boutonQuitter, &QPushButton::clicked, this, &FenetrePrincipale::close);
+
+    // Initialiser le contrôleur de jeu
+    Plateau plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, 5);
+    Partie* partie = new Partie(plateau);
+    controleur = new Controleur(partie, this);
+
+    // Connecter les signaux et les slots
+    connect(controleur, &Controleur::miseAJourPlateau, this, &FenetrePrincipale::onMiseAJourPlateau);
+    connect(controleur, &Controleur::partieTerminee, this, &FenetrePrincipale::onPartieTerminee);
+    connect(boutonCommencerPartieContreIA, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieContreIA);
+    connect(boutonCommencerPartieDeuxJoueurs, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieDeuxJoueurs);
 }
 
 FenetrePrincipale::~FenetrePrincipale() {
     // TODO
 }
 
-QWidget* FenetrePrincipale::creerPage(const QString& title, QPushButton*& boutonRetour) {
+void FenetrePrincipale::onMiseAJourPlateau() {
+    std::cout << "Execution de onMiseAJourPlateau()" << std::endl;
+}
+
+void FenetrePrincipale::onPartieTerminee(const QString& message) {
+    // Afficher un message de fin de partie
+    QMessageBox::information(this, "Partie terminée", message);
+}
+
+QWidget* FenetrePrincipale::creerPage(const QString& title, QPushButton*& boutonRetour, bool ajouterBoutonRetour) {
     QWidget* page = new QWidget(this);
     QVBoxLayout* layout = new QVBoxLayout(page);
-    boutonRetour = new QPushButton("Retour", this);
     QLabel* labelTitle = new QLabel(title, this);
     labelTitle->setAlignment(Qt::AlignCenter);
     labelTitle->setStyleSheet("font-size: 24px; font-weight: bold;");
 
-    QHBoxLayout* topLayout = new QHBoxLayout();
-    topLayout->addWidget(boutonRetour);
-    topLayout->addStretch(1);
+    if (ajouterBoutonRetour) {
+        boutonRetour = new QPushButton("Retour", this);
+        QHBoxLayout* topLayout = new QHBoxLayout();
+        topLayout->addWidget(boutonRetour);
+        topLayout->addStretch(1);
+        layout->addLayout(topLayout);
+    }
+    else {
+        boutonRetour = nullptr;
+    }
 
-    layout->addLayout(topLayout);
     layout->addWidget(labelTitle);
     layout->setAlignment(labelTitle, Qt::AlignTop | Qt::AlignHCenter);
     layout->addStretch(1);
@@ -76,7 +94,7 @@ void FenetrePrincipale::ajouterBouton(QVBoxLayout* layout, const QString& button
 }
 
 void FenetrePrincipale::initPageMenu() {
-    QWidget* pageMenu = creerPage("Bienvenue dans le jeu Hive!", boutonRetourNouvellePartie);
+    QWidget* pageMenu = creerPage("Bienvenue dans le jeu Hive!", boutonRetourNouvellePartie, false);
     QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pageMenu->layout());
 
     ajouterBouton(layout, "Nouvelle partie", boutonNouvellePartie);
@@ -115,7 +133,7 @@ void FenetrePrincipale::initPageJouerContreIA() {
     ajouterCheckbox(layout, "Extension Moustique", checkboxExtensionMoustique);
     ajouterCheckbox(layout, "Extension Coccinelle", checkboxExtensionCoccinelle);
     ajouterCheckbox(layout, "Extension Araignée", checkboxExtensionAraignee);
-    ajouterBouton(layout, "Commencer la partie", boutonCommencerPartie);
+    ajouterBouton(layout, "Commencer la partie", boutonCommencerPartieContreIA);
 
     layout->addStretch(1);
     stackedWidget->addWidget(pageJouerContreIA);
@@ -134,7 +152,7 @@ void FenetrePrincipale::initPageJouerDeuxJoueurs() {
     ajouterCheckbox(layout, "Extension Moustique", checkboxExtensionMoustique);
     ajouterCheckbox(layout, "Extension Coccinelle", checkboxExtensionCoccinelle);
     ajouterCheckbox(layout, "Extension Araignée", checkboxExtensionAraignee);
-    ajouterBouton(layout, "Commencer la partie", boutonCommencerPartie);
+    ajouterBouton(layout, "Commencer la partie", boutonCommencerPartieDeuxJoueurs);
 
     layout->addStretch(1);
     stackedWidget->addWidget(pageJouerDeuxJoueurs);
@@ -173,6 +191,49 @@ void FenetrePrincipale::ouvrirFileDialog() {
         boutonLancerJeu->setVisible(true);
         // Vous pouvez ajouter ici le code pour charger la partie à partir du fichier sélectionné
     }
+}
+
+void FenetrePrincipale::commencerPartieContreIA() {
+    std::string nomJoueur = champNomJoueur1->text().toStdString();
+    std::string nomSauvegarde = champNomSauvegarde->text().toStdString();
+    unsigned int nbUndo = champNombreRetours->text().toUInt();
+    //bool extensionMoustique = checkboxExtensionMoustique->isChecked();
+    //bool extensionCoccinelle = checkboxExtensionCoccinelle->isChecked();
+    //bool extensionAraignee = checkboxExtensionAraignee->isChecked();
+
+    Joueur* joueur1 = new JoueurHumain(nomJoueur, controleur->partie->initialiserPions(RED), RED, *(controleur->partie));
+    Joueur* joueur2 = new JoueurIA("IA", controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie));
+
+    controleur->partie->setNomPartie(nomSauvegarde);
+    controleur->partie->setNbUndo(nbUndo);
+    controleur->partie->setJoueur1(joueur1);
+    controleur->partie->setJoueur2(joueur2);
+    // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
+
+    controleur->commencerPartie();
+    stackedWidget->setCurrentIndex(INDEX_JOUER_CONTRE_IA);
+}
+
+void FenetrePrincipale::commencerPartieDeuxJoueurs() {
+    std::string nomJoueur1 = champNomJoueur1->text().toStdString();
+    std::string nomJoueur2 = champNomJoueur2->text().toStdString();
+    std::string nomSauvegarde = champNomSauvegarde->text().toStdString();
+    unsigned int nbUndo = champNombreRetours->text().toUInt();
+    //bool extensionMoustique = checkboxExtensionMoustique->isChecked();
+    //bool extensionCoccinelle = checkboxExtensionCoccinelle->isChecked();
+    //bool extensionAraignee = checkboxExtensionAraignee->isChecked();
+
+    Joueur* joueur1 = new JoueurHumain(nomJoueur1, controleur->partie->initialiserPions(RED), RED, *(controleur->partie));
+    Joueur* joueur2 = new JoueurHumain(nomJoueur2, controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie));
+
+    controleur->partie->setNomPartie(nomSauvegarde);
+    controleur->partie->setNbUndo(nbUndo);
+    controleur->partie->setJoueur1(joueur1);
+    controleur->partie->setJoueur1(joueur2);
+    // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
+
+    controleur->commencerPartie();
+    stackedWidget->setCurrentIndex(INDEX_JOUER_DEUX_JOUEURS);
 }
 
 void FenetrePrincipale::afficherNouvellePartie() {

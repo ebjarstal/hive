@@ -9,7 +9,9 @@
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QMessageBox>
 #include "Constantes.h"
+#include "Controleur.h"
 
 class FenetrePrincipale : public QMainWindow {
     Q_OBJECT
@@ -35,7 +37,7 @@ private:
 
     void ouvrirFileDialog();
 
-    QWidget* creerPage(const QString& title, QPushButton*& boutonRetour);
+    QWidget* creerPage(const QString& title, QPushButton*& boutonRetour, bool ajouterBoutonRetour = true);
     void ajouterLabelAvecLineEdit(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth = 400);
     void ajouterCheckbox(QVBoxLayout* layout, const QString& labelText, QCheckBox*& checkBox, int maxWidth = 400);
     void ajouterBouton(QVBoxLayout* layout, const QString& buttonText, QPushButton*& button, int minWidth = 200, int minHeight = 50, int maxWidth = 400);
@@ -61,7 +63,8 @@ private:
     QCheckBox* checkboxExtensionMoustique;
     QCheckBox* checkboxExtensionCoccinelle;
     QCheckBox* checkboxExtensionAraignee;
-    QPushButton* boutonCommencerPartie;
+    QPushButton* boutonCommencerPartieContreIA;
+    QPushButton* boutonCommencerPartieDeuxJoueurs;
 
     QPushButton* boutonRetourNouvellePartie;
     QPushButton* boutonRetourJouerContreIA;
@@ -70,4 +73,12 @@ private:
 
     QPushButton* boutonOuvrirFichier;
     QLabel* labelCheminFichier;
+
+    Controleur* controleur;
+
+private slots:
+    void commencerPartieContreIA();
+    void commencerPartieDeuxJoueurs();
+    void onMiseAJourPlateau();
+    void onPartieTerminee(const QString& message);
 };

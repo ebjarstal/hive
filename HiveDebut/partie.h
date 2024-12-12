@@ -48,6 +48,7 @@ public:
     unsigned int getNbUndo() const { return nbUndo; }
     std::stack<Command*>& getHistorique() { return historique; }
 
+    void setNomPartie(const std::string& nom) { nomPartie = nom; }
     void setPlateau(Plateau& p) { plateau = p; }
     void setNombreTour(unsigned int nb) { nombreTour = nb; }
     void setJoueur1(Joueur* j) { joueur1 = j; }

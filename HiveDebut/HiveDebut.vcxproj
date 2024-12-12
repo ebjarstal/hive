@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="command.cpp" />
+    <ClCompile Include="Controleur.cpp" />
     <ClCompile Include="FenetrePrincipale.cpp" />
     <ClCompile Include="gestionnaireCommand.cpp" />
     <ClCompile Include="gestionnaireMouvements.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="command.h" />
     <QtMoc Include="FenetrePrincipale.h" />
     <ClInclude Include="Constantes.h" />
+    <QtMoc Include="Controleur.h" />
     <ClInclude Include="gestionnaireCommand.h" />
     <ClInclude Include="gestionnaireMouvements.h" />
     <ClInclude Include="gestionnairePions.h" />
