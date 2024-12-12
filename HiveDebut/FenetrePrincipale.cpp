@@ -7,6 +7,12 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     widgetCentral = new QWidget(this);
     setCentralWidget(widgetCentral);
 
+    // Initialiser les widgets pour la page de chargement de partie
+    labelFichierCharge = new QLabel(this);
+    labelFichierCharge->setVisible(false);
+    boutonLancerJeu = new QPushButton("Lancer le jeu", this);
+    boutonLancerJeu->setVisible(false);
+
     stackedWidget = new QStackedWidget(this);
 
     // Initialiser les pages
@@ -160,13 +166,48 @@ void FenetrePrincipale::initPageChargerPartie() {
     topLayout->addWidget(boutonRetourChargerPartie);
     topLayout->addStretch(1);
 
+    // Ajouter le bouton pour ouvrir le QFileDialog
+    boutonOuvrirFichier = new QPushButton("Sélectionner une sauvegarde", this);
+    boutonOuvrirFichier->setMinimumSize(200, 50);
+    labelCheminFichier = new QLabel(this);
+    labelCheminFichier->setAlignment(Qt::AlignCenter);
+
+    // Ajouter le label pour indiquer que le fichier est chargé
+    labelFichierCharge = new QLabel(this);
+    labelFichierCharge->setAlignment(Qt::AlignCenter);
+    labelFichierCharge->setStyleSheet("color: green; font-weight: bold;");
+
+    // Ajouter le bouton "Lancer le jeu"
+    boutonLancerJeu = new QPushButton("Lancer le jeu", this);
+    boutonLancerJeu->setMinimumSize(200, 50);
+
     layoutChargerPartie->addLayout(topLayout);
     layoutChargerPartie->addWidget(labelChargerPartie);
     layoutChargerPartie->setAlignment(labelChargerPartie, Qt::AlignTop | Qt::AlignHCenter);
+    layoutChargerPartie->addStretch(1);
+    layoutChargerPartie->addWidget(boutonOuvrirFichier);
+    layoutChargerPartie->setAlignment(boutonOuvrirFichier, Qt::AlignCenter);
+    layoutChargerPartie->addWidget(labelCheminFichier);
+    layoutChargerPartie->addWidget(labelFichierCharge);
+    layoutChargerPartie->setAlignment(labelFichierCharge, Qt::AlignCenter);
+    layoutChargerPartie->addWidget(boutonLancerJeu);
+    layoutChargerPartie->setAlignment(boutonLancerJeu, Qt::AlignCenter);
+    layoutChargerPartie->addStretch(1);
 
     stackedWidget->addWidget(pageChargerPartie);
 
     connect(boutonRetourChargerPartie, &QPushButton::clicked, this, &FenetrePrincipale::retourMenu);
+    connect(boutonOuvrirFichier, &QPushButton::clicked, this, &FenetrePrincipale::ouvrirFileDialog);
+}
+
+void FenetrePrincipale::ouvrirFileDialog() {
+    QString fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier de sauvegarde", "", "Fichiers texte (*.txt)");
+    if (!fichier.isEmpty()) {
+        labelCheminFichier->setText(fichier);
+        labelFichierCharge->setText("Fichier de sauvegarde chargé");
+        boutonLancerJeu->setVisible(true);
+        // Vous pouvez ajouter ici le code pour charger la partie à partir du fichier sélectionné
+    }
 }
 
 void FenetrePrincipale::afficherNouvellePartie() {

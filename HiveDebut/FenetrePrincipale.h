@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QStackedWidget>
 #include <QButtonGroup>
+#include <QFileDialog>
 #include "Constantes.h"
 
 class FenetrePrincipale : public QMainWindow {
@@ -30,6 +31,8 @@ private:
     void retourMenu();
     void retourNouvellePartie();
 
+    void ouvrirFileDialog();
+
     QGridLayout* gridLayout;
     QStackedWidget* stackedWidget;
     QWidget* widgetCentral;
@@ -41,8 +44,14 @@ private:
     QPushButton* boutonChargerPartie;
     QPushButton* boutonQuitter;
 
+    QLabel* labelFichierCharge;
+    QPushButton* boutonLancerJeu;
+
     QPushButton* boutonRetourNouvellePartie;
     QPushButton* boutonRetourJouerContreIA;
     QPushButton* boutonRetourJouerDeuxJoueurs;
     QPushButton* boutonRetourChargerPartie;
+
+    QPushButton* boutonOuvrirFichier;
+    QLabel* labelCheminFichier;
 };
