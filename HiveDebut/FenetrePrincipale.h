@@ -11,6 +11,8 @@
 #include <QCheckBox>
 #include <QMessageBox>
 #include <QIntValidator>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include "Constantes.h"
 #include "Controleur.h"
 
@@ -28,7 +30,6 @@ private:
     void initPageJouerDeuxJoueurs();
     void initPageChargerPartie();
 
-    void initPagePartieEnCours();
     QWidget* pagePartieEnCours;
 
     void afficherNouvellePartie();
@@ -90,6 +91,8 @@ private slots:
 
     void ouvrirFileDialog();
     void chargerPartieSauvegarde();
+
+    void afficherPlateauScene(VuePion* pion);
 
     void onMiseAJourPlateau();
     void onPartieTerminee(const QString& message);

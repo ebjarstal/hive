@@ -1,5 +1,6 @@
 #include "Controleur.h"
 #include "gestionnaireSauvegarde.h"
+#include "VuePion.h"
 
 Controleur::Controleur(Partie* partie, QObject* parent)
     : QObject(parent), partie(partie) {
@@ -10,6 +11,14 @@ void Controleur::commencerPartie() {
 
     GestionnaireSauvegarde::sauvegarde(*partie);
     partie->getPlateau().afficher();
+    // afficher le plateau en qt
+
+    // Créer et ajouter un pion à la scène
+    VuePion* pion = new VuePion();
+    pion->setCouleur(Qt::darkRed);
+    pion->setType("R");
+    emit afficherPlateauScene(pion);
+
     // jouerTour() fait crash l'app qt
 }
 

@@ -1,6 +1,8 @@
 #pragma once
 
+#include "VuePion.h"
 #include <QObject>
+#include <QList>
 #include "partie.h"
 
 class Controleur : public QObject {
@@ -10,7 +12,17 @@ public:
     Controleur(Partie* partie, QObject* parent = nullptr);
     Partie* partie;
 
+    // getters
+
+    // setters
+
+private:
+    QList<VuePion*> piocheJoueur1;
+    QList<VuePion*> piocheJoueur2;
+
 signals:
+    void afficherPlateauScene(VuePion* pion);
+
     void miseAJourPlateau();
     void partieTerminee(const QString& message);
 

@@ -15,7 +15,6 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     initPageJouerContreIA();
     initPageJouerDeuxJoueurs();
     initPageChargerPartie();
-    initPagePartieEnCours();
 
     QVBoxLayout* mainLayout = new QVBoxLayout(widgetCentral);
     mainLayout->addWidget(stackedWidget);
@@ -30,6 +29,7 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     // Connecter les signaux et les slots
     connect(controleur, &Controleur::miseAJourPlateau, this, &FenetrePrincipale::onMiseAJourPlateau);
     connect(controleur, &Controleur::partieTerminee, this, &FenetrePrincipale::onPartieTerminee);
+    connect(controleur, &Controleur::afficherPlateauScene, this, &FenetrePrincipale::afficherPlateauScene);
     connect(boutonCommencerPartieContreIA, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieContreIA);
     connect(boutonCommencerPartieDeuxJoueurs, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieDeuxJoueurs);
 }
@@ -104,18 +104,6 @@ void FenetrePrincipale::ajouterBouton(QVBoxLayout* layout, const QString& button
     button->setMinimumSize(minWidth, minHeight);
     button->setMaximumWidth(maxWidth);
     layout->addWidget(button, 0, Qt::AlignCenter);
-}
-
-void FenetrePrincipale::initPagePartieEnCours() {
-    pagePartieEnCours = creerPage("Partie en cours", boutonRetourNouvellePartie, false);
-    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pagePartieEnCours->layout());
-
-    QLabel* labelPartieEnCours = new QLabel("Implémenter affichage plateau et pioches ici...", this);
-    labelPartieEnCours->setAlignment(Qt::AlignCenter);
-    layout->addWidget(labelPartieEnCours);
-
-    layout->addStretch(1);
-    stackedWidget->addWidget(pagePartieEnCours);
 }
 
 void FenetrePrincipale::initPageMenu() {
@@ -245,9 +233,6 @@ void FenetrePrincipale::commencerPartieContreIA() {
     // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
 
     controleur->commencerPartie();
-
-    std::cout << "apres commencerPartie" << std::endl;
-    stackedWidget->setCurrentIndex(INDEX_PARTIE_EN_COURS); // Rediriger vers la page "Partie en cours"
 }
 
 void FenetrePrincipale::commencerPartieDeuxJoueurs() {
@@ -277,7 +262,6 @@ void FenetrePrincipale::commencerPartieDeuxJoueurs() {
     // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
 
     controleur->commencerPartie();
-    stackedWidget->setCurrentIndex(INDEX_PARTIE_EN_COURS); // Rediriger vers la page "Partie en cours"
 }
 
 void FenetrePrincipale::chargerPartieSauvegarde() {
@@ -329,4 +313,28 @@ void FenetrePrincipale::retourMenu() {
 void FenetrePrincipale::retourNouvellePartie() {
     // Afficher la page nouvelle partie
     stackedWidget->setCurrentIndex(INDEX_NOUVELLE_PARTIE);
+}
+
+void FenetrePrincipale::afficherPlateauScene(VuePion* pion) {
+    QGraphicsScene* scene = new QGraphicsScene(this);
+    scene->addItem(pion);
+
+    // Définir le fond de la scène en blanc
+    scene->setBackgroundBrush(Qt::white);
+
+    // Placer le pion en haut à gauche
+    pion->setPos(100, 0);
+
+    QGraphicsView* vuePartie = new QGraphicsView(scene, this);
+    vuePartie->setFixedSize(LARGEUR_ECRAN, HAUTEUR_ECRAN);
+
+    // Définir les limites de la scène pour s'assurer qu'elle commence à (0, 0)
+    scene->setSceneRect(0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+
+    // Centrer la vue sur le coin supérieur gauche
+    vuePartie->centerOn(0, 0);
+
+    // Ajouter la vue directement à stackedWidget
+    stackedWidget->addWidget(vuePartie);
+    stackedWidget->setCurrentWidget(vuePartie);
 }
