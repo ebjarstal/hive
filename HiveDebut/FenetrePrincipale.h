@@ -39,8 +39,6 @@ private:
     void retourMenu();
     void retourNouvellePartie();
 
-    void ouvrirFileDialog();
-
     QWidget* creerPage(const QString& title, QPushButton*& boutonRetour, bool ajouterBoutonRetour = true);
     void ajouterLabelAvecLineEditTexte(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth = 400);
     void ajouterLabelAvecLineEditNombre(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth = 400);
@@ -59,7 +57,7 @@ private:
     QPushButton* boutonQuitter;
 
     QLabel* labelFichierCharge;
-    QPushButton* boutonLancerJeu;
+    QPushButton* boutonChargerPartieSauvegarde;
 
     QLineEdit* champNomJoueur1IA;
     QLineEdit* champNomSauvegardeIA;
@@ -82,13 +80,17 @@ private:
     QPushButton* boutonRetourChargerPartie;
 
     QPushButton* boutonOuvrirFichier;
-    QLabel* labelCheminFichier;
+    QLabel* labelNomSauvegarde;
 
     Controleur* controleur;
 
 private slots:
     void commencerPartieContreIA();
     void commencerPartieDeuxJoueurs();
+
+    void ouvrirFileDialog();
+    void chargerPartieSauvegarde();
+
     void onMiseAJourPlateau();
     void onPartieTerminee(const QString& message);
 };

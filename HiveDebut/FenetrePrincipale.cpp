@@ -190,31 +190,33 @@ void FenetrePrincipale::initPageChargerPartie() {
     QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pageChargerPartie->layout());
 
     ajouterBouton(layout, "Sélectionner une sauvegarde", boutonOuvrirFichier);
-    labelCheminFichier = new QLabel(this);
-    labelCheminFichier->setAlignment(Qt::AlignCenter);
-    layout->addWidget(labelCheminFichier, 0, Qt::AlignCenter);
+    labelNomSauvegarde = new QLabel(this);
+    labelNomSauvegarde->setAlignment(Qt::AlignCenter);
+    layout->addWidget(labelNomSauvegarde, 0, Qt::AlignCenter);
 
     labelFichierCharge = new QLabel(this);
     labelFichierCharge->setAlignment(Qt::AlignCenter);
     labelFichierCharge->setStyleSheet("color: green; font-weight: bold;");
     layout->addWidget(labelFichierCharge, 0, Qt::AlignCenter);
 
-    ajouterBouton(layout, "Lancer le jeu", boutonLancerJeu);
+    ajouterBouton(layout, "Lancer le jeu", boutonChargerPartieSauvegarde);
 
     layout->addStretch(1);
     stackedWidget->addWidget(pageChargerPartie);
 
     connect(boutonRetourChargerPartie, &QPushButton::clicked, this, &FenetrePrincipale::retourMenu);
     connect(boutonOuvrirFichier, &QPushButton::clicked, this, &FenetrePrincipale::ouvrirFileDialog);
+    connect(boutonChargerPartieSauvegarde, &QPushButton::clicked, this, &FenetrePrincipale::chargerPartieSauvegarde);
 }
 
 void FenetrePrincipale::ouvrirFileDialog() {
     QString fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier de sauvegarde", "", "Fichiers texte (*.txt)");
     if (!fichier.isEmpty()) {
-        labelCheminFichier->setText(fichier);
+        QFileInfo fileInfo(fichier);
+        QString nomFichier = fileInfo.completeBaseName(); // Obtenir le nom du fichier sans l'extension
+        labelNomSauvegarde->setText(nomFichier);
         labelFichierCharge->setText("Fichier de sauvegarde chargé");
-        boutonLancerJeu->setVisible(true);
-        // Vous pouvez ajouter ici le code pour charger la partie à partir du fichier sélectionné
+        boutonChargerPartieSauvegarde->setVisible(true);
     }
 }
 
@@ -276,6 +278,27 @@ void FenetrePrincipale::commencerPartieDeuxJoueurs() {
 
     controleur->commencerPartie();
     stackedWidget->setCurrentIndex(INDEX_PARTIE_EN_COURS); // Rediriger vers la page "Partie en cours"
+}
+
+void FenetrePrincipale::chargerPartieSauvegarde() {
+    QString nomFichierSauvegarde = labelNomSauvegarde->text();
+    if (nomFichierSauvegarde.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Aucun fichier de sauvegarde sélectionné.");
+        return;
+    }
+
+    std::string nomFichierSauvegardeStd = nomFichierSauvegarde.toStdString();
+    Partie* partie = controleur->partie;
+    partie->setNomPartie(nomFichierSauvegardeStd);
+
+    if (GestionnaireSauvegarde::chargerPartie(*partie)) {
+        std::cout << "Partie chargée avec succès depuis " << nomFichierSauvegardeStd << std::endl;
+        controleur->commencerPartie();
+        stackedWidget->setCurrentIndex(INDEX_PARTIE_EN_COURS); // Rediriger vers la page "Partie en cours"
+    }
+    else {
+        QMessageBox::warning(this, "Erreur", "Erreur lors du chargement de la partie.");
+    }
 }
 
 void FenetrePrincipale::afficherNouvellePartie() {
