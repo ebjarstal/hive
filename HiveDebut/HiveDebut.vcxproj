@@ -164,9 +164,11 @@
     <ClCompile Include="pions.cpp" />
     <ClCompile Include="plateau.cpp" />
     <ClCompile Include="usine.cpp" />
+    <ClCompile Include="VuePartie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.h" />
+    <ClInclude Include="VuePartie.h" />
     <QtMoc Include="FenetrePrincipale.h" />
     <ClInclude Include="Constantes.h" />
     <QtMoc Include="Controleur.h" />
