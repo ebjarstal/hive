@@ -19,4 +19,3 @@ public slots:
     void jouerTour();
     void annulerMouvement();
 };
-

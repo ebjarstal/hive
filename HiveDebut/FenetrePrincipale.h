@@ -10,6 +10,7 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QMessageBox>
+#include <QIntValidator>
 #include "Constantes.h"
 #include "Controleur.h"
 
@@ -27,6 +28,9 @@ private:
     void initPageJouerDeuxJoueurs();
     void initPageChargerPartie();
 
+    void initPagePartieEnCours();
+    QWidget* pagePartieEnCours;
+
     void afficherNouvellePartie();
     void afficherJouerContreIA();
     void afficherJouerDeuxJoueurs();
@@ -38,7 +42,8 @@ private:
     void ouvrirFileDialog();
 
     QWidget* creerPage(const QString& title, QPushButton*& boutonRetour, bool ajouterBoutonRetour = true);
-    void ajouterLabelAvecLineEdit(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth = 400);
+    void ajouterLabelAvecLineEditTexte(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth = 400);
+    void ajouterLabelAvecLineEditNombre(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth = 400);
     void ajouterCheckbox(QVBoxLayout* layout, const QString& labelText, QCheckBox*& checkBox, int maxWidth = 400);
     void ajouterBouton(QVBoxLayout* layout, const QString& buttonText, QPushButton*& button, int minWidth = 200, int minHeight = 50, int maxWidth = 400);
 
@@ -56,10 +61,15 @@ private:
     QLabel* labelFichierCharge;
     QPushButton* boutonLancerJeu;
 
-    QLineEdit* champNomJoueur1;
-    QLineEdit* champNomJoueur2;
-    QLineEdit* champNomSauvegarde;
-    QLineEdit* champNombreRetours;
+    QLineEdit* champNomJoueur1IA;
+    QLineEdit* champNomSauvegardeIA;
+    QLineEdit* champNombreRetoursIA;
+
+    QLineEdit* champNomJoueur1DeuxJoueurs;
+    QLineEdit* champNomJoueur2DeuxJoueurs;
+    QLineEdit* champNomSauvegardeDeuxJoueurs;
+    QLineEdit* champNombreRetoursDeuxJoueurs;
+
     QCheckBox* checkboxExtensionMoustique;
     QCheckBox* checkboxExtensionCoccinelle;
     QCheckBox* checkboxExtensionAraignee;

@@ -1,12 +1,16 @@
 #include "Controleur.h"
+#include "gestionnaireSauvegarde.h"
 
 Controleur::Controleur(Partie* partie, QObject* parent)
     : QObject(parent), partie(partie) {
 }
 
 void Controleur::commencerPartie() {
-    // partie->setup();
     emit miseAJourPlateau();
+
+    GestionnaireSauvegarde::sauvegarde(*partie);
+    partie->getPlateau().afficher();
+    // jouerTour() fait crash l'app qt
 }
 
 void Controleur::jouerTour() {
@@ -14,6 +18,7 @@ void Controleur::jouerTour() {
     partie->jouerUnTour(joueurCourant);
     emit miseAJourPlateau();
 
+    // Déterminer le gagnant après chaque tour
     if (partie->partieTerminee()) {
         Joueur* gagnant = partie->determinerGagnant();
         QString message = gagnant ? QString("%1 gagne !!").arg(QString::fromStdString(gagnant->getNom())) : "Egalite !!";

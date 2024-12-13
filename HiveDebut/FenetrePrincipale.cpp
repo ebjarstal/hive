@@ -15,6 +15,7 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     initPageJouerContreIA();
     initPageJouerDeuxJoueurs();
     initPageChargerPartie();
+    initPagePartieEnCours();
 
     QVBoxLayout* mainLayout = new QVBoxLayout(widgetCentral);
     mainLayout->addWidget(stackedWidget);
@@ -22,8 +23,8 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     connect(boutonQuitter, &QPushButton::clicked, this, &FenetrePrincipale::close);
 
     // Initialiser le contrôleur de jeu
-    Plateau plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, 5);
-    Partie* partie = new Partie(plateau);
+    Plateau* plateau = new Plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, 5);
+    Partie* partie = new Partie(*plateau);
     controleur = new Controleur(partie, this);
 
     // Connecter les signaux et les slots
@@ -71,9 +72,21 @@ QWidget* FenetrePrincipale::creerPage(const QString& title, QPushButton*& bouton
     return page;
 }
 
-void FenetrePrincipale::ajouterLabelAvecLineEdit(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth) {
+void FenetrePrincipale::ajouterLabelAvecLineEditTexte(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth) {
     QLabel* label = new QLabel(labelText, this);
     lineEdit = new QLineEdit(this);
+    lineEdit->setText(QString("Texte"));
+    label->setMaximumWidth(maxWidth);
+    lineEdit->setMaximumWidth(maxWidth);
+    layout->addWidget(label, 0, Qt::AlignCenter);
+    layout->addWidget(lineEdit, 0, Qt::AlignCenter);
+}
+
+void FenetrePrincipale::ajouterLabelAvecLineEditNombre(QVBoxLayout* layout, const QString& labelText, QLineEdit*& lineEdit, int maxWidth) {
+    QLabel* label = new QLabel(labelText, this);
+    lineEdit = new QLineEdit(this);
+    lineEdit->setText(QString("0"));
+    lineEdit->setValidator(new QIntValidator(0, 100, this)); // Limite de 0 à 100 par exemple
     label->setMaximumWidth(maxWidth);
     lineEdit->setMaximumWidth(maxWidth);
     layout->addWidget(label, 0, Qt::AlignCenter);
@@ -91,6 +104,18 @@ void FenetrePrincipale::ajouterBouton(QVBoxLayout* layout, const QString& button
     button->setMinimumSize(minWidth, minHeight);
     button->setMaximumWidth(maxWidth);
     layout->addWidget(button, 0, Qt::AlignCenter);
+}
+
+void FenetrePrincipale::initPagePartieEnCours() {
+    pagePartieEnCours = creerPage("Partie en cours", boutonRetourNouvellePartie, false);
+    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pagePartieEnCours->layout());
+
+    QLabel* labelPartieEnCours = new QLabel("Implémenter affichage plateau et pioches ici...", this);
+    labelPartieEnCours->setAlignment(Qt::AlignCenter);
+    layout->addWidget(labelPartieEnCours);
+
+    layout->addStretch(1);
+    stackedWidget->addWidget(pagePartieEnCours);
 }
 
 void FenetrePrincipale::initPageMenu() {
@@ -127,9 +152,9 @@ void FenetrePrincipale::initPageJouerContreIA() {
     QWidget* pageJouerContreIA = creerPage("Jouer contre une IA", boutonRetourJouerContreIA);
     QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pageJouerContreIA->layout());
 
-    ajouterLabelAvecLineEdit(layout, "Nom du joueur:", champNomJoueur1);
-    ajouterLabelAvecLineEdit(layout, "Nom de la sauvegarde:", champNomSauvegarde);
-    ajouterLabelAvecLineEdit(layout, "Nombre de retours en arrière possibles:", champNombreRetours);
+    ajouterLabelAvecLineEditTexte(layout, "Nom du joueur:", champNomJoueur1IA);
+    ajouterLabelAvecLineEditTexte(layout, "Nom de la sauvegarde:", champNomSauvegardeIA);
+    ajouterLabelAvecLineEditNombre(layout, "Nombre de retours en arrière possibles:", champNombreRetoursIA);
     ajouterCheckbox(layout, "Extension Moustique", checkboxExtensionMoustique);
     ajouterCheckbox(layout, "Extension Coccinelle", checkboxExtensionCoccinelle);
     ajouterCheckbox(layout, "Extension Araignée", checkboxExtensionAraignee);
@@ -145,10 +170,10 @@ void FenetrePrincipale::initPageJouerDeuxJoueurs() {
     QWidget* pageJouerDeuxJoueurs = creerPage("Jouer à deux en local", boutonRetourJouerDeuxJoueurs);
     QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(pageJouerDeuxJoueurs->layout());
 
-    ajouterLabelAvecLineEdit(layout, "Nom du joueur 1:", champNomJoueur1);
-    ajouterLabelAvecLineEdit(layout, "Nom du joueur 2:", champNomJoueur2);
-    ajouterLabelAvecLineEdit(layout, "Nom de la sauvegarde:", champNomSauvegarde);
-    ajouterLabelAvecLineEdit(layout, "Nombre de retours en arrière possibles:", champNombreRetours);
+    ajouterLabelAvecLineEditTexte(layout, "Nom du joueur 1:", champNomJoueur1DeuxJoueurs);
+    ajouterLabelAvecLineEditTexte(layout, "Nom du joueur 2:", champNomJoueur2DeuxJoueurs);
+    ajouterLabelAvecLineEditTexte(layout, "Nom de la sauvegarde:", champNomSauvegardeDeuxJoueurs);
+    ajouterLabelAvecLineEditNombre(layout, "Nombre de retours en arrière possibles:", champNombreRetoursDeuxJoueurs);
     ajouterCheckbox(layout, "Extension Moustique", checkboxExtensionMoustique);
     ajouterCheckbox(layout, "Extension Coccinelle", checkboxExtensionCoccinelle);
     ajouterCheckbox(layout, "Extension Araignée", checkboxExtensionAraignee);
@@ -194,46 +219,63 @@ void FenetrePrincipale::ouvrirFileDialog() {
 }
 
 void FenetrePrincipale::commencerPartieContreIA() {
-    std::string nomJoueur = champNomJoueur1->text().toStdString();
-    std::string nomSauvegarde = champNomSauvegarde->text().toStdString();
-    unsigned int nbUndo = champNombreRetours->text().toUInt();
-    //bool extensionMoustique = checkboxExtensionMoustique->isChecked();
-    //bool extensionCoccinelle = checkboxExtensionCoccinelle->isChecked();
-    //bool extensionAraignee = checkboxExtensionAraignee->isChecked();
+    QString nomJoueur = champNomJoueur1IA->text();
+    QString nomSauvegarde = champNomSauvegardeIA->text();
+    bool ok;
+    int nbUndo = champNombreRetoursIA->text().toInt(&ok);
 
-    Joueur* joueur1 = new JoueurHumain(nomJoueur, controleur->partie->initialiserPions(RED), RED, *(controleur->partie));
+    if (!ok) {
+        QMessageBox::warning(this, "Erreur", "Le nombre de retours en arrière doit être un entier.");
+        return;
+    }
+
+    std::cout << "nomJoueur: " << nomJoueur.toStdString() << std::endl;
+    std::cout << "nomSauvegarde: " << nomSauvegarde.toStdString() << std::endl;
+    std::cout << "nbUndo: " << nbUndo << std::endl;
+
+    Joueur* joueur1 = new JoueurHumain(nomJoueur.toStdString(), controleur->partie->initialiserPions(RED), RED, *(controleur->partie));
     Joueur* joueur2 = new JoueurIA("IA", controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie));
 
-    controleur->partie->setNomPartie(nomSauvegarde);
+    controleur->partie->setNomPartie(nomSauvegarde.toStdString());
     controleur->partie->setNbUndo(nbUndo);
     controleur->partie->setJoueur1(joueur1);
     controleur->partie->setJoueur2(joueur2);
     // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
 
     controleur->commencerPartie();
-    stackedWidget->setCurrentIndex(INDEX_JOUER_CONTRE_IA);
+
+    std::cout << "apres commencerPartie" << std::endl;
+    stackedWidget->setCurrentIndex(INDEX_PARTIE_EN_COURS); // Rediriger vers la page "Partie en cours"
 }
 
 void FenetrePrincipale::commencerPartieDeuxJoueurs() {
-    std::string nomJoueur1 = champNomJoueur1->text().toStdString();
-    std::string nomJoueur2 = champNomJoueur2->text().toStdString();
-    std::string nomSauvegarde = champNomSauvegarde->text().toStdString();
-    unsigned int nbUndo = champNombreRetours->text().toUInt();
-    //bool extensionMoustique = checkboxExtensionMoustique->isChecked();
-    //bool extensionCoccinelle = checkboxExtensionCoccinelle->isChecked();
-    //bool extensionAraignee = checkboxExtensionAraignee->isChecked();
+    QString nomJoueur1 = champNomJoueur1DeuxJoueurs->text();
+    QString nomJoueur2 = champNomJoueur2DeuxJoueurs->text();
+    QString nomSauvegarde = champNomSauvegardeDeuxJoueurs->text();
+    bool ok;
+    int nbUndo = champNombreRetoursDeuxJoueurs->text().toInt(&ok);
 
-    Joueur* joueur1 = new JoueurHumain(nomJoueur1, controleur->partie->initialiserPions(RED), RED, *(controleur->partie));
-    Joueur* joueur2 = new JoueurHumain(nomJoueur2, controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie));
+    if (!ok) {
+        QMessageBox::warning(this, "Erreur", "Le nombre de retours en arrière doit être un entier.");
+        return;
+    }
 
-    controleur->partie->setNomPartie(nomSauvegarde);
+    std::cout << "nomJoueur1: " << nomJoueur1.toStdString() << std::endl;
+    std::cout << "nomJoueur2: " << nomJoueur2.toStdString() << std::endl;
+    std::cout << "nomSauvegarde: " << nomSauvegarde.toStdString() << std::endl;
+    std::cout << "nbUndo: " << nbUndo << std::endl;
+
+    Joueur* joueur1 = new JoueurHumain(nomJoueur1.toStdString(), controleur->partie->initialiserPions(RED), RED, *(controleur->partie));
+    Joueur* joueur2 = new JoueurHumain(nomJoueur2.toStdString(), controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie));
+
+    controleur->partie->setNomPartie(nomSauvegarde.toStdString());
     controleur->partie->setNbUndo(nbUndo);
     controleur->partie->setJoueur1(joueur1);
-    controleur->partie->setJoueur1(joueur2);
+    controleur->partie->setJoueur2(joueur2);
     // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
 
     controleur->commencerPartie();
-    stackedWidget->setCurrentIndex(INDEX_JOUER_DEUX_JOUEURS);
+    stackedWidget->setCurrentIndex(INDEX_PARTIE_EN_COURS); // Rediriger vers la page "Partie en cours"
 }
 
 void FenetrePrincipale::afficherNouvellePartie() {
