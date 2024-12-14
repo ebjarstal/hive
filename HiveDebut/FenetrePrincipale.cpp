@@ -315,15 +315,15 @@ void FenetrePrincipale::retourNouvellePartie() {
     stackedWidget->setCurrentIndex(INDEX_NOUVELLE_PARTIE);
 }
 
-void FenetrePrincipale::afficherPlateauScene(VuePion* pion) {
+void FenetrePrincipale::afficherPlateauScene() {
     QGraphicsScene* scene = new QGraphicsScene(this);
-    scene->addItem(pion);
+
+    // Créer une instance de VuePlateau en utilisant le plateau de la partie
+    VuePlateau* vuePlateau = new VuePlateau(scene, &(controleur->partie->getPlateau()));
+    vuePlateau->initialiserPlateau(0, 0);
 
     // Définir le fond de la scène en blanc
     scene->setBackgroundBrush(Qt::white);
-
-    // Placer le pion en haut à gauche
-    pion->setPos(100, 0);
 
     QGraphicsView* vuePartie = new QGraphicsView(scene, this);
     vuePartie->setFixedSize(LARGEUR_ECRAN, HAUTEUR_ECRAN);

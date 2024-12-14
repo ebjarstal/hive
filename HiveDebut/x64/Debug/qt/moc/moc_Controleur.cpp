@@ -38,8 +38,6 @@ constexpr auto qt_meta_stringdata_CLASSControleurENDCLASS = QtMocHelpers::string
     "Controleur",
     "afficherPlateauScene",
     "",
-    "VuePion*",
-    "pion",
     "miseAJourPlateau",
     "partieTerminee",
     "message",
@@ -66,19 +64,19 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSControleurENDCLASS[] = {
        3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,   50,    2, 0x06,    1 /* Public */,
-       5,    0,   53,    2, 0x06,    3 /* Public */,
-       6,    1,   54,    2, 0x06,    4 /* Public */,
+       1,    0,   50,    2, 0x06,    1 /* Public */,
+       3,    0,   51,    2, 0x06,    2 /* Public */,
+       4,    1,   52,    2, 0x06,    3 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       8,    0,   57,    2, 0x0a,    6 /* Public */,
-       9,    0,   58,    2, 0x0a,    7 /* Public */,
-      10,    0,   59,    2, 0x0a,    8 /* Public */,
+       6,    0,   55,    2, 0x0a,    5 /* Public */,
+       7,    0,   56,    2, 0x0a,    6 /* Public */,
+       8,    0,   57,    2, 0x0a,    7 /* Public */,
 
  // signals: parameters
-    QMetaType::Void, 0x80000000 | 3,    4,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,    7,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,    5,
 
  // slots: parameters
     QMetaType::Void,
@@ -99,7 +97,6 @@ Q_CONSTINIT const QMetaObject Controleur::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<Controleur, std::true_type>,
         // method 'afficherPlateauScene'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<VuePion *, std::false_type>,
         // method 'miseAJourPlateau'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'partieTerminee'
@@ -121,7 +118,7 @@ void Controleur::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         auto *_t = static_cast<Controleur *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->afficherPlateauScene((*reinterpret_cast< std::add_pointer_t<VuePion*>>(_a[1]))); break;
+        case 0: _t->afficherPlateauScene(); break;
         case 1: _t->miseAJourPlateau(); break;
         case 2: _t->partieTerminee((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 3: _t->commencerPartie(); break;
@@ -132,7 +129,7 @@ void Controleur::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (Controleur::*)(VuePion * );
+            using _t = void (Controleur::*)();
             if (_t _q_method = &Controleur::afficherPlateauScene; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
                 *result = 0;
                 return;
@@ -186,10 +183,9 @@ int Controleur::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void Controleur::afficherPlateauScene(VuePion * _t1)
+void Controleur::afficherPlateauScene()
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
-    QMetaObject::activate(this, &staticMetaObject, 0, _a);
+    QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
 }
 
 // SIGNAL 1

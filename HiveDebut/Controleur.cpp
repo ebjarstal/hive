@@ -13,11 +13,7 @@ void Controleur::commencerPartie() {
     partie->getPlateau().afficher();
     // afficher le plateau en qt
 
-    // Créer et ajouter un pion à la scène
-    VuePion* pion = new VuePion();
-    pion->setCouleur(Qt::darkRed);
-    pion->setType("R");
-    emit afficherPlateauScene(pion);
+    emit afficherPlateauScene();
 
     // jouerTour() fait crash l'app qt
 }

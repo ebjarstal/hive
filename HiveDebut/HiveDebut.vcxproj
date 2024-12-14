@@ -165,10 +165,12 @@
     <ClCompile Include="plateau.cpp" />
     <ClCompile Include="usine.cpp" />
     <ClCompile Include="VuePion.cpp" />
+    <ClCompile Include="VuePlateau.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.h" />
     <ClInclude Include="VuePion.h" />
+    <ClInclude Include="VuePlateau.h" />
     <QtMoc Include="FenetrePrincipale.h" />
     <ClInclude Include="Constantes.h" />
     <QtMoc Include="Controleur.h" />

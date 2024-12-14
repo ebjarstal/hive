@@ -92,7 +92,7 @@ private slots:
     void ouvrirFileDialog();
     void chargerPartieSauvegarde();
 
-    void afficherPlateauScene(VuePion* pion);
+    void afficherPlateauScene();
 
     void onMiseAJourPlateau();
     void onPartieTerminee(const QString& message);

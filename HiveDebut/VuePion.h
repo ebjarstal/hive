@@ -3,6 +3,11 @@
 
 #include <QGraphicsPolygonItem>
 #include <QGraphicsSceneMouseEvent>
+#include <string>
+
+#define RED "\033[31m"
+#define WHITE "\033[37m"
+#define RESET "\033[37m"
 
 class VuePion : public QGraphicsPolygonItem {
 public:
@@ -15,6 +20,7 @@ public:
     QString getType();
 
     // setters
+    void setCouleur(std::string nouvelleCouleur);
     void setCouleur(QColor nouvelleCouleur);
     void setEstPose(bool nouvelEtat);
     void setType(QString type);

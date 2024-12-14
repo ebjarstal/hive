@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VuePion.h"
+#include "VuePlateau.h"
 #include <QObject>
 #include <QList>
 #include "partie.h"
@@ -21,8 +22,7 @@ private:
     QList<VuePion*> piocheJoueur2;
 
 signals:
-    void afficherPlateauScene(VuePion* pion);
-
+    void afficherPlateauScene();
     void miseAJourPlateau();
     void partieTerminee(const QString& message);
 

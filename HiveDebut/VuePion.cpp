@@ -27,11 +27,33 @@ VuePion::VuePion(QGraphicsItem* parent) : QGraphicsPolygonItem(parent), estPose(
     setType(QString(""));
 
     // couleur par défaut
-    setCouleur(Qt::white);
+    setCouleur(std::string(WHITE));
 }
 
 QColor VuePion::getCouleur() {
     return couleur;
+}
+
+void VuePion::setCouleur(string nouvelleCouleur) {
+    if (nouvelleCouleur == RED) {
+        couleur = Qt::darkRed;
+    }
+    else if (nouvelleCouleur == WHITE) {
+        couleur = Qt::darkBlue;
+    }
+    else {
+        couleur = Qt::white;
+    }
+
+    // donne le look métallique
+    QLinearGradient gradient(0, 0, 1, 1);
+    gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
+    gradient.setColorAt(0, couleur.lighter(150));
+    gradient.setColorAt(0.5, couleur);
+    gradient.setColorAt(1, couleur.darker(150));
+
+    QBrush brush(gradient);
+    setBrush(brush);
 }
 
 void VuePion::setCouleur(QColor nouvelleCouleur) {
