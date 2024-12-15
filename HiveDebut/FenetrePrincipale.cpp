@@ -340,8 +340,34 @@ void FenetrePrincipale::afficherPlateauDebut() {
 }
 
 void FenetrePrincipale::afficherPiochesDebut() {
-    dessinerPanneauJoueur(0, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);
-    dessinerPanneauJoueur(LARGEUR_ECRAN - 170, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);
+    dessinerPanneauJoueur(0, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);  // panneau du joueur 1 (a gauche)
+    dessinerPanneauJoueur(LARGEUR_ECRAN - 170, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);  // panneau du joueur 2 (a droite)
+
+    QGraphicsTextItem* textePiocheJoueur1 = new QGraphicsTextItem("Pioche " + QString::fromStdString(controleur->partie->getJoueur1()->getNom()));
+    // Définir la position du texte
+    textePiocheJoueur1->setPos(10, 10);
+    // Définir les propriétés du texte (facultatif)
+    QFont font("Arial", 13, QFont::Bold);
+    textePiocheJoueur1->setFont(font);
+    textePiocheJoueur1->setDefaultTextColor(Qt::black);
+    scene->addItem(textePiocheJoueur1);
+
+    QGraphicsTextItem* textePiocheJoueur2 = new QGraphicsTextItem("Pioche " + QString::fromStdString(controleur->partie->getJoueur2()->getNom()));
+    // Définir la position du texte
+    textePiocheJoueur2->setPos(864, 10);
+    // Définir les propriétés du texte (facultatif)
+    textePiocheJoueur2->setFont(font);
+    textePiocheJoueur2->setDefaultTextColor(Qt::black);
+    scene->addItem(textePiocheJoueur2);
+
+    texteTour = new QGraphicsTextItem("Au tour de: " + controleur->getAQuiDeJouer());
+    texteTour->setPos(LARGEUR_ECRAN / 2 - 100, 10);
+    texteTour->setFont(font);
+    texteTour->setDefaultTextColor(Qt::black);
+    scene->addItem(texteTour);
+
+    // on dessine les pions de départ des joueurs
+    dessinerPionsPiochesJoueurs();
 }
 
 void FenetrePrincipale::dessinerPanneauJoueur(int x, int y, int largeur, int hauteur, QColor couleur, double opacite) {
@@ -354,8 +380,38 @@ void FenetrePrincipale::dessinerPanneauJoueur(int x, int y, int largeur, int hau
     gradient.setColorAt(0.5, couleur);
     gradient.setColorAt(1, couleur.darker(150));
 
+    controleur->partie->getJoueur1()->getPionsEnMain(); // renvoie un vector de pions
+
     QBrush pinceau(gradient);
     panneau->setBrush(pinceau);
     panneau->setOpacity(opacite);
     scene->addItem(panneau);
+}
+
+void FenetrePrincipale::dessinerPionsPiochesJoueurs() {
+
+    // on retire les pions deja dessines pour eviter les duplicats
+    for (size_t i = 0; i < controleur->getPiocheJoueur1().size(); i++) {
+        if (controleur->getPiocheJoueur1()[i]) {
+            scene->removeItem(controleur->getPiocheJoueur1()[i]);
+        }
+    }
+    for (size_t j = 0; j < controleur->getPiocheJoueur2().size(); j++) {
+        if (controleur->getPiocheJoueur2()[j]) {
+            scene->removeItem(controleur->getPiocheJoueur2()[j]);
+        }
+    }
+
+    // dessine les pions du joueur 1
+    for (size_t i = 0; i < controleur->getPiocheJoueur1().size(); i++) {  // PQ FAUT DIVISER PAR 2 ???????????????  EDIT: CAR JE SUIS CONNNN
+        VuePion* pion = controleur->getPiocheJoueur1()[i];
+        pion->setPos(60, 40 + (HAUTEUR_PIONS + ESPACEMENT_VERTICAL_PIONS_PIOCHE) * i);
+        scene->addItem(pion);
+    }
+
+    for (size_t j = 0; j < controleur->getPiocheJoueur2().size(); j++) {  // PQ FAUT DIVISER PAR 2 ???????????????  EDIT: CAR JE SUIS UN FDP
+        VuePion* pion = controleur->getPiocheJoueur2()[j];
+        pion->setPos(904, 40 + (HAUTEUR_PIONS + ESPACEMENT_VERTICAL_PIONS_PIOCHE) * j);
+        scene->addItem(pion);
+    }
 }

@@ -23,15 +23,23 @@ VuePion::VuePion(QGraphicsItem* parent) : QGraphicsPolygonItem(parent), estPose(
     setPolygon(hexagone);
 
     // initialise
-    setEstPose(false);
-    setType(QString(""));
-
-    // couleur par défaut
-    setCouleur(std::string(WHITE));
+    setAttributs(std::string(WHITE), false, QString(""));
 }
 
 QColor VuePion::getCouleur() {
     return couleur;
+}
+
+void VuePion::setAttributs(std::string nouvelleCouleur, bool estPose, QString type) {
+    setCouleur(nouvelleCouleur);
+    setEstPose(estPose);
+    setType(type);
+}
+
+void VuePion::setAttributs(QColor nouvelleCouleur, bool estPose, QString type) {
+    setCouleur(nouvelleCouleur);
+    setEstPose(estPose);
+    setType(type);
 }
 
 void VuePion::setCouleur(string nouvelleCouleur) {

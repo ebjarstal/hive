@@ -189,9 +189,7 @@ int Controleur::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         if (_id < 7)
-        {
-        }
-        *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
+            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
         _id -= 7;
     }
     return _id;

@@ -20,6 +20,8 @@ public:
     QString getType();
 
     // setters
+    void setAttributs(std::string nouvelleCouleur, bool estPose, QString type);
+    void setAttributs(QColor nouvelleCouleur, bool estPose, QString type);
     void setCouleur(std::string nouvelleCouleur);
     void setCouleur(QColor nouvelleCouleur);
     void setEstPose(bool nouvelEtat);

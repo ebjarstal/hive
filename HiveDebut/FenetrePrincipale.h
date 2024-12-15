@@ -87,6 +87,8 @@ private:
     VuePlateau* vuePlateau;
     QGraphicsView* vuePartie;
 
+    QGraphicsTextItem* texteTour;
+
     Controleur* controleur;
 
 private slots:
@@ -100,6 +102,7 @@ private slots:
     void afficherPiochesDebut();
 
     void dessinerPanneauJoueur(int x, int y, int largeur, int hauteur, QColor couleur, double opacite);
+    void dessinerPionsPiochesJoueurs();
 
     void onMiseAJourPlateau();
     void onPartieTerminee(const QString& message);
