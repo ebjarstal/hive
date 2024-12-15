@@ -104,23 +104,21 @@ std::vector<Mouvement*> Reine::deplacementsPossibles(Pion& p, Joueur& j, Plateau
     std::vector<Mouvement*> mouvementsPossibles;
     std::set<std::tuple<int, int, int>> emplacementsVisites;
 
-    // Si le plateau est vide, aucun mouvement n'est possible
+    // Si le plateau est vide, aucun mouvement possible
     if (plateau.isVide() || j.getCouleur() != p.getCouleur()) {
         return mouvementsPossibles;
     }
+    
+    // Récupérer les coordonnées des cases vides autour du pion Reine
+    std::vector<std::tuple<int, int, int>> casesVidesCoords = GestionnaireVoisins::getCasesVidesAutour(p, plateau);
 
-    // Récupérer les cases vides autour du pion communes à ses voisins directs
-    std::vector<std::tuple<int, int, int>> casesVidesCoords = GestionnaireVoisins::getCasesVidesCommunes(p, plateau);
-
-    for (const auto& caseVide : casesVidesCoords) {
+    // Vérifier si le déplacement est valide (ne casse pas la ruche)
+    for (std::tuple<int, int, int> caseVide : casesVidesCoords) {
         int new_ligne = std::get<0>(caseVide);
         int new_colonne = std::get<1>(caseVide);
         int new_z = std::get<2>(caseVide);
-        // Traiter chaque case vide commune
 
-    // Vérifier que le passage est ouvert ET que le déplacement est valide (sans survoler un trou)
         if (!GestionnaireMouvements::deplacementCasseRuche(&p, new_ligne, new_colonne, new_z, plateau)) {
-
             // Éviter les doublons
             if (emplacementsVisites.find({ new_ligne, new_colonne, new_z }) == emplacementsVisites.end()) {
                 emplacementsVisites.insert({ new_ligne, new_colonne, new_z });
@@ -300,18 +298,17 @@ std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plat
         return mouvementsPossibles;
     }
 
-    // Récupérer les cases vides autour du pion communes à ses voisins directs
-    std::vector<std::tuple<int, int, int>> casesVidesCoords = GestionnaireVoisins::getCasesVidesCommunes(p, plateau);
+    // Déplacements comme une Reine 
+    // Récupérer les cases vides autour
+    std::vector<std::tuple<int, int, int>> casesVidesCoords = GestionnaireVoisins::getCasesVidesAutour(p, plateau);
 
-    for (const auto& caseVide : casesVidesCoords) {
+    // Vérifier si le déplacement est valide (ne casse pas la ruche)
+    for (std::tuple<int, int, int> caseVide : casesVidesCoords) {
         int new_ligne = std::get<0>(caseVide);
         int new_colonne = std::get<1>(caseVide);
-        int new_z = std::get<2>(caseVide);
-        // Traiter chaque case vide commune
+        int new_z = 0;
 
-    // Vérifier que le passage est ouvert ET que le déplacement est valide (sans survoler un trou)
         if (z > 0 || !GestionnaireMouvements::deplacementCasseRuche(&p, new_ligne, new_colonne, new_z, plateau)) {
-
             // Éviter les doublons
             if (emplacementsVisites.find({ new_ligne, new_colonne, new_z }) == emplacementsVisites.end()) {
                 emplacementsVisites.insert({ new_ligne, new_colonne, new_z });
@@ -319,21 +316,21 @@ std::vector<Mouvement*> Scarabee::deplacementsPossibles(Pion& p, Joueur& j, Plat
             }
         }
     }
+ 
+    // Récupérer les voisins directs du Scarabée
     std::vector<Pion*> voisins = GestionnaireVoisins::getVoisins(p, plateau);
 
+    // Modification du Z pour monter dessus
     for (Pion* voisin : voisins) {
         if (voisin) {
-            int voisinLigne = voisin->getLigne();
-            int voisinColonne = voisin->getColonne();
-            int voisinZ = voisin->getZ() + 1;
-
-            mouvementsPossibles.push_back(new Mouvement(p.getId(), voisinLigne, voisinColonne, voisinZ, p.getLigne(), p.getColonne(), p.getZ()));
+            while (plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1] != nullptr) {
+                voisin = plateau.getGrille()[voisin->getLigne()][voisin->getColonne()][voisin->getZ() + 1];
+            }
+            mouvementsPossibles.push_back(new Mouvement(p.getId(), voisin->getLigne(), voisin->getColonne(), voisin->getZ() + 1, p.getLigne(), p.getColonne(), p.getZ()));
         }
     }
-
     return mouvementsPossibles;
 }
-
 
 std::vector<Mouvement*> Coccinelle::deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) {
     std::vector<Mouvement*> mouvementsPossibles;

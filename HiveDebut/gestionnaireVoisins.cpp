@@ -233,32 +233,3 @@ std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(
 }
 
 
-std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesCommunes(Pion& p, Plateau& plateau) {
-    std::vector<std::tuple<int, int, int>> casesCommunes;
-
-    // Récupérer les voisins directs du Scarabée
-    std::vector<Pion*> voisins = GestionnaireVoisins::getVoisins(p, plateau);
-
-    // Récupérer les cases vides autour du pion
-    std::vector<std::tuple<int, int, int>> casesPion = GestionnaireVoisins::getCasesVidesAutour(p, plateau);
-
-    // Itérer sur les voisins pour récupérer leurs cases vides autour
-    std::vector<std::tuple<int, int, int>> casesVoisins;
-    for (Pion* voisin : voisins) {
-        if (voisin) {
-            // Récupérer les cases vides autour de chaque voisin
-            std::vector<std::tuple<int, int, int>> casesVoisine = GestionnaireVoisins::getCasesVidesAutour(*voisin, plateau);
-            casesVoisins.insert(casesVoisins.end(), casesVoisine.begin(), casesVoisine.end());
-        }
-    }
-
-    // Trouver les cases communes entre le pion et ses voisins
-    for (const auto& casePion : casesPion) {
-        // Vérifier si cette case est présente dans les cases des voisins
-        if (std::find(casesVoisins.begin(), casesVoisins.end(), casePion) != casesVoisins.end()) {
-            casesCommunes.push_back(casePion);
-        }
-    }
-
-    return casesCommunes;
-}
