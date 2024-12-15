@@ -22,7 +22,8 @@ private:
     QList<VuePion*> piocheJoueur2;
 
 signals:
-    void afficherPlateauScene();
+    void afficherPlateauDebut();
+    void afficherPiochesDebut();
     void miseAJourPlateau();
     void partieTerminee(const QString& message);
 

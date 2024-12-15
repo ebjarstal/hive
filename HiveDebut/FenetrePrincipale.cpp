@@ -29,7 +29,8 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     // Connecter les signaux et les slots
     connect(controleur, &Controleur::miseAJourPlateau, this, &FenetrePrincipale::onMiseAJourPlateau);
     connect(controleur, &Controleur::partieTerminee, this, &FenetrePrincipale::onPartieTerminee);
-    connect(controleur, &Controleur::afficherPlateauScene, this, &FenetrePrincipale::afficherPlateauScene);
+    connect(controleur, &Controleur::afficherPlateauDebut, this, &FenetrePrincipale::afficherPlateauDebut);
+    connect(controleur, &Controleur::afficherPiochesDebut, this, &FenetrePrincipale::afficherPiochesDebut);
     connect(boutonCommencerPartieContreIA, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieContreIA);
     connect(boutonCommencerPartieDeuxJoueurs, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieDeuxJoueurs);
 }
@@ -315,26 +316,46 @@ void FenetrePrincipale::retourNouvellePartie() {
     stackedWidget->setCurrentIndex(INDEX_NOUVELLE_PARTIE);
 }
 
-void FenetrePrincipale::afficherPlateauScene() {
-    QGraphicsScene* scene = new QGraphicsScene(this);
+void FenetrePrincipale::afficherPlateauDebut() {
+    scene = new QGraphicsScene(this);
 
     // Créer une instance de VuePlateau en utilisant le plateau de la partie
-    VuePlateau* vuePlateau = new VuePlateau(scene, &(controleur->partie->getPlateau()));
-    vuePlateau->initialiserPlateau(0, 0);
+    vuePlateau = new VuePlateau(scene, &(controleur->partie->getPlateau()));
+    vuePlateau->initialiserPlateau(190, 100);
 
     // Définir le fond de la scène en blanc
     scene->setBackgroundBrush(Qt::white);
 
-    QGraphicsView* vuePartie = new QGraphicsView(scene, this);
+    vuePartie = new QGraphicsView(scene, this);
     vuePartie->setFixedSize(LARGEUR_ECRAN, HAUTEUR_ECRAN);
 
     // Définir les limites de la scène pour s'assurer qu'elle commence à (0, 0)
     scene->setSceneRect(0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
 
-    // Centrer la vue sur le coin supérieur gauche
-    vuePartie->centerOn(0, 0);
+    // Ajoute la pioche du joueur 1
 
     // Ajouter la vue directement à stackedWidget
     stackedWidget->addWidget(vuePartie);
     stackedWidget->setCurrentWidget(vuePartie);
+}
+
+void FenetrePrincipale::afficherPiochesDebut() {
+    dessinerPanneauJoueur(0, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);
+    dessinerPanneauJoueur(LARGEUR_ECRAN - 170, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);
+}
+
+void FenetrePrincipale::dessinerPanneauJoueur(int x, int y, int largeur, int hauteur, QColor couleur, double opacite) {
+    // dessine un panneau aux coordonnées spécifiées avec les propriétés spécifiées
+    QGraphicsRectItem* panneau = new QGraphicsRectItem(x, y, largeur, hauteur);
+
+    // Crée un dégradé linéaire pour donner un effet métallique
+    QLinearGradient gradient(0, 0, largeur, hauteur);
+    gradient.setColorAt(0, couleur.lighter(150));
+    gradient.setColorAt(0.5, couleur);
+    gradient.setColorAt(1, couleur.darker(150));
+
+    QBrush pinceau(gradient);
+    panneau->setBrush(pinceau);
+    panneau->setOpacity(opacite);
+    scene->addItem(panneau);
 }

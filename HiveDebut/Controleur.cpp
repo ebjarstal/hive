@@ -7,13 +7,13 @@ Controleur::Controleur(Partie* partie, QObject* parent)
 }
 
 void Controleur::commencerPartie() {
-    emit miseAJourPlateau();
+    // emit miseAJourPlateau();
 
-    GestionnaireSauvegarde::sauvegarde(*partie);
-    partie->getPlateau().afficher();
-    // afficher le plateau en qt
+    GestionnaireSauvegarde::sauvegarde(*partie);  // sauvegarde la nouvelle partie
+    partie->getPlateau().afficher();  // affiche le plateau en console (a supprimer)
 
-    emit afficherPlateauScene();
+    emit afficherPlateauDebut();  // affiche le plateau en qt
+    emit afficherPiochesDebut();  // affiche les pioches en qt
 
     // jouerTour() fait crash l'app qt
 }

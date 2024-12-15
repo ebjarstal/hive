@@ -7,6 +7,7 @@
 #include "gestionnaireSauvegarde.h"
 #include "joueur.h"
 #include "mouvement.h"
+#include "Constantes.h"
 
 #include <QApplication>
 #include "FenetrePrincipale.h"
@@ -18,9 +19,8 @@ int main(int argc, char* argv[]) {
     cout << "Interface console (0) ou interface Qt (1) ?" << endl;
     cin >> choix;
     if (choix == 0) {
-        unsigned int length = 20;
 
-        Plateau plateau(length, length, 5);
+        Plateau plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, 5);
         Partie partie(plateau);
         partie.setup();
         while (partie.partieTerminee() != true) {

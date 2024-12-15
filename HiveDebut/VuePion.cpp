@@ -52,6 +52,10 @@ void VuePion::setCouleur(string nouvelleCouleur) {
     gradient.setColorAt(0.5, couleur);
     gradient.setColorAt(1, couleur.darker(150));
 
+    if (couleur == Qt::white) {
+        this->setOpacity(0.2);
+    }
+
     QBrush brush(gradient);
     setBrush(brush);
 }
@@ -65,6 +69,10 @@ void VuePion::setCouleur(QColor nouvelleCouleur) {
     gradient.setColorAt(0, couleur.lighter(150));
     gradient.setColorAt(0.5, couleur);
     gradient.setColorAt(1, couleur.darker(150));
+
+    if (couleur == Qt::white) {
+        this->setOpacity(0.2);
+    }
 
     QBrush brush(gradient);
     setBrush(brush);

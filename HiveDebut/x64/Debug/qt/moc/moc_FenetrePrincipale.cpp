@@ -41,7 +41,7 @@ constexpr auto qt_meta_stringdata_CLASSFenetrePrincipaleENDCLASS = QtMocHelpers:
     "commencerPartieDeuxJoueurs",
     "ouvrirFileDialog",
     "chargerPartieSauvegarde",
-    "afficherPlateauScene",
+    "afficherPlateauDebut",
     "onMiseAJourPlateau",
     "onPartieTerminee",
     "message"
@@ -102,7 +102,7 @@ Q_CONSTINIT const QMetaObject FenetrePrincipale::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'chargerPartieSauvegarde'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'afficherPlateauScene'
+        // method 'afficherPlateauDebut'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onMiseAJourPlateau'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
@@ -123,7 +123,7 @@ void FenetrePrincipale::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         case 1: _t->commencerPartieDeuxJoueurs(); break;
         case 2: _t->ouvrirFileDialog(); break;
         case 3: _t->chargerPartieSauvegarde(); break;
-        case 4: _t->afficherPlateauScene(); break;
+        case 4: _t->afficherPlateauDebut(); break;
         case 5: _t->onMiseAJourPlateau(); break;
         case 6: _t->onPartieTerminee((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         default: ;

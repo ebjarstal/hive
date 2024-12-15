@@ -83,6 +83,10 @@ private:
     QPushButton* boutonOuvrirFichier;
     QLabel* labelNomSauvegarde;
 
+    QGraphicsScene* scene;
+    VuePlateau* vuePlateau;
+    QGraphicsView* vuePartie;
+
     Controleur* controleur;
 
 private slots:
@@ -92,7 +96,10 @@ private slots:
     void ouvrirFileDialog();
     void chargerPartieSauvegarde();
 
-    void afficherPlateauScene();
+    void afficherPlateauDebut();
+    void afficherPiochesDebut();
+
+    void dessinerPanneauJoueur(int x, int y, int largeur, int hauteur, QColor couleur, double opacite);
 
     void onMiseAJourPlateau();
     void onPartieTerminee(const QString& message);
