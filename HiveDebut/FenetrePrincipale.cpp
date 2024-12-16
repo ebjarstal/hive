@@ -16,6 +16,8 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     initPageJouerDeuxJoueurs();
     initPageChargerPartie();
 
+    pionEnCoursDeTraitement = nullptr;
+
     QVBoxLayout* mainLayout = new QVBoxLayout(widgetCentral);
     mainLayout->addWidget(stackedWidget);
 
@@ -332,11 +334,15 @@ void FenetrePrincipale::afficherPlateauDebut() {
     // Définir les limites de la scène pour s'assurer qu'elle commence à (0, 0)
     scene->setSceneRect(0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
 
-    // Ajoute la pioche du joueur 1
-
     // Ajouter la vue directement à stackedWidget
     stackedWidget->addWidget(vuePartie);
     stackedWidget->setCurrentWidget(vuePartie);
+
+    // Connecter tous les VuePion dans le plateau
+    QList<VuePion*> listePions = vuePlateau->getListePionsPlateau();
+    for (VuePion* pion : listePions) {
+        connect(pion, &VuePion::pionClique, this, &FenetrePrincipale::onPionClique);
+    }
 }
 
 void FenetrePrincipale::afficherPiochesDebut() {
@@ -395,11 +401,46 @@ void FenetrePrincipale::dessinerPionsPiochesJoueurs() {
         VuePion* pion = controleur->getPiocheJoueur1()[i];
         pion->setPos(60, 40 + (HAUTEUR_PIONS + ESPACEMENT_VERTICAL_PIONS_PIOCHE) * i);
         scene->addItem(pion);
+
+        connect(pion, &VuePion::pionClique, this, &FenetrePrincipale::onPionClique);
     }
     // dessine les pions du joueur 2
     for (size_t j = 0; j < controleur->getPiocheJoueur2().size(); j++) {
         VuePion* pion = controleur->getPiocheJoueur2()[j];
         pion->setPos(904, 40 + (HAUTEUR_PIONS + ESPACEMENT_VERTICAL_PIONS_PIOCHE) * j);
         scene->addItem(pion);
+
+        connect(pion, &VuePion::pionClique, this, &FenetrePrincipale::onPionClique);
+    }
+}
+
+void FenetrePrincipale::onPionClique(VuePion* pion) {
+    std::cout << "pion clique " << pion << std::endl;
+    if (pionEnCoursDeTraitement == nullptr) {
+        if (pion->getEstPose() == false) {
+            // SI AU TOUR DE JOUEUR1 ET QU'ON CLIQUE SUR UN PION DE SA PIOCHE
+            if (controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur1()->getNom())) {
+                if (pion->getCouleur() == Qt::darkRed) {
+                    positionDeDepart = pion->pos();
+                    pionEnCoursDeTraitement = pion;
+                    return;
+                }
+            }
+            // SI AU TOUR DE JOUEUR2 ET QU'ON CLIQUE SUR UN PION DE SA PIOCHE
+            else if (controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur2()->getNom())) {
+                if (pion->getCouleur() == Qt::darkBlue) {
+                    positionDeDepart = pion->pos();
+                    pionEnCoursDeTraitement = pion;
+                    return;
+                }
+            }
+        }
+    }
+
+    // SI IL Y A UN PION EN COURS DE TRAITEMENT (CAD QU IL Y A UN PION A PLACER / DEPLACER)
+    else {
+        if (pion->getEstPose() == true && pion->getCouleur() == Qt::white) {
+
+        }
     }
 }

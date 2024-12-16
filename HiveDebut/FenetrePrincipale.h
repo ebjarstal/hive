@@ -13,6 +13,7 @@
 #include <QIntValidator>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QMouseEvent>
 #include "Constantes.h"
 #include "Controleur.h"
 
@@ -89,6 +90,9 @@ private:
 
     QGraphicsTextItem* texteTour;
 
+    VuePion* pionEnCoursDeTraitement;
+    QPointF positionDeDepart;
+
     Controleur* controleur;
 
 private slots:
@@ -106,4 +110,6 @@ private slots:
 
     void onMiseAJourPlateau();
     void onPartieTerminee(const QString& message);
+
+    void onPionClique(VuePion* pion);
 };

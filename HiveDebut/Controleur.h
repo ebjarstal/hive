@@ -37,6 +37,4 @@ public slots:
     void commencerPartie();
     void jouerTour();
     void annulerMouvement();
-
-    void onPionClique(VuePion* pion);
 };
