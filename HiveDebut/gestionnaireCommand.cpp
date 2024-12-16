@@ -1,5 +1,5 @@
 #include "GestionnaireCommand.h"
-#include "Partie.h"
+#include "partie.h"
 
 void GestionnaireCommand::executeCommand(Partie& partie, Command* cmd) {
     // Exécuter la commande

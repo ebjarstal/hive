@@ -54,7 +54,6 @@ bool GestionnaireSauvegarde::chargementSauvegardePartie(Partie& p, const std::st
         }
     }
 }
-
 bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
     UsineDePions usine_j1;
     UsineDePions usine_j2;
@@ -68,20 +67,20 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
 
     std::string ligne;
 
-    // Lire le nombre de tours et d'undo
+    // Lire le nombre de tours
     std::getline(fichier, ligne);
     p.setNombreTour(std::stoi(ligne.substr(ligne.find(":") + 2)));
-
-    std::getline(fichier, ligne);
-    p.setNbUndo(std::stoi(ligne.substr(ligne.find(":") + 2)));
 
     // Charger les informations du joueur 1
     std::getline(fichier, ligne); // "Joueur 1"
     std::getline(fichier, ligne); // "Type: Humain/IA"
     std::string typeJ1 = ligne.substr(ligne.find(":") + 2);
 
-    std::getline(fichier, ligne); // "Couleur: Nom_Joueur"
+    std::getline(fichier, ligne); // "Nom: Nom_Joueur"
     std::string nomJ1 = ligne.substr(ligne.find(":") + 2);
+
+    std::getline(fichier, ligne); // "NbUndo: Nb_Undo"
+    int nbUndoJ1 = std::stoi(ligne.substr(ligne.find(":") + 2));
 
     std::getline(fichier, ligne); // "Couleur: Couleur_Joueur"
     std::string couleurJ1 = ligne.substr(ligne.find(":") + 2);
@@ -108,16 +107,19 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
     }
     // Créer le joueur 1
     if (typeJ1 == "Humain")
-        p.setJoueur1(new JoueurHumain(nomJ1, pionsJ1, couleurJ1, p));
+        p.setJoueur1(new JoueurHumain(nomJ1, pionsJ1, couleurJ1, nbUndoJ1, p));
     else
-        p.setJoueur1(new JoueurIA(nomJ1, pionsJ1, couleurJ1, p));
+        p.setJoueur1(new JoueurIA(nomJ1, pionsJ1, couleurJ1, p, nbUndoJ1));
 
     // Charger les informations du joueur 2
     std::getline(fichier, ligne); // "Type: Humain/IA"
     std::string typeJ2 = ligne.substr(ligne.find(":") + 2);
 
-    std::getline(fichier, ligne); // "Couleur: Nom_Joueur"
+    std::getline(fichier, ligne); // "Nom: Nom_Joueur"
     std::string nomJ2 = ligne.substr(ligne.find(":") + 2);
+
+    std::getline(fichier, ligne); // "NbUndo: Nb_Undo"
+    int nbUndoJ2 = std::stoi(ligne.substr(ligne.find(":") + 2));
 
     std::getline(fichier, ligne); // "Couleur: Couleur_Joueur"
     std::string couleurJ2 = ligne.substr(ligne.find(":") + 2);
@@ -145,9 +147,9 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
     }
     // Créer le joueur 2
     if (typeJ2 == "Humain")
-        p.setJoueur2(new JoueurHumain(nomJ2, pionsJ2, couleurJ2, p));
+        p.setJoueur2(new JoueurHumain(nomJ2, pionsJ2, couleurJ2, nbUndoJ2, p));
     else
-        p.setJoueur2(new JoueurIA(nomJ2, pionsJ2, couleurJ2, p));
+        p.setJoueur2(new JoueurIA(nomJ2, pionsJ2, couleurJ2, p, nbUndoJ2));
 
     // Charger l'état du plateau
     while (std::getline(fichier, ligne) && ligne.find("Position") != std::string::npos) {
@@ -243,7 +245,6 @@ void GestionnaireSauvegarde::sauvegarde(Partie& p) {
 
     string nomPartie = p.nomPartie;
     int nombreTour = p.getNombreTour();
-    int nbUndo = p.getNbUndo();
     Joueur* joueur1 = p.getJoueur1();
     Joueur* joueur2 = p.getJoueur2();
     Plateau& plateau = p.getPlateau();
@@ -258,12 +259,12 @@ void GestionnaireSauvegarde::sauvegarde(Partie& p) {
 
     // Sauvegarder les données de base
     fichier << "Nombre de tour: " << nombreTour << std::endl;
-    fichier << "Nombre d'undo: " << nbUndo << std::endl;
 
     // Sauvegarde des joueurs
     fichier << "Joueur 1:" << std::endl;
     fichier << "Type: " << (dynamic_cast<JoueurHumain*>(joueur1) ? "Humain" : "IA") << std::endl;
     fichier << "Nom: " << joueur1->getNom() << std::endl;
+    fichier << "NbUndo: " << joueur1->getNbUndo() << std::endl;
     fichier << "Couleur: " << joueur1->getCouleur() << std::endl;
     fichier << "Pions en main:" << std::endl;
     for (Pion* pion : joueur1->getPionsEnMain()) {
@@ -273,6 +274,7 @@ void GestionnaireSauvegarde::sauvegarde(Partie& p) {
     fichier << "Joueur 2:" << std::endl;
     fichier << "Type: " << (dynamic_cast<JoueurHumain*>(joueur2) ? "Humain" : "IA") << std::endl;
     fichier << "Nom: " << joueur2->getNom() << std::endl;
+    fichier << "NbUndo: " << joueur2->getNbUndo() << std::endl;
     fichier << "Couleur: " << joueur2->getCouleur() << std::endl;
     fichier << "Pions en main:" << std::endl;
     for (Pion* pion : joueur2->getPionsEnMain()) {

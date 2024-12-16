@@ -64,17 +64,6 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
 
     std::cout << "Nouvelle partie creee : " << nomPartie << std::endl;
 
-    int nbUndoCin = -1;
-    while (nbUndoCin < 0) {
-        std::cout << "Entrez le nombre de retour en arriere : ";
-        std::cin >> nbUndoCin;
-
-        if (nbUndoCin < 0) {
-            std::cout << "Erreur : Vous devez entrer un nombre positif." << std::endl;
-        }
-    }
-    nbUndo = nbUndoCin;
-
     // Initialisation de la partie
     int nbJoueur = 0;
     while (nbJoueur != 1 && nbJoueur != 2) {
@@ -96,6 +85,17 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
         nomJoueur2 = "IA"; // Nom par défaut pour l'IA
     }
 
+
+    int nbUndoCin = -1;
+    while (nbUndoCin < 0) {
+        std::cout << "Entrez le nombre de retour en arriere : ";
+        std::cin >> nbUndoCin;
+
+        if (nbUndoCin < 0) {
+            std::cout << "Erreur : Vous devez entrer un nombre positif." << std::endl;
+        }
+    }
+
     UsineDePions usine;
     usine = choixExtension(usine);
 
@@ -103,12 +103,12 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
     std::cout << "Nombre de joueurs selectionne : " << nbJoueur << std::endl;
 
     if (nbJoueur == 1) {
-        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED, usine), RED, *this);
-        joueur2 = new JoueurIA(nomJoueur2, initialiserPions(WHITE, usine), WHITE, *this);
+        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED, usine), RED, nbUndoCin, *this);
+        joueur2 = new JoueurIA(nomJoueur2, initialiserPions(WHITE, usine), WHITE, *this, nbUndoCin);
     }
     else {
-        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED, usine), RED, *this);
-        joueur2 = new JoueurHumain(nomJoueur2, initialiserPions(WHITE, usine), WHITE, *this);
+        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED, usine), RED, nbUndoCin, *this);
+        joueur2 = new JoueurHumain(nomJoueur2, initialiserPions(WHITE, usine), WHITE, nbUndoCin, *this);
     }
 }
 
@@ -171,11 +171,10 @@ void Partie::jouerUnTour(Joueur* j) {
     }
 }
 
-void Partie::annulerMouvement() {
+void Partie::annulerMouvement(Joueur& j) {
     if (historique.size() >= 2) {
         GestionnaireCommand::undoCommand(*this);
         GestionnaireCommand::undoCommand(*this);
-        nbUndo--;
     }
     else {
         std::cout << "Aucun mouvement à annuler." << std::endl;

@@ -33,31 +33,24 @@ private:
     Joueur* joueur1;
     Joueur* joueur2;
     unsigned int nombreTour;
-    unsigned int nbUndo;
-
 public:
 
     string nomPartie;
-
-    Partie(Plateau& p) : joueur1(nullptr), joueur2(nullptr), nombreTour(1), nbUndo(0), plateau(p) {}
+    Partie(Plateau& p) : joueur1(nullptr), joueur2(nullptr), nombreTour(1), plateau(p) {}
     ~Partie();
     Plateau& getPlateau() { return plateau; }
     unsigned int getNombreTour() const { return nombreTour; }
     Joueur* getJoueur1() const { return joueur1; }
     Joueur* getJoueur2() const { return joueur2; }
-    unsigned int getNbUndo() const { return nbUndo; }
     std::stack<Command*>& getHistorique() { return historique; }
 
     void setPlateau(Plateau& p) { plateau = p; }
     void setNombreTour(unsigned int nb) { nombreTour = nb; }
     void setJoueur1(Joueur* j) { joueur1 = j; }
     void setJoueur2(Joueur* j) { joueur2 = j; }
-    void setNbUndo(unsigned int nb) { nbUndo = nb; }
     void setHistorique(std::stack<Command*>& h) { historique = h; }
 
     Joueur& joueurAdverse(Joueur& joueur) { return (&joueur == joueur1) ? *joueur2 : *joueur1; }
-
-    bool canUndo() { return !historique.empty() && historique.size() >= 2 && getNbUndo() >= 1; }
 
     void setup(); // Met en place une partie
 
@@ -70,5 +63,5 @@ public:
 
     bool partieTerminee() const;
     Joueur* determinerGagnant() const;
-    void annulerMouvement();
+    void annulerMouvement(Joueur& j);
 };

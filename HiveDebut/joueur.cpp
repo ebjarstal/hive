@@ -28,7 +28,7 @@ bool Joueur::isMainVide() {
     else return false;
 }
 
-Joueur::Joueur(vector<Pion*> pEm, string c, Partie& p, string n) : pionsEnMain(pEm), couleur(c), partie(p), nom(n) {
+Joueur::Joueur(vector<Pion*> pEm, string c, Partie& p, string n, unsigned int nb) : nbUndo(nb), pionsEnMain(pEm), couleur(c), partie(p), nom(n) {
 
 }
 
@@ -148,12 +148,12 @@ void JoueurHumain::Jouer(Plateau& plateau, Partie& partie) {
         std::cout << "Vous devez poser votre pion Reine\n";
         choix = 4;
     }
-    else if (partie.canUndo() && peutBougerPions()) {
-        std::cout << "Voulez-vous poser (1), deplacer (2) ou annuler un mouvement (" << partie.getNbUndo() << " restants) (3) ? ";
+    else if (canUndo() && peutBougerPions()) {
+        std::cout << "Voulez-vous poser (1), deplacer (2) ou annuler un mouvement (" << getNbUndo() << " restants) (3) ? ";
         std::cin >> choix;
     }
-    else if (partie.canUndo()) {
-        std::cout << "Voulez-vous poser (1) ou annuler un mouvement (" << partie.getNbUndo() << " restants) (3) ? ";
+    else if (canUndo()) {
+        std::cout << "Voulez-vous poser (1) ou annuler un mouvement (" << getNbUndo() << " restants) (3) ? ";
         std::cin >> choix;
     }
     else if (peutBougerPions()) {
@@ -173,15 +173,19 @@ void JoueurHumain::Jouer(Plateau& plateau, Partie& partie) {
     else if (choix == 2 && !plateau.isVide()) {
         deplacerPionHumain(plateau);  // Appel de la m thode pour d placer un pion
     }
-    else if (choix == 3 && partie.canUndo()){
-        partie.annulerMouvement();
+    else if (choix == 3 && canUndo()) {
+        nbUndo--;
+        partie.annulerMouvement(*this);
         plateau.afficher();
-        Jouer(plateau,partie);
+        Jouer(plateau, partie);
     }
     else {
-        std::cout << "Choix invalide." << std::endl;
         return; // Ajout d'un retour par d faut
     }
+}
+
+bool Joueur::canUndo() { 
+    return !partie.getHistorique().empty() && partie.getHistorique().size() >= 2 && getNbUndo() >= 1;
 }
 
 Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau,Partie& partie) {
@@ -200,9 +204,7 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau,Partie& partie) {
     afficherEmplacements(emplacements);
     Mouvement* emplacementChoisi = choisirEmplacement(emplacements);
 
-    auto poserPionCommand = new MouvementCommand(partie, emplacementChoisi);
-    GestionnaireCommand::executeCommand(partie, poserPionCommand);
-
+    JouerMouvement(partie, emplacementChoisi);
 
     for (Mouvement* m : emplacements) {
         if (m != emplacementChoisi) {
@@ -210,6 +212,11 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau,Partie& partie) {
         }
     }
     return emplacementChoisi;
+}
+
+void JoueurHumain::JouerMouvement(Partie& partie, Mouvement* emplacementChoisi) {
+    auto command = new MouvementCommand(partie, emplacementChoisi);
+    GestionnaireCommand::executeCommand(partie, command);
 }
 
 Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
@@ -234,8 +241,7 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
     afficherEmplacements(deplacementsValides);
     Mouvement* deplacementChoisi = choisirEmplacement(deplacementsValides);
 
-    auto deplacerPionCommand = new MouvementCommand(partie, deplacementChoisi);
-    GestionnaireCommand::executeCommand(partie, deplacerPionCommand);
+    JouerMouvement(partie, deplacementChoisi);
 
     for (Mouvement* m : deplacementsValides) {
         if (m != deplacementChoisi) {
@@ -427,8 +433,7 @@ Mouvement* JoueurHumain::poserReineHumain(Plateau& plateau) {
     afficherEmplacements(emplacements);
     Mouvement* emplacementChoisi = choisirEmplacement(emplacements);
 
-    auto poserPionCommand = new MouvementCommand(partie, emplacementChoisi);
-    GestionnaireCommand::executeCommand(partie, poserPionCommand);
+    JouerMouvement(partie, emplacementChoisi);
 
     for (Mouvement* m : emplacements) {
         if (m != emplacementChoisi) {
