@@ -95,24 +95,22 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
     else {
         nomJoueur2 = "IA"; // Nom par défaut pour l'IA
     }
-
-    UsineDePions usine;
-    usine = choixExtension(usine);
-
+    
+    choixExtension();
 
     std::cout << "Nombre de joueurs selectionne : " << nbJoueur << std::endl;
 
     if (nbJoueur == 1) {
-        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED, usine), RED, *this);
-        joueur2 = new JoueurIA(nomJoueur2, initialiserPions(WHITE, usine), WHITE, *this);
+        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, *this);
+        joueur2 = new JoueurIA(nomJoueur2, initialiserPions(WHITE), WHITE, *this);
     }
     else {
-        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED, usine), RED, *this);
-        joueur2 = new JoueurHumain(nomJoueur2, initialiserPions(WHITE, usine), WHITE, *this);
+        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, *this);
+        joueur2 = new JoueurHumain(nomJoueur2, initialiserPions(WHITE), WHITE, *this);
     }
 }
 
-UsineDePions Partie::choixExtension(UsineDePions usine) {
+void Partie::choixExtension() {
     std::cout << "Voici les extensions disponible, veuillez choisir si vous voulez les activer ou non:\n";
     std::cout << "(Pour plus d'info, bah dommage)\n";
     for (const auto& pair : usine.getNombreDePions()) {
@@ -127,10 +125,10 @@ UsineDePions Partie::choixExtension(UsineDePions usine) {
             }
         }
     }
-    return usine;
+    return;
 }
 
-std::vector<Pion*> Partie::initialiserPions(const std::string& couleur, UsineDePions usine) {
+std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
     std::vector<Pion*> pions;
 
     for (const auto& pair : usine.getNombreDePions()) {
