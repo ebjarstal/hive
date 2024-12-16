@@ -415,35 +415,124 @@ void FenetrePrincipale::dessinerPionsPiochesJoueurs() {
 }
 
 void FenetrePrincipale::onPionClique(VuePion* pion) {
-    std::cout << "pion clique " << pion << std::endl;
+
+    // si il n'y a pas encore de pion selectionne
     if (pionEnCoursDeTraitement == nullptr) {
-        if (pion->getEstPose() == false) {
-            // SI AU TOUR DE JOUEUR1 ET QU'ON CLIQUE SUR UN PION DE SA PIOCHE
-            if (controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur1()->getNom())) {
-                if (pion->getCouleur() == Qt::darkRed) {
-                    positionDeDepart = pion->pos();
-                    pionEnCoursDeTraitement = pion;
-                    return;
-                }
+        // si click sur pion vide
+        if (pion->getType() == QString("") && pion->getEstPose() == true) {
+            // ne rien faire
+            std::cout << "click sur case vide: " << pion << std::endl;
+            return;
+        }
+
+        // si click sur pion joueur 1
+        else if (pion->getCouleur() == Qt::darkRed) {
+            // si click sur pion pioche
+            if (pion->getEstPose() == false) {
+                pionEnCoursDeTraitement = pion;
+                // TODO: afficher les emplacements possibles
+                // afficherEmplacementsPossibles(pion);
+                std::cout << "click sur pion de la pioche du joueur 1 ramasse: " << pion << std::endl;
+                return;
             }
-            // SI AU TOUR DE JOUEUR2 ET QU'ON CLIQUE SUR UN PION DE SA PIOCHE
-            else if (controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur2()->getNom())) {
-                if (pion->getCouleur() == Qt::darkBlue) {
-                    positionDeDepart = pion->pos();
-                    pionEnCoursDeTraitement = pion;
-                    return;
-                }
+            // si click sur pion pose sur plateau
+            else {
+                pionEnCoursDeTraitement = pion;
+                // TODO: afficher les déplacements possibles
+                // afficherDeplacementsPossibles(pion);
+                std::cout << "click sur pion pose sur plateau du joueur 1 ramasse: " << pion << std::endl;
+                return;
+            }
+        }
+
+        // si click sur pion joueur 2
+        else if (pion->getCouleur() == Qt::darkBlue) {
+            // si click sur pion pioche
+            if (pion->getEstPose() == false) {
+                pionEnCoursDeTraitement = pion;
+                // TODO: afficher les emplacements possibles
+                // afficherEmplacementsPossibles(pion);
+                std::cout << "click sur pion de la pioche du joueur 2 ramasse: " << pion << std::endl;
+                return;
+            }
+            // si click sur pion pose sur plateau
+            else {
+                pionEnCoursDeTraitement = pion;
+                // TODO: afficher les déplacements possibles
+                // afficherDeplacementsPossibles(pion);
+                std::cout << "click sur pion pose sur plateau du joueur 2 ramasse: " << pion << std::endl;
+                return;
             }
         }
     }
-    // SI IL Y A UN PION EN COURS DE TRAITEMENT (CAD QU IL Y A UN PION A PLACER / DEPLACER)
+
+    // si il y a deja un pion selectionne
     else {
-        // si il s'agit de placer un pion qui n'a pas encore ete place
-        if (pion->getEstPose() == true && pionEnCoursDeTraitement->getEstPose() == false) {
-            controleur->placerPion(pionEnCoursDeTraitement, pion);
+        // si click sur pion vide
+        if (pion->getType() == QString("") && pion->getEstPose() == true) {
+            // TODO:
+            // controleur->placerPion(pion, pionEnCoursDeTraitement);
+            // updateAffichage();
+            std::cout << "clic sur case vide: " << pion << std::endl;
+            std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
+            pionEnCoursDeTraitement = nullptr;
+            return;
         }
-        else if (pion->getEstPose() == true && pionEnCoursDeTraitement->getEstPose() == true) {
-            controleur->deplacerPion(pionEnCoursDeTraitement, pion);
+
+        // si click sur pion joueur 1
+        else if (pion->getCouleur() == Qt::darkRed) {
+            // si click sur pion pioche
+            if (pion->getEstPose() == false) {
+                // TODO:
+                // controleur->placerPion(pion, pionEnCoursDeTraitement);
+                // updateAffichage();
+                std::cout << "click sur pion de la pioche du joueur 1: " << pion << std::endl;
+                std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
+                pionEnCoursDeTraitement = nullptr;
+                pionEnCoursDeTraitement = pion;
+                std::cout << pionEnCoursDeTraitement << " a ete ramasse" << std::endl;
+                return;
+            }
+            // si click sur pion pose sur plateau
+            else {
+                // TODO:
+                // controleur->placerPion(pion, pionEnCoursDeTraitement);
+                // updateAffichage();
+                std::cout << "click sur pion pose sur plateau du joueur 1: " << pion << std::endl;
+                std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
+                pionEnCoursDeTraitement = nullptr;
+                pionEnCoursDeTraitement = pion;
+                std::cout << pionEnCoursDeTraitement << " a ete ramasse" << std::endl;
+                return;
+            }
+        }
+
+        // si click sur pion joueur 2
+        else if (pion->getCouleur() == Qt::darkBlue) {
+            // si click sur pion pioche
+            if (pion->getEstPose() == false) {
+                // TODO:
+                // controleur->placerPion(pion, pionEnCoursDeTraitement);
+                // updateAffichage();
+                std::cout << "click sur pion de la pioche du joueur 2: " << pion << std::endl;
+                std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
+                pionEnCoursDeTraitement = nullptr;
+                pionEnCoursDeTraitement = pion;
+                std::cout << pionEnCoursDeTraitement << " a ete ramasse" << std::endl;
+                return;
+            }
+            // si click sur pion pose sur plateau
+            else {
+                // TODO:
+                // controleur->placerPion(pion, pionEnCoursDeTraitement);
+                // updateAffichage();
+                std::cout << "click sur pion pose sur plateau du joueur 2: " << pion << std::endl;
+                std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
+                pionEnCoursDeTraitement = nullptr;
+                pionEnCoursDeTraitement = pion;
+                std::cout << pionEnCoursDeTraitement << " a ete ramasse" << std::endl;
+                return;
+            }
         }
     }
 }
