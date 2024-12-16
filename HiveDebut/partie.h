@@ -29,6 +29,7 @@ using namespace std;
 class Partie {
 private:
     Plateau& plateau;
+    UsineDePions usine;
     std::stack<Command*> historique;
     Joueur* joueur1;
     Joueur* joueur2;
@@ -56,8 +57,8 @@ public:
 
     int choixChargementOuCreationPartie(); // Donne le choix au joueur de charger ou créer une partie
     void creationPartie(const std::string dossierSauvegarde);  // Cree une partie
-    UsineDePions choixExtension(UsineDePions usine);
-    std::vector<Pion*> initialiserPions(const std::string& couleur, UsineDePions usine);  // Initialise les pions des 2 joueurs
+    void choixExtension();
+    std::vector<Pion*> initialiserPions(const std::string& couleur);  // Initialise les pions des 2 joueurs
 
     void jouerUnTour(Joueur* j);
 
