@@ -3,13 +3,16 @@
 
 #include <QGraphicsPolygonItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QObject>
 #include <string>
 
 #define RED "\033[31m"
 #define WHITE "\033[37m"
 #define RESET "\033[37m"
 
-class VuePion : public QGraphicsPolygonItem {
+class VuePion : public QObject, public QGraphicsPolygonItem {
+    Q_OBJECT
+
 public:
     // constructeur
     VuePion(QGraphicsItem* parent = nullptr);
@@ -37,6 +40,9 @@ private:
     QColor  couleur;
     bool    estPose;
     QString type;
+
+signals:
+    void pionClique(VuePion* pion);
 };
 
 #endif // VUE_PION_H

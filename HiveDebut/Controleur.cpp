@@ -26,12 +26,16 @@ void Controleur::commencerPartie() {
         VuePion* pion = new VuePion();
         pion->setAttributs(std::string(RED), false, QString::fromStdString(partie->getJoueur1()->getPionsEnMain()[i]->getType()));
         piocheJoueur1.append(pion);
+
+        connect(pion, &VuePion::pionClique, this, &Controleur::onPionClique);
     }
 
     for (size_t j = 0; j < partie->getJoueur2()->getPionsEnMain().size(); j++) {
         VuePion* pion = new VuePion();
         pion->setAttributs(std::string(WHITE), false, QString::fromStdString(partie->getJoueur2()->getPionsEnMain()[j]->getType()));
         piocheJoueur2.append(pion);
+
+        connect(pion, &VuePion::pionClique, this, &Controleur::onPionClique);
     }
 
     emit afficherPlateauDebut();  // affiche le plateau en qt
@@ -60,4 +64,8 @@ void Controleur::jouerTour() {
 void Controleur::annulerMouvement() {
     partie->annulerMouvement();
     emit miseAJourPlateau();
+}
+
+void Controleur::onPionClique(VuePion* pion) {
+    std::cout << "clique sur " << pion << std::endl;
 }

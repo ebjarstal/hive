@@ -44,7 +44,10 @@ constexpr auto qt_meta_stringdata_CLASSControleurENDCLASS = QtMocHelpers::string
     "message",
     "commencerPartie",
     "jouerTour",
-    "annulerMouvement"
+    "annulerMouvement",
+    "onPionClique",
+    "VuePion*",
+    "pion"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -57,7 +60,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSControleurENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -65,15 +68,16 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSControleurENDCLASS[] = {
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   56,    2, 0x06,    1 /* Public */,
-       3,    0,   57,    2, 0x06,    2 /* Public */,
-       4,    0,   58,    2, 0x06,    3 /* Public */,
-       5,    1,   59,    2, 0x06,    4 /* Public */,
+       1,    0,   62,    2, 0x06,    1 /* Public */,
+       3,    0,   63,    2, 0x06,    2 /* Public */,
+       4,    0,   64,    2, 0x06,    3 /* Public */,
+       5,    1,   65,    2, 0x06,    4 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       7,    0,   62,    2, 0x0a,    6 /* Public */,
-       8,    0,   63,    2, 0x0a,    7 /* Public */,
-       9,    0,   64,    2, 0x0a,    8 /* Public */,
+       7,    0,   68,    2, 0x0a,    6 /* Public */,
+       8,    0,   69,    2, 0x0a,    7 /* Public */,
+       9,    0,   70,    2, 0x0a,    8 /* Public */,
+      10,    1,   71,    2, 0x0a,    9 /* Public */,
 
  // signals: parameters
     QMetaType::Void,
@@ -85,6 +89,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSControleurENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 11,   12,
 
        0        // eod
 };
@@ -112,7 +117,10 @@ Q_CONSTINIT const QMetaObject Controleur::staticMetaObject = { {
         // method 'jouerTour'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'annulerMouvement'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onPionClique'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<VuePion *, std::false_type>
     >,
     nullptr
 } };
@@ -130,7 +138,19 @@ void Controleur::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 4: _t->commencerPartie(); break;
         case 5: _t->jouerTour(); break;
         case 6: _t->annulerMouvement(); break;
+        case 7: _t->onPionClique((*reinterpret_cast< std::add_pointer_t<VuePion*>>(_a[1]))); break;
         default: ;
+        }
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        switch (_id) {
+        default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+        case 7:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< VuePion* >(); break;
+            }
+            break;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
@@ -184,13 +204,13 @@ int Controleur::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
-            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 7;
+        if (_id < 8)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 8;
     }
     return _id;
 }

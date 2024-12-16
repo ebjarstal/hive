@@ -107,9 +107,6 @@
     <ClInclude Include="gestionnaireSauvegarde.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="VuePion.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="VuePlateau.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -119,6 +116,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </QtMoc>
     <QtMoc Include="Controleur.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </QtMoc>
+    <QtMoc Include="VuePion.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </QtMoc>
   </ItemGroup>

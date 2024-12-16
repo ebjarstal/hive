@@ -169,7 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="command.h" />
-    <ClInclude Include="VuePion.h" />
+    <QtMoc Include="VuePion.h" />
     <ClInclude Include="VuePlateau.h" />
     <QtMoc Include="FenetrePrincipale.h" />
     <ClInclude Include="Constantes.h" />

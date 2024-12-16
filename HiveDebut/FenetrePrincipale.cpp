@@ -390,26 +390,14 @@ void FenetrePrincipale::dessinerPanneauJoueur(int x, int y, int largeur, int hau
 
 void FenetrePrincipale::dessinerPionsPiochesJoueurs() {
 
-    // on retire les pions deja dessines pour eviter les duplicats
-    for (size_t i = 0; i < controleur->getPiocheJoueur1().size(); i++) {
-        if (controleur->getPiocheJoueur1()[i]) {
-            scene->removeItem(controleur->getPiocheJoueur1()[i]);
-        }
-    }
-    for (size_t j = 0; j < controleur->getPiocheJoueur2().size(); j++) {
-        if (controleur->getPiocheJoueur2()[j]) {
-            scene->removeItem(controleur->getPiocheJoueur2()[j]);
-        }
-    }
-
     // dessine les pions du joueur 1
-    for (size_t i = 0; i < controleur->getPiocheJoueur1().size(); i++) {  // PQ FAUT DIVISER PAR 2 ???????????????  EDIT: CAR JE SUIS CONNNN
+    for (size_t i = 0; i < controleur->getPiocheJoueur1().size(); i++) {
         VuePion* pion = controleur->getPiocheJoueur1()[i];
         pion->setPos(60, 40 + (HAUTEUR_PIONS + ESPACEMENT_VERTICAL_PIONS_PIOCHE) * i);
         scene->addItem(pion);
     }
-
-    for (size_t j = 0; j < controleur->getPiocheJoueur2().size(); j++) {  // PQ FAUT DIVISER PAR 2 ???????????????  EDIT: CAR JE SUIS UN FDP
+    // dessine les pions du joueur 2
+    for (size_t j = 0; j < controleur->getPiocheJoueur2().size(); j++) {
         VuePion* pion = controleur->getPiocheJoueur2()[j];
         pion->setPos(904, 40 + (HAUTEUR_PIONS + ESPACEMENT_VERTICAL_PIONS_PIOCHE) * j);
         scene->addItem(pion);

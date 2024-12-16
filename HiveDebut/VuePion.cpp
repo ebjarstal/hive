@@ -5,7 +5,8 @@
 #include "Controleur.h"
 #include "Constantes.h"
 
-VuePion::VuePion(QGraphicsItem* parent) : QGraphicsPolygonItem(parent), estPose(false) {
+VuePion::VuePion(QGraphicsItem* parent)
+    : QObject(), QGraphicsPolygonItem(parent), estPose(false) {
     // dessiner l'hexagone avec les points nécessaires
     QVector<QPointF> hexPoints;
     hexPoints << QPointF(1, 0) << QPointF(2, 0.58) << QPointF(2, 1.73)
@@ -104,7 +105,7 @@ void VuePion::setEstPose(bool nouvelEtat) {
 }
 
 void VuePion::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-    // TODO ?
+    emit pionClique(this);
 }
 
 void VuePion::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
