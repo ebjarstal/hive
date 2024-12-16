@@ -420,8 +420,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
     if (pionEnCoursDeTraitement == nullptr) {
         // si click sur pion vide
         if (pion->getType() == QString("") && pion->getEstPose() == true) {
-            // ne rien faire
-            std::cout << "click sur case vide: " << pion << std::endl;
+            resetPionsTemporairementGris();
             return;
         }
 
@@ -431,8 +430,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             if (pion->getEstPose() == false) {
                 pionEnCoursDeTraitement = pion;
                 // TODO: afficher les emplacements possibles
-                // afficherEmplacementsPossibles(pion);
-                std::cout << "click sur pion de la pioche du joueur 1 ramasse: " << pion << std::endl;
+                afficherEmplacementsPossibles(pion);
                 return;
             }
             // si click sur pion pose sur plateau
@@ -440,7 +438,6 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
                 pionEnCoursDeTraitement = pion;
                 // TODO: afficher les déplacements possibles
                 // afficherDeplacementsPossibles(pion);
-                std::cout << "click sur pion pose sur plateau du joueur 1 ramasse: " << pion << std::endl;
                 return;
             }
         }
@@ -451,8 +448,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             if (pion->getEstPose() == false) {
                 pionEnCoursDeTraitement = pion;
                 // TODO: afficher les emplacements possibles
-                // afficherEmplacementsPossibles(pion);
-                std::cout << "click sur pion de la pioche du joueur 2 ramasse: " << pion << std::endl;
+                afficherEmplacementsPossibles(pion);
                 return;
             }
             // si click sur pion pose sur plateau
@@ -460,7 +456,6 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
                 pionEnCoursDeTraitement = pion;
                 // TODO: afficher les déplacements possibles
                 // afficherDeplacementsPossibles(pion);
-                std::cout << "click sur pion pose sur plateau du joueur 2 ramasse: " << pion << std::endl;
                 return;
             }
         }
@@ -473,8 +468,6 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             // TODO:
             // controleur->placerPion(pion, pionEnCoursDeTraitement);
             // updateAffichage();
-            std::cout << "clic sur case vide: " << pion << std::endl;
-            std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
             pionEnCoursDeTraitement = nullptr;
             return;
         }
@@ -484,13 +477,8 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
                 // TODO:
-                // controleur->placerPion(pion, pionEnCoursDeTraitement);
-                // updateAffichage();
-                std::cout << "click sur pion de la pioche du joueur 1: " << pion << std::endl;
-                std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
-                pionEnCoursDeTraitement = nullptr;
+                afficherEmplacementsPossibles(pion);
                 pionEnCoursDeTraitement = pion;
-                std::cout << pionEnCoursDeTraitement << " a ete ramasse" << std::endl;
                 return;
             }
             // si click sur pion pose sur plateau
@@ -498,11 +486,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
                 // TODO:
                 // controleur->placerPion(pion, pionEnCoursDeTraitement);
                 // updateAffichage();
-                std::cout << "click sur pion pose sur plateau du joueur 1: " << pion << std::endl;
-                std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
-                pionEnCoursDeTraitement = nullptr;
                 pionEnCoursDeTraitement = pion;
-                std::cout << pionEnCoursDeTraitement << " a ete ramasse" << std::endl;
                 return;
             }
         }
@@ -512,13 +496,8 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
                 // TODO:
-                // controleur->placerPion(pion, pionEnCoursDeTraitement);
-                // updateAffichage();
-                std::cout << "click sur pion de la pioche du joueur 2: " << pion << std::endl;
-                std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
-                pionEnCoursDeTraitement = nullptr;
+                afficherEmplacementsPossibles(pion);
                 pionEnCoursDeTraitement = pion;
-                std::cout << pionEnCoursDeTraitement << " a ete ramasse" << std::endl;
                 return;
             }
             // si click sur pion pose sur plateau
@@ -526,13 +505,35 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
                 // TODO:
                 // controleur->placerPion(pion, pionEnCoursDeTraitement);
                 // updateAffichage();
-                std::cout << "click sur pion pose sur plateau du joueur 2: " << pion << std::endl;
-                std::cout << pionEnCoursDeTraitement << " a ete repose" << std::endl;
-                pionEnCoursDeTraitement = nullptr;
                 pionEnCoursDeTraitement = pion;
-                std::cout << pionEnCoursDeTraitement << " a ete ramasse" << std::endl;
                 return;
             }
         }
     }
+}
+
+void FenetrePrincipale::afficherEmplacementsPossibles(VuePion* pion) {
+    resetPionsTemporairementGris();
+
+    // Récupérer les emplacements possibles
+    Pion* pionAssocie = pion->getPionAssocie();
+    std::vector<Mouvement*> emplacements = pionAssocie->emplacementsPossibles(*pionAssocie, controleur->partie->getPlateau());
+
+    // Parcourir les emplacements possibles et changer la couleur des VuePion correspondants en gris
+    for (Mouvement* mouvement : emplacements) {
+        VuePion* vuePion = vuePlateau->getVuePion(mouvement->getLigne(), mouvement->getColonne(), mouvement->getZ());
+        if (vuePion != nullptr) {
+            vuePion->setCouleur(Qt::darkGray);
+            vuePion->setOpacity(0.5);
+            pionsTemporairementGris.append(vuePion);
+        }
+    }
+}
+
+void FenetrePrincipale::resetPionsTemporairementGris() {
+    for (VuePion* pionCourant : pionsTemporairementGris) {
+        pionCourant->setCouleur(Qt::white);
+        pionCourant->setOpacity(0.2);
+    }
+    pionsTemporairementGris.clear();
 }

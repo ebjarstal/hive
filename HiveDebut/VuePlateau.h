@@ -16,10 +16,11 @@ public:
     // setters
 
     // getters
-    QList<VuePion*> getListePionsPlateau() const { return listePionsPlateau; }
+    QList<VuePion*> getListePionsPlateau() const;
+    VuePion* getVuePion(int ligne, int colonne, int couche) const;
 
 private:
     QGraphicsScene* scene;
     Plateau* plateau;
-    QList<VuePion*> listePionsPlateau;
+    std::vector<std::vector<std::vector<VuePion*>>> grilleVuePions;
 };

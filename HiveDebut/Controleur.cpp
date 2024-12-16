@@ -32,7 +32,7 @@ void Controleur::commencerPartie() {
     for (size_t j = 0; j < partie->getJoueur2()->getPionsEnMain().size(); j++) {
         VuePion* pion = new VuePion();
         pion->setAttributs(std::string(WHITE), false, QString::fromStdString(partie->getJoueur2()->getPionsEnMain()[j]->getType()));
-        pion->setPionAssocie(partie->getJoueur1()->getPionsEnMain()[j]);
+        pion->setPionAssocie(partie->getJoueur2()->getPionsEnMain()[j]);
         piocheJoueur2.append(pion);
     }
 

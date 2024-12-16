@@ -28,6 +28,10 @@ VuePion::VuePion(QGraphicsItem* parent)
     pionAssocie = nullptr;
 }
 
+void VuePion::setPionAssocie(Pion* pion) {
+    pionAssocie = pion;
+}
+
 QColor VuePion::getCouleur() {
     return couleur;
 }

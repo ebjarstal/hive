@@ -14,6 +14,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QMouseEvent>
+#include "mouvement.h"
 #include "Constantes.h"
 #include "Controleur.h"
 #include "VuePlateau.h"
@@ -96,6 +97,10 @@ private:
     QPointF positionDeDepart;
 
     Controleur* controleur;
+
+    void afficherEmplacementsPossibles(VuePion* pion);
+    QList<VuePion*> pionsTemporairementGris;
+    void resetPionsTemporairementGris();
 
 private slots:
     void commencerPartieContreIA();

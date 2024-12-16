@@ -23,13 +23,13 @@ public:
     bool    getEstPose();
     QString getType();
 
-    Pion* getPionAssocie() { return pionAssocie;  }
+    Pion* getPionAssocie() { return pionAssocie; }
 
     // setters
     void setAttributs(std::string nouvelleCouleur, bool estPose, QString type);
     void setAttributs(QColor nouvelleCouleur, bool estPose, QString type);
 
-    void setPionAssocie(Pion* pion) { pionAssocie = pion; }
+    void setPionAssocie(Pion* pion);
 
     void setCouleur(std::string nouvelleCouleur);
     void setCouleur(QColor nouvelleCouleur);
