@@ -25,6 +25,7 @@ VuePion::VuePion(QGraphicsItem* parent)
 
     // initialise
     setAttributs(std::string(WHITE), false, QString(""));
+    pionAssocie = nullptr;
 }
 
 QColor VuePion::getCouleur() {

@@ -1,0 +1,38 @@
+Nombre de tour: 1
+Nombre d'undo: 0
+Joueur 1:
+Type: Humain
+Nom: Texte
+Couleur: [31m
+Pions en main:
+  ID: 1  Type: R, Couleur: [31m
+  ID: 2  Type: S, Couleur: [31m
+  ID: 3  Type: S, Couleur: [31m
+  ID: 4  Type: S, Couleur: [31m
+  ID: 5  Type: F, Couleur: [31m
+  ID: 6  Type: F, Couleur: [31m
+  ID: 7  Type: F, Couleur: [31m
+  ID: 8  Type: K, Couleur: [31m
+  ID: 9  Type: K, Couleur: [31m
+  ID: 10  Type: A, Couleur: [31m
+  ID: 11  Type: A, Couleur: [31m
+  ID: 12  Type: M, Couleur: [31m
+Joueur 2:
+Type: Humain
+Nom: Texte
+Couleur: [37m
+Pions en main:
+  ID: 13  Type: R, Couleur: [37m
+  ID: 14  Type: S, Couleur: [37m
+  ID: 15  Type: S, Couleur: [37m
+  ID: 16  Type: S, Couleur: [37m
+  ID: 17  Type: F, Couleur: [37m
+  ID: 18  Type: F, Couleur: [37m
+  ID: 19  Type: F, Couleur: [37m
+  ID: 20  Type: K, Couleur: [37m
+  ID: 21  Type: K, Couleur: [37m
+  ID: 22  Type: A, Couleur: [37m
+  ID: 23  Type: A, Couleur: [37m
+  ID: 24  Type: M, Couleur: [37m
+Plateau:
+Historique des mouvements:

@@ -25,12 +25,14 @@ void Controleur::commencerPartie() {
     for (size_t i = 0; i < partie->getJoueur1()->getPionsEnMain().size(); i++) {
         VuePion* pion = new VuePion();
         pion->setAttributs(std::string(RED), false, QString::fromStdString(partie->getJoueur1()->getPionsEnMain()[i]->getType()));
+        pion->setPionAssocie(partie->getJoueur1()->getPionsEnMain()[i]);
         piocheJoueur1.append(pion);
     }
 
     for (size_t j = 0; j < partie->getJoueur2()->getPionsEnMain().size(); j++) {
         VuePion* pion = new VuePion();
         pion->setAttributs(std::string(WHITE), false, QString::fromStdString(partie->getJoueur2()->getPionsEnMain()[j]->getType()));
+        pion->setPionAssocie(partie->getJoueur1()->getPionsEnMain()[j]);
         piocheJoueur2.append(pion);
     }
 
@@ -60,4 +62,14 @@ void Controleur::jouerTour() {
 void Controleur::annulerMouvement() {
     partie->annulerMouvement();
     emit miseAJourPlateau();
+}
+
+void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
+    // encapsuler logique
+    std::cout << "faire la methode Controleur::placerPion" << std::endl;
+}
+
+void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
+    // encapsuler logique
+    std::cout << "faire la methode Controleur::deplacerPion" << std::endl;
 }

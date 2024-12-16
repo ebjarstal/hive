@@ -16,6 +16,8 @@
 #include <QMouseEvent>
 #include "Constantes.h"
 #include "Controleur.h"
+#include "VuePlateau.h"
+#include "VuePion.h"
 
 class FenetrePrincipale : public QMainWindow {
     Q_OBJECT

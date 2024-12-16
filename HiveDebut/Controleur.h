@@ -14,6 +14,9 @@ public:
     Controleur(Partie* partie, QObject* parent = nullptr);
     Partie* partie;
 
+    void placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer);
+    void deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer);
+
     // getters
     QList<VuePion*> getPiocheJoueur1() const { return piocheJoueur1; }
     QList<VuePion*> getPiocheJoueur2() const { return piocheJoueur2; }

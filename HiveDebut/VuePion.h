@@ -4,6 +4,7 @@
 #include <QGraphicsPolygonItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QObject>
+#include "pions.h"
 #include <string>
 
 #define RED "\033[31m"
@@ -22,9 +23,14 @@ public:
     bool    getEstPose();
     QString getType();
 
+    Pion* getPionAssocie() { return pionAssocie;  }
+
     // setters
     void setAttributs(std::string nouvelleCouleur, bool estPose, QString type);
     void setAttributs(QColor nouvelleCouleur, bool estPose, QString type);
+
+    void setPionAssocie(Pion* pion) { pionAssocie = pion; }
+
     void setCouleur(std::string nouvelleCouleur);
     void setCouleur(QColor nouvelleCouleur);
     void setEstPose(bool nouvelEtat);
@@ -37,6 +43,8 @@ protected:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 
 private:
+    Pion* pionAssocie;
+
     QColor  couleur;
     bool    estPose;
     QString type;

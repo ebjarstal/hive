@@ -33,6 +33,7 @@ void VuePlateau::creerLignePions(int x, int y, int ligne, int nb_colonnes) {
             vuePion->setCouleur(Qt::white);
             vuePion->setType(QString(""));
         }
+        vuePion->setPionAssocie(pion);
         vuePion->setEstPose(true);
         vuePion->setPos(x + (LARGEUR_PIONS + ESPACEMENT_PIONS) * i, y);
         scene->addItem(vuePion);

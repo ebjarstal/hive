@@ -436,11 +436,14 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             }
         }
     }
-
     // SI IL Y A UN PION EN COURS DE TRAITEMENT (CAD QU IL Y A UN PION A PLACER / DEPLACER)
     else {
-        if (pion->getEstPose() == true && pion->getCouleur() == Qt::white) {
-
+        // si il s'agit de placer un pion qui n'a pas encore ete place
+        if (pion->getEstPose() == true && pionEnCoursDeTraitement->getEstPose() == false) {
+            controleur->placerPion(pionEnCoursDeTraitement, pion);
+        }
+        else if (pion->getEstPose() == true && pionEnCoursDeTraitement->getEstPose() == true) {
+            controleur->deplacerPion(pionEnCoursDeTraitement, pion);
         }
     }
 }
