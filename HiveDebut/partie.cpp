@@ -113,7 +113,7 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
 void Partie::choixExtension() {
     std::cout << "Voici les extensions disponible, veuillez choisir si vous voulez les activer ou non:\n";
     std::cout << "(Pour plus d'info, bah dommage)\n";
-    for (const auto& pair : usine.getNombreDePions()) {
+    for (const auto& pair : usine->getNombreDePions()) {
         const std::string& type = pair.first;              // Clé (type)
         const std::pair<unsigned int, bool>& data = pair.second; // Valeur (nombre et état)
         if (type != "R" && type != "K" && type != "F" && type != "S" && type != "A") {
@@ -121,7 +121,7 @@ void Partie::choixExtension() {
             std::cout << "Type : " << type << "\nVoulez-vous l'activer ? (1 pour oui, 0 pour non)\n";
             std::cin >> choix;
             if (choix == 1) {
-                usine.setExtensionActive(type);
+                usine->setExtensionActive(type);
             }
         }
     }
@@ -131,13 +131,13 @@ void Partie::choixExtension() {
 std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
     std::vector<Pion*> pions;
 
-    for (const auto& pair : usine.getNombreDePions()) {
+    for (const auto& pair : usine->getNombreDePions()) {
         const std::string& type = pair.first;              // Clé (type)
         const std::pair<unsigned int, bool>& data = pair.second; // Valeur (nombre et état)
 
         int nbpion = data.first;
         while (nbpion > 0 && data.second) {
-            Pion* pionQuelconque = usine.creerPion(type, couleur);
+            Pion* pionQuelconque = usine->creerPion(type, couleur);
             Pion::ajouterPion(pionQuelconque);
             pions.push_back(pionQuelconque);
             nbpion--;

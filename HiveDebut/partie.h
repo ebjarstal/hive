@@ -29,7 +29,7 @@ using namespace std;
 class Partie {
 private:
     Plateau& plateau;
-    UsineDePions usine;
+    UsineDePions* usine;
     std::stack<Command*> historique;
     Joueur* joueur1;
     Joueur* joueur2;
