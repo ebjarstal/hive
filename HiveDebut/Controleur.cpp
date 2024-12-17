@@ -93,8 +93,27 @@ void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
 
 
 void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
-    // encapsuler logique
-    std::cout << "faire la methode Controleur::deplacerPion" << std::endl;
+    int old_ligne = pionADeplacer->getLigne();
+    int old_colonne = pionADeplacer->getColonne();
+    int old_couche = pionADeplacer->getZ();
+
+    int new_ligne = pionARemplacer->getLigne();
+    int new_colonne = pionARemplacer->getColonne();
+    int new_couche = pionARemplacer->getZ();
+
+    // les trois lignes suivantes permettent d'executer le placement du pion du cote du vrai plateau
+    Mouvement* emplacementChoisi = new Mouvement(pionADeplacer->getPionAssocie()->getId(), new_ligne, new_colonne, new_couche, old_ligne, old_colonne, old_couche);
+    auto poserPionCommand = new MouvementCommand(*partie, emplacementChoisi);
+    GestionnaireCommand::executeCommand(*partie, poserPionCommand);
+
+    // retirer le pion de la pioche du joueur1
+    if (piocheJoueur1.removeOne(pionADeplacer)) {
+        piocheJoueur1.resize(piocheJoueur1.size());
+    }
+    // on check pour joueur2
+    else if (piocheJoueur2.removeOne(pionADeplacer)) {
+        piocheJoueur2.resize(piocheJoueur2.size());
+    }
 }
 
 void Controleur::setAQuiDeJouer(QString nomJoueur) {

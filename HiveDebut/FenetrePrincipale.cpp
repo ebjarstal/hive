@@ -443,14 +443,12 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
                 pionEnCoursDeTraitement = pion;
-                // TODO: afficher les emplacements possibles
                 afficherEmplacementsPossibles(pion);
                 return;
             }
             // si click sur pion pose sur plateau
             else {
                 pionEnCoursDeTraitement = pion;
-                // TODO: afficher les déplacements possibles
                 afficherDeplacementsPossibles(pion);
                 return;
             }
@@ -461,14 +459,12 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
                 pionEnCoursDeTraitement = pion;
-                // TODO: afficher les emplacements possibles
                 afficherEmplacementsPossibles(pion);
                 return;
             }
             // si click sur pion pose sur plateau
             else {
                 pionEnCoursDeTraitement = pion;
-                // TODO: afficher les déplacements possibles
                 afficherDeplacementsPossibles(pion);
                 return;
             }
@@ -479,9 +475,6 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
     else {
         // si click sur pion vide
         if (pion->getType() == QString("") && pion->getEstPose() == true) {
-            // TODO:
-            // controleur->placerPion(pion, pionEnCoursDeTraitement);
-            // updateAffichage();
             pionEnCoursDeTraitement = nullptr;
             return;
         }
@@ -490,16 +483,12 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         else if (pion->getCouleur() == Qt::darkRed) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
-                // TODO:
                 afficherEmplacementsPossibles(pion);
                 pionEnCoursDeTraitement = pion;
                 return;
             }
             // si click sur pion pose sur plateau
             else {
-                // TODO:
-                // controleur->placerPion(pion, pionEnCoursDeTraitement);
-                // updateAffichage();
                 pionEnCoursDeTraitement = pion;
                 afficherDeplacementsPossibles(pion);
                 return;
@@ -510,16 +499,12 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         else if (pion->getCouleur() == Qt::darkBlue) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
-                // TODO:
                 afficherEmplacementsPossibles(pion);
                 pionEnCoursDeTraitement = pion;
                 return;
             }
             // si click sur pion pose sur plateau
             else {
-                // TODO:
-                // controleur->placerPion(pion, pionEnCoursDeTraitement);
-                // updateAffichage();
                 pionEnCoursDeTraitement = pion;
                 afficherDeplacementsPossibles(pion);
                 return;
