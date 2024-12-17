@@ -6,7 +6,7 @@
 #define WHITE "\033[37m"
 #define RESET "\033[37m"
 
-Controleur::Controleur(Partie* partie, QObject* parent) : QObject(parent), partie(partie) {}
+Controleur::Controleur(Partie* partie, QObject* parent) : QObject(parent), partie(partie), vuePlateau(nullptr) {}
 
 void Controleur::commencerPartie() {
     // emit miseAJourPlateau();
@@ -67,6 +67,8 @@ void Controleur::faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer) {
 void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
     // encapsuler logique
     std::cout << "faire la methode Controleur::placerPion" << std::endl;
+
+
 }
 
 void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {

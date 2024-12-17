@@ -88,7 +88,6 @@ private:
     QLabel* labelNomSauvegarde;
 
     QGraphicsScene* scene;
-    VuePlateau* vuePlateau;
     QGraphicsView* vuePartie;
 
     QGraphicsTextItem* texteTour;

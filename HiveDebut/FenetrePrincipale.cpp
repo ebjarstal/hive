@@ -322,8 +322,8 @@ void FenetrePrincipale::afficherPlateauDebut() {
     scene = new QGraphicsScene(this);
 
     // Créer une instance de VuePlateau en utilisant le plateau de la partie
-    vuePlateau = new VuePlateau(scene, &(controleur->partie->getPlateau()));
-    vuePlateau->initialiserPlateau(190, 100);
+    controleur->vuePlateau = new VuePlateau(scene, &(controleur->partie->getPlateau()));
+    controleur->vuePlateau->initialiserPlateau(190, 100);
 
     // Définir le fond de la scène en blanc
     scene->setBackgroundBrush(Qt::white);
@@ -339,7 +339,7 @@ void FenetrePrincipale::afficherPlateauDebut() {
     stackedWidget->setCurrentWidget(vuePartie);
 
     // Connecter tous les VuePion dans le plateau
-    QList<VuePion*> listePions = vuePlateau->getListePionsPlateau();
+    QList<VuePion*> listePions = controleur->vuePlateau->getListePionsPlateau();
     for (VuePion* pion : listePions) {
         connect(pion, &VuePion::pionClique, this, &FenetrePrincipale::onPionClique);
     }
@@ -420,8 +420,11 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
     // CAD si il y a un mouvement a faire lorsque on clique dessus
     if (std::find(pionsTemporairementGris.begin(), pionsTemporairementGris.end(), pion) != pionsTemporairementGris.end()
         && pionEnCoursDeTraitement != nullptr) {
-        // TODO:
+        // fait le mouvement qu'il y a à faire du cote de la grille de pion
+        // et de la grille de vuepion à l'aide des classes du jeu console
         controleur->faireMouvement(pionEnCoursDeTraitement, pion);
+
+        // on met l'affichage a jour
         // updateAffichage();
         return;
     }
@@ -534,7 +537,7 @@ void FenetrePrincipale::afficherEmplacementsPossibles(VuePion* pion) {
 
     // Parcourir les emplacements possibles et changer la couleur des VuePion correspondants en gris
     for (Mouvement* mouvement : emplacements) {
-        VuePion* vuePion = vuePlateau->getVuePion(mouvement->getLigne(), mouvement->getColonne(), mouvement->getZ());
+        VuePion* vuePion = controleur->vuePlateau->getVuePion(mouvement->getLigne(), mouvement->getColonne(), mouvement->getZ());
         if (vuePion != nullptr) {
             vuePion->setCouleur(Qt::black);
             vuePion->setOpacity(1);
@@ -556,7 +559,7 @@ void FenetrePrincipale::afficherDeplacementsPossibles(VuePion* pion) {
 
     // Parcourir les déplacements possibles et changer la couleur des VuePion correspondants en gris
     for (Mouvement* mouvement : deplacements) {
-        VuePion* vuePion = vuePlateau->getVuePion(mouvement->getLigne(), mouvement->getColonne(), mouvement->getZ());
+        VuePion* vuePion = controleur->vuePlateau->getVuePion(mouvement->getLigne(), mouvement->getColonne(), mouvement->getZ());
         if (vuePion != nullptr) {
             vuePion->setCouleur(Qt::black);
             vuePion->setOpacity(0.9);

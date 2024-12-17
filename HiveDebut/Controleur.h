@@ -13,6 +13,7 @@ class Controleur : public QObject {
 public:
     Controleur(Partie* partie, QObject* parent = nullptr);
     Partie* partie;
+    VuePlateau* vuePlateau;
 
     void faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer);
     void placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer);
