@@ -32,7 +32,7 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     connect(controleur, &Controleur::miseAJourPlateau, this, &FenetrePrincipale::onMiseAJourPlateau);
     connect(controleur, &Controleur::partieTerminee, this, &FenetrePrincipale::onPartieTerminee);
     connect(controleur, &Controleur::afficherPlateauDebut, this, &FenetrePrincipale::afficherPlateauDebut);
-    connect(controleur, &Controleur::afficherPiochesDebut, this, &FenetrePrincipale::afficherPiochesDebut);
+    connect(controleur, &Controleur::afficherPiochesEtAQuiDeJouer, this, &FenetrePrincipale::afficherPiochesEtAQuiDeJouer);
     connect(boutonCommencerPartieContreIA, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieContreIA);
     connect(boutonCommencerPartieDeuxJoueurs, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieDeuxJoueurs);
 }
@@ -345,7 +345,7 @@ void FenetrePrincipale::afficherPlateauDebut() {
     }
 }
 
-void FenetrePrincipale::afficherPiochesDebut() {
+void FenetrePrincipale::afficherPiochesEtAQuiDeJouer() {
     dessinerPanneauJoueur(0, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);  // panneau du joueur 1 (a gauche)
     dessinerPanneauJoueur(LARGEUR_ECRAN - 170, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);  // panneau du joueur 2 (a droite)
 
@@ -386,8 +386,6 @@ void FenetrePrincipale::dessinerPanneauJoueur(int x, int y, int largeur, int hau
     gradient.setColorAt(0.5, couleur);
     gradient.setColorAt(1, couleur.darker(150));
 
-    controleur->partie->getJoueur1()->getPionsEnMain(); // renvoie un vector de pions
-
     QBrush pinceau(gradient);
     panneau->setBrush(pinceau);
     panneau->setOpacity(opacite);
@@ -423,9 +421,11 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         // fait le mouvement qu'il y a à faire du cote de la grille de pion
         // et de la grille de vuepion à l'aide des classes du jeu console
         controleur->faireMouvement(pionEnCoursDeTraitement, pion);
+        resetPionsTemporairementModifies();
+        pionEnCoursDeTraitement = nullptr;
 
         // on met l'affichage a jour
-        // updateAffichage();
+        updateAffichage();
         return;
     }
 
@@ -584,5 +584,17 @@ void FenetrePrincipale::resetPionsTemporairementModifies() {
 }
 
 void FenetrePrincipale::updateAffichage() {
-    // TODO
+    scene->clear();
+
+    // afficher le tour
+    
+    // afficher le plateau
+    controleur->updateVuePlateau();
+    QList<VuePion*> listePions = controleur->vuePlateau->getListePionsPlateau();
+    for (VuePion* pion : listePions) {
+        connect(pion, &VuePion::pionClique, this, &FenetrePrincipale::onPionClique);
+    }
+
+    controleur->updatePioches();
+    afficherPiochesEtAQuiDeJouer();
 }

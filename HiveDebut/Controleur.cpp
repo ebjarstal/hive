@@ -21,25 +21,32 @@ void Controleur::commencerPartie() {
         aQuiDeJouer = QString::fromStdString(partie->getJoueur2()->getNom());
     }
 
-    // cree les pioches de chaque joueur
+    updatePioches();
+
+    emit afficherPlateauDebut();  // affiche le plateau en qt
+    emit afficherPiochesEtAQuiDeJouer();  // affiche les pioches en qt
+
+    // jouerTour() fait crash l'app qt
+}
+
+void Controleur::updatePioches() {
+    // Supprimer les VuePion existants dans les pioches
+    piocheJoueur1.clear();
+    piocheJoueur2.clear();
+
+    // Recréer les pioches de chaque joueur
     for (size_t i = 0; i < partie->getJoueur1()->getPionsEnMain().size(); i++) {
         VuePion* pion = new VuePion();
         pion->setAttributs(std::string(RED), false, QString::fromStdString(partie->getJoueur1()->getPionsEnMain()[i]->getType()));
         pion->setPionAssocie(partie->getJoueur1()->getPionsEnMain()[i]);
         piocheJoueur1.append(pion);
     }
-
     for (size_t j = 0; j < partie->getJoueur2()->getPionsEnMain().size(); j++) {
         VuePion* pion = new VuePion();
         pion->setAttributs(std::string(WHITE), false, QString::fromStdString(partie->getJoueur2()->getPionsEnMain()[j]->getType()));
         pion->setPionAssocie(partie->getJoueur2()->getPionsEnMain()[j]);
         piocheJoueur2.append(pion);
     }
-
-    emit afficherPlateauDebut();  // affiche le plateau en qt
-    emit afficherPiochesDebut();  // affiche les pioches en qt
-
-    // jouerTour() fait crash l'app qt
 }
 
 void Controleur::faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer) {
@@ -65,11 +72,25 @@ void Controleur::faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer) {
 }
 
 void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
-    // encapsuler logique
-    std::cout << "faire la methode Controleur::placerPion" << std::endl;
+    int new_ligne = pionARemplacer->getLigne();
+    int new_colonne = pionARemplacer->getColonne();
+    int new_couche = pionARemplacer->getZ();
 
+    // les trois lignes suivantes permettent d'executer le placement du pion du cote du vrai plateau
+    Mouvement* emplacementChoisi = new Mouvement(pionAPlacer->getPionAssocie()->getId(), new_ligne, new_colonne, new_couche, -1, -1, -1);
+    auto poserPionCommand = new MouvementCommand(*partie, emplacementChoisi);
+    GestionnaireCommand::executeCommand(*partie, poserPionCommand);
 
+    // retirer le pion de la pioche du joueur1
+    if (piocheJoueur1.removeOne(pionAPlacer)) {
+        piocheJoueur1.resize(piocheJoueur1.size());
+    }
+    // on check pour joueur2
+    else if (piocheJoueur2.removeOne(pionAPlacer)) {
+        piocheJoueur2.resize(piocheJoueur2.size());
+    }
 }
+
 
 void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
     // encapsuler logique
@@ -96,4 +117,15 @@ void Controleur::jouerTour() {
 void Controleur::annulerMouvement() {
     partie->annulerMouvement();
     emit miseAJourPlateau();
+}
+
+void Controleur::updateVuePlateau() {
+    // Supprimer les VuePion existants
+    //QList<VuePion*> listePions = vuePlateau->getListePionsPlateau();
+    //for (VuePion* pion : listePions) {
+    //    delete pion;
+    //}
+
+    // Réinitialiser le plateau
+    vuePlateau->initialiserPlateau(190, 100);
 }

@@ -42,7 +42,7 @@ constexpr auto qt_meta_stringdata_CLASSFenetrePrincipaleENDCLASS = QtMocHelpers:
     "ouvrirFileDialog",
     "chargerPartieSauvegarde",
     "afficherPlateauDebut",
-    "afficherPiochesDebut",
+    "afficherPiochesEtAQuiDeJouer",
     "dessinerPanneauJoueur",
     "x",
     "y",
@@ -124,7 +124,7 @@ Q_CONSTINIT const QMetaObject FenetrePrincipale::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'afficherPlateauDebut'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'afficherPiochesDebut'
+        // method 'afficherPiochesEtAQuiDeJouer'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'dessinerPanneauJoueur'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
@@ -159,7 +159,7 @@ void FenetrePrincipale::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         case 2: _t->ouvrirFileDialog(); break;
         case 3: _t->chargerPartieSauvegarde(); break;
         case 4: _t->afficherPlateauDebut(); break;
-        case 5: _t->afficherPiochesDebut(); break;
+        case 5: _t->afficherPiochesEtAQuiDeJouer(); break;
         case 6: _t->dessinerPanneauJoueur((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[3])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[4])),(*reinterpret_cast< std::add_pointer_t<QColor>>(_a[5])),(*reinterpret_cast< std::add_pointer_t<double>>(_a[6]))); break;
         case 7: _t->dessinerPionsPiochesJoueurs(); break;
         case 8: _t->onMiseAJourPlateau(); break;

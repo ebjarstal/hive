@@ -18,6 +18,8 @@ public:
     // getters
     QList<VuePion*> getListePionsPlateau() const;
     VuePion* getVuePion(int ligne, int colonne, int couche) const;
+    Plateau* getPlateau() { return plateau; }
+    std::vector<std::vector<std::vector<VuePion*>>> getGrilleVuePions() { return grilleVuePions; }
 
 private:
     QGraphicsScene* scene;

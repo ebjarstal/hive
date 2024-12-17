@@ -22,8 +22,10 @@ public:
     QColor  getCouleur();
     bool    getEstPose();
     QString getType();
-
     Pion* getPionAssocie() { return pionAssocie; }
+    int getLigne() { return ligne; }
+    int getColonne() { return colonne; }
+    int getZ() { return z; }
 
     // setters
     void setAttributs(std::string nouvelleCouleur, bool estPose, QString type);
@@ -35,6 +37,10 @@ public:
     void setCouleur(QColor nouvelleCouleur);
     void setEstPose(bool nouvelEtat);
     void setType(QString type);
+
+    void setLigne(int new_ligne) { ligne = new_ligne; }
+    void setColonne(int new_col) { colonne = new_col; }
+    void setZ(int new_z) { z = new_z; }
 
     // event
     void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -48,6 +54,11 @@ private:
     QColor  couleur;
     bool    estPose;
     QString type;
+
+    // pour les pions "vides", le pion associé est un nullptr donc on stocke les coordonnées ici
+    int ligne;
+    int colonne;
+    int z;
 
 signals:
     void pionClique(VuePion* pion);

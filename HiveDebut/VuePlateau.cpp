@@ -6,8 +6,7 @@ VuePlateau::VuePlateau(QGraphicsScene* scene, Plateau* plateau)
 }
 
 void VuePlateau::initialiserPlateau(int x, int y) {
-    scene->clear();
-    grilleVuePions.clear(); // Clear the grid when initializing the plateau
+    grilleVuePions.clear();
 
     int decalage_x = (LARGEUR_PIONS + ESPACEMENT_PIONS) / 2;
     int decalage_y = PRESQUE_DEUX_TIERS_HAUTEUR_PION + ESPACEMENT_PIONS;
@@ -41,6 +40,9 @@ void VuePlateau::creerLignePions(int x, int y, int ligne, int nb_colonnes) {
         else {
             vuePion->setCouleur(Qt::white);
             vuePion->setType(QString(""));
+            vuePion->setLigne(ligne);
+            vuePion->setColonne(i);
+            vuePion->setZ(0);
         }
         vuePion->setPionAssocie(pion);
         vuePion->setEstPose(true);

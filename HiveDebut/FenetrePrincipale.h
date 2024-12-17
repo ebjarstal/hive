@@ -112,7 +112,7 @@ private slots:
     void chargerPartieSauvegarde();
 
     void afficherPlateauDebut();
-    void afficherPiochesDebut();
+    void afficherPiochesEtAQuiDeJouer();
 
     void dessinerPanneauJoueur(int x, int y, int largeur, int hauteur, QColor couleur, double opacite);
     void dessinerPionsPiochesJoueurs();

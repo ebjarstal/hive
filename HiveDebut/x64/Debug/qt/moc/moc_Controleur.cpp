@@ -38,7 +38,7 @@ constexpr auto qt_meta_stringdata_CLASSControleurENDCLASS = QtMocHelpers::string
     "Controleur",
     "afficherPlateauDebut",
     "",
-    "afficherPiochesDebut",
+    "afficherPiochesEtAQuiDeJouer",
     "miseAJourPlateau",
     "partieTerminee",
     "message",
@@ -100,7 +100,7 @@ Q_CONSTINIT const QMetaObject Controleur::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<Controleur, std::true_type>,
         // method 'afficherPlateauDebut'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'afficherPiochesDebut'
+        // method 'afficherPiochesEtAQuiDeJouer'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'miseAJourPlateau'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
@@ -124,7 +124,7 @@ void Controleur::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         (void)_t;
         switch (_id) {
         case 0: _t->afficherPlateauDebut(); break;
-        case 1: _t->afficherPiochesDebut(); break;
+        case 1: _t->afficherPiochesEtAQuiDeJouer(); break;
         case 2: _t->miseAJourPlateau(); break;
         case 3: _t->partieTerminee((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 4: _t->commencerPartie(); break;
@@ -143,7 +143,7 @@ void Controleur::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         }
         {
             using _t = void (Controleur::*)();
-            if (_t _q_method = &Controleur::afficherPiochesDebut; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+            if (_t _q_method = &Controleur::afficherPiochesEtAQuiDeJouer; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
                 *result = 1;
                 return;
             }
@@ -202,7 +202,7 @@ void Controleur::afficherPlateauDebut()
 }
 
 // SIGNAL 1
-void Controleur::afficherPiochesDebut()
+void Controleur::afficherPiochesEtAQuiDeJouer()
 {
     QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
 }
