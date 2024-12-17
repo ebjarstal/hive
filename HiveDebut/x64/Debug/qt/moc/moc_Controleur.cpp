@@ -39,7 +39,6 @@ constexpr auto qt_meta_stringdata_CLASSControleurENDCLASS = QtMocHelpers::string
     "afficherPlateauDebut",
     "",
     "afficherPiochesEtAQuiDeJouer",
-    "miseAJourPlateau",
     "partieTerminee",
     "message",
     "commencerPartie",
@@ -57,29 +56,27 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSControleurENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       4,       // signalCount
+       3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   56,    2, 0x06,    1 /* Public */,
-       3,    0,   57,    2, 0x06,    2 /* Public */,
-       4,    0,   58,    2, 0x06,    3 /* Public */,
-       5,    1,   59,    2, 0x06,    4 /* Public */,
+       1,    0,   50,    2, 0x06,    1 /* Public */,
+       3,    0,   51,    2, 0x06,    2 /* Public */,
+       4,    1,   52,    2, 0x06,    3 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       7,    0,   62,    2, 0x0a,    6 /* Public */,
-       8,    0,   63,    2, 0x0a,    7 /* Public */,
-       9,    0,   64,    2, 0x0a,    8 /* Public */,
+       6,    0,   55,    2, 0x0a,    5 /* Public */,
+       7,    0,   56,    2, 0x0a,    6 /* Public */,
+       8,    0,   57,    2, 0x0a,    7 /* Public */,
 
  // signals: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,    6,
+    QMetaType::Void, QMetaType::QString,    5,
 
  // slots: parameters
     QMetaType::Void,
@@ -102,8 +99,6 @@ Q_CONSTINIT const QMetaObject Controleur::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'afficherPiochesEtAQuiDeJouer'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'miseAJourPlateau'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'partieTerminee'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
@@ -125,11 +120,10 @@ void Controleur::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         switch (_id) {
         case 0: _t->afficherPlateauDebut(); break;
         case 1: _t->afficherPiochesEtAQuiDeJouer(); break;
-        case 2: _t->miseAJourPlateau(); break;
-        case 3: _t->partieTerminee((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 4: _t->commencerPartie(); break;
-        case 5: _t->jouerTour(); break;
-        case 6: _t->annulerMouvement(); break;
+        case 2: _t->partieTerminee((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 3: _t->commencerPartie(); break;
+        case 4: _t->jouerTour(); break;
+        case 5: _t->annulerMouvement(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -149,16 +143,9 @@ void Controleur::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             }
         }
         {
-            using _t = void (Controleur::*)();
-            if (_t _q_method = &Controleur::miseAJourPlateau; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
-                *result = 2;
-                return;
-            }
-        }
-        {
             using _t = void (Controleur::*)(const QString & );
             if (_t _q_method = &Controleur::partieTerminee; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
-                *result = 3;
+                *result = 2;
                 return;
             }
         }
@@ -184,13 +171,13 @@ int Controleur::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 6;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 6)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 7;
+        _id -= 6;
     }
     return _id;
 }
@@ -208,15 +195,9 @@ void Controleur::afficherPiochesEtAQuiDeJouer()
 }
 
 // SIGNAL 2
-void Controleur::miseAJourPlateau()
-{
-    QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
-}
-
-// SIGNAL 3
 void Controleur::partieTerminee(const QString & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
-    QMetaObject::activate(this, &staticMetaObject, 3, _a);
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 QT_WARNING_POP

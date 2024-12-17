@@ -117,7 +117,6 @@ private slots:
     void dessinerPanneauJoueur(int x, int y, int largeur, int hauteur, QColor couleur, double opacite);
     void dessinerPionsPiochesJoueurs();
 
-    void onMiseAJourPlateau();
     void onPartieTerminee(const QString& message);
 
     void onPionClique(VuePion* pion);

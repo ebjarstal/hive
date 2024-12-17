@@ -42,7 +42,6 @@ private:
 signals:
     void afficherPlateauDebut();
     void afficherPiochesEtAQuiDeJouer();
-    void miseAJourPlateau();
     void partieTerminee(const QString& message);
 
 public slots:

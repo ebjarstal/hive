@@ -29,7 +29,6 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     controleur = new Controleur(partie, this);
 
     // Connecter les signaux et les slots
-    connect(controleur, &Controleur::miseAJourPlateau, this, &FenetrePrincipale::onMiseAJourPlateau);
     connect(controleur, &Controleur::partieTerminee, this, &FenetrePrincipale::onPartieTerminee);
     connect(controleur, &Controleur::afficherPlateauDebut, this, &FenetrePrincipale::afficherPlateauDebut);
     connect(controleur, &Controleur::afficherPiochesEtAQuiDeJouer, this, &FenetrePrincipale::afficherPiochesEtAQuiDeJouer);
@@ -39,10 +38,6 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
 
 FenetrePrincipale::~FenetrePrincipale() {
     // TODO
-}
-
-void FenetrePrincipale::onMiseAJourPlateau() {
-    std::cout << "Execution de onMiseAJourPlateau()" << std::endl;
 }
 
 void FenetrePrincipale::onPartieTerminee(const QString& message) {
@@ -421,6 +416,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         // fait le mouvement qu'il y a à faire du cote de la grille de pion
         // et de la grille de vuepion à l'aide des classes du jeu console
         controleur->faireMouvement(pionEnCoursDeTraitement, pion);
+        controleur->jouerTour();
         resetPionsTemporairementModifies();
         pionEnCoursDeTraitement = nullptr;
 
@@ -439,7 +435,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         }
 
         // si click sur pion joueur 1
-        else if (pion->getCouleur() == Qt::darkRed) {
+        else if (pion->getCouleur() == Qt::darkRed && controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur1()->getNom())) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
                 pionEnCoursDeTraitement = pion;
@@ -455,7 +451,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         }
 
         // si click sur pion joueur 2
-        else if (pion->getCouleur() == Qt::darkBlue) {
+        else if (pion->getCouleur() == Qt::darkBlue && controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur2()->getNom())) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
                 pionEnCoursDeTraitement = pion;
@@ -480,7 +476,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         }
 
         // si click sur pion joueur 1
-        else if (pion->getCouleur() == Qt::darkRed) {
+        else if (pion->getCouleur() == Qt::darkRed && controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur1()->getNom())) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
                 afficherEmplacementsPossibles(pion);
@@ -496,7 +492,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         }
 
         // si click sur pion joueur 2
-        else if (pion->getCouleur() == Qt::darkBlue) {
+        else if (pion->getCouleur() == Qt::darkBlue && controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur2()->getNom())) {
             // si click sur pion pioche
             if (pion->getEstPose() == false) {
                 afficherEmplacementsPossibles(pion);

@@ -93,9 +93,9 @@ void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
 
 
 void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
-    int old_ligne = pionADeplacer->getLigne();
-    int old_colonne = pionADeplacer->getColonne();
-    int old_couche = pionADeplacer->getZ();
+    int old_ligne = pionADeplacer->getPionAssocie()->getLigne();
+    int old_colonne = pionADeplacer->getPionAssocie()->getColonne();
+    int old_couche = pionADeplacer->getPionAssocie()->getZ();
 
     int new_ligne = pionARemplacer->getLigne();
     int new_colonne = pionARemplacer->getColonne();
@@ -121,9 +121,19 @@ void Controleur::setAQuiDeJouer(QString nomJoueur) {
 }
 
 void Controleur::jouerTour() {
-    Joueur* joueurCourant = (partie->getNombreTour() % 2 == 1) ? partie->getJoueur1() : partie->getJoueur2();
-    partie->jouerUnTour(joueurCourant);
-    emit miseAJourPlateau();
+    // Alterner le joueur courant
+    if (aQuiDeJouer == QString::fromStdString(partie->getJoueur1()->getNom())) {
+        aQuiDeJouer = QString::fromStdString(partie->getJoueur2()->getNom());
+    }
+    else {
+        aQuiDeJouer = QString::fromStdString(partie->getJoueur1()->getNom());
+    }
+
+    // Incrémenter le nombre de tours joués
+    partie->setNombreTour(partie->getNombreTour() + 1);
+
+    // Sauvegarder la partie après chaque tour
+    GestionnaireSauvegarde::sauvegarde(*partie);
 
     // Déterminer le gagnant après chaque tour
     if (partie->partieTerminee()) {
@@ -135,7 +145,6 @@ void Controleur::jouerTour() {
 
 void Controleur::annulerMouvement() {
     partie->annulerMouvement();
-    emit miseAJourPlateau();
 }
 
 void Controleur::updateVuePlateau() {
