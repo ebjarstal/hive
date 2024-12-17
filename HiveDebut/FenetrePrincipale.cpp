@@ -416,11 +416,12 @@ void FenetrePrincipale::dessinerPionsPiochesJoueurs() {
 
 void FenetrePrincipale::onPionClique(VuePion* pion) {
 
+    resetPionsTemporairementModifies();
+
     // si il n'y a pas encore de pion selectionne
     if (pionEnCoursDeTraitement == nullptr) {
         // si click sur pion vide
         if (pion->getType() == QString("") && pion->getEstPose() == true) {
-            resetPionsTemporairementGris();
             return;
         }
 
@@ -468,7 +469,6 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             // TODO:
             // controleur->placerPion(pion, pionEnCoursDeTraitement);
             // updateAffichage();
-            resetPionsTemporairementGris();
             pionEnCoursDeTraitement = nullptr;
             return;
         }
@@ -516,7 +516,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
 }
 
 void FenetrePrincipale::afficherEmplacementsPossibles(VuePion* pion) {
-    resetPionsTemporairementGris();
+    resetPionsTemporairementModifies();
 
     // Récupérer les emplacements possibles
     Pion* pionAssocie = pion->getPionAssocie();
@@ -531,10 +531,13 @@ void FenetrePrincipale::afficherEmplacementsPossibles(VuePion* pion) {
             pionsTemporairementGris.append(vuePion);
         }
     }
+
+    // change l'apparence du pion selectionne pour le remarquer plus facilement
+    pion->setCouleur(Qt::darkGray);
 }
 
 void FenetrePrincipale::afficherDeplacementsPossibles(VuePion* pion) {
-    resetPionsTemporairementGris();
+    resetPionsTemporairementModifies();
 
     // Récupérer les déplacements possibles
     Pion* pionAssocie = pion->getPionAssocie();
@@ -546,13 +549,20 @@ void FenetrePrincipale::afficherDeplacementsPossibles(VuePion* pion) {
         VuePion* vuePion = vuePlateau->getVuePion(mouvement->getLigne(), mouvement->getColonne(), mouvement->getZ());
         if (vuePion != nullptr) {
             vuePion->setCouleur(Qt::black);
-            vuePion->setOpacity(1);
+            vuePion->setOpacity(0.9);
             pionsTemporairementGris.append(vuePion);
         }
     }
+
+    // change l'apparence du pion selectionne pour le remarquer plus facilement
+    pion->setCouleur(Qt::darkGray);
 }
 
-void FenetrePrincipale::resetPionsTemporairementGris() {
+void FenetrePrincipale::resetPionsTemporairementModifies() {
+    if (pionEnCoursDeTraitement != nullptr) {
+        (pionEnCoursDeTraitement->getPionAssocie()->getCouleur() == RED) ? pionEnCoursDeTraitement->setCouleur(Qt::darkRed) : pionEnCoursDeTraitement->setCouleur(Qt::darkBlue);
+    }
+
     for (VuePion* pionCourant : pionsTemporairementGris) {
         pionCourant->setCouleur(Qt::white);
         pionCourant->setOpacity(0.2);

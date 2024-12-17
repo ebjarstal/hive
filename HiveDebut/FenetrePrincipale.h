@@ -103,7 +103,7 @@ private:
     void updateAffichage();
 
     QList<VuePion*> pionsTemporairementGris;
-    void resetPionsTemporairementGris();
+    void resetPionsTemporairementModifies();
 
 private slots:
     void commencerPartieContreIA();
