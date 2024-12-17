@@ -1,4 +1,4 @@
-Nombre de tour: 5
+Nombre de tour: 7
 Nombre d'undo: 2
 Joueur 1:
 Type: Humain
@@ -9,8 +9,6 @@ Pions en main:
   ID: 3  Type: S, Couleur: [31m
   ID: 4  Type: S, Couleur: [31m
   ID: 5  Type: F, Couleur: [31m
-  ID: 6  Type: F, Couleur: [31m
-  ID: 7  Type: F, Couleur: [31m
   ID: 9  Type: K, Couleur: [31m
   ID: 11  Type: A, Couleur: [31m
   ID: 12  Type: M, Couleur: [31m
@@ -19,7 +17,6 @@ Type: Humain
 Nom: bg
 Couleur: [37m
 Pions en main:
-  ID: 15  Type: S, Couleur: [37m
   ID: 16  Type: S, Couleur: [37m
   ID: 17  Type: F, Couleur: [37m
   ID: 19  Type: F, Couleur: [37m
@@ -28,13 +25,16 @@ Pions en main:
   ID: 22  Type: A, Couleur: [37m
   ID: 23  Type: A, Couleur: [37m
 Plateau:
+  Position: (8, 4, 0),   ID: 7,  Type: F, Couleur: [31m
   Position: (5, 5, 0),   ID: 1,  Type: R, Couleur: [31m
   Position: (6, 5, 0),   ID: 8,  Type: K, Couleur: [31m
+  Position: (7, 5, 0),   ID: 6,  Type: F, Couleur: [31m
   Position: (4, 6, 0),   ID: 24,  Type: M, Couleur: [37m
   Position: (5, 6, 0),   ID: 14,  Type: S, Couleur: [37m
   Position: (7, 6, 0),   ID: 10,  Type: A, Couleur: [31m
   Position: (5, 7, 0),   ID: 18,  Type: F, Couleur: [37m
   Position: (5, 8, 0),   ID: 13,  Type: R, Couleur: [37m
+  Position: (6, 8, 0),   ID: 15,  Type: S, Couleur: [37m
 Historique des mouvements:
 Pion ID: 1 De (-1, -1, -1) A (5, 5, 0) 1
 Pion ID: 14 De (-1, -1, -1) A (6, 5, 0) 2
@@ -44,3 +44,7 @@ Pion ID: 10 De (-1, -1, -1) A (4, 6, 0) 1
 Pion ID: 18 De (-1, -1, -1) A (7, 5, 0) 2
 Pion ID: 10 De (4, 6, 0) A (6, 7, 0) 1
 Pion ID: 13 De (-1, -1, -1) A (8, 5, 0) 2
+Pion ID: 6 De (-1, -1, -1) A (5, 7, 0) 1
+Pion ID: 15 De (-1, -1, -1) A (8, 4, 0) 2
+Pion ID: 7 De (-1, -1, -1) A (4, 8, 0) 1
+Pion ID: 15 De (8, 4, 0) A (8, 6, 0) 2

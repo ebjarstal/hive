@@ -437,7 +437,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             else {
                 pionEnCoursDeTraitement = pion;
                 // TODO: afficher les déplacements possibles
-                // afficherDeplacementsPossibles(pion);
+                afficherDeplacementsPossibles(pion);
                 return;
             }
         }
@@ -455,7 +455,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             else {
                 pionEnCoursDeTraitement = pion;
                 // TODO: afficher les déplacements possibles
-                // afficherDeplacementsPossibles(pion);
+                afficherDeplacementsPossibles(pion);
                 return;
             }
         }
@@ -468,6 +468,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             // TODO:
             // controleur->placerPion(pion, pionEnCoursDeTraitement);
             // updateAffichage();
+            resetPionsTemporairementGris();
             pionEnCoursDeTraitement = nullptr;
             return;
         }
@@ -487,6 +488,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
                 // controleur->placerPion(pion, pionEnCoursDeTraitement);
                 // updateAffichage();
                 pionEnCoursDeTraitement = pion;
+                afficherDeplacementsPossibles(pion);
                 return;
             }
         }
@@ -506,6 +508,7 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
                 // controleur->placerPion(pion, pionEnCoursDeTraitement);
                 // updateAffichage();
                 pionEnCoursDeTraitement = pion;
+                afficherDeplacementsPossibles(pion);
                 return;
             }
         }
@@ -523,8 +526,27 @@ void FenetrePrincipale::afficherEmplacementsPossibles(VuePion* pion) {
     for (Mouvement* mouvement : emplacements) {
         VuePion* vuePion = vuePlateau->getVuePion(mouvement->getLigne(), mouvement->getColonne(), mouvement->getZ());
         if (vuePion != nullptr) {
-            vuePion->setCouleur(Qt::darkGray);
-            vuePion->setOpacity(0.5);
+            vuePion->setCouleur(Qt::black);
+            vuePion->setOpacity(1);
+            pionsTemporairementGris.append(vuePion);
+        }
+    }
+}
+
+void FenetrePrincipale::afficherDeplacementsPossibles(VuePion* pion) {
+    resetPionsTemporairementGris();
+
+    // Récupérer les déplacements possibles
+    Pion* pionAssocie = pion->getPionAssocie();
+    Joueur* joueurAssocie = (pionAssocie->getCouleur() == RED) ? controleur->partie->getJoueur1() : controleur->partie->getJoueur2();
+    std::vector<Mouvement*> deplacements = pionAssocie->deplacementsPossibles(*pionAssocie, *joueurAssocie, controleur->partie->getPlateau());
+
+    // Parcourir les déplacements possibles et changer la couleur des VuePion correspondants en gris
+    for (Mouvement* mouvement : deplacements) {
+        VuePion* vuePion = vuePlateau->getVuePion(mouvement->getLigne(), mouvement->getColonne(), mouvement->getZ());
+        if (vuePion != nullptr) {
+            vuePion->setCouleur(Qt::black);
+            vuePion->setOpacity(1);
             pionsTemporairementGris.append(vuePion);
         }
     }
@@ -536,4 +558,8 @@ void FenetrePrincipale::resetPionsTemporairementGris() {
         pionCourant->setOpacity(0.2);
     }
     pionsTemporairementGris.clear();
+}
+
+void FenetrePrincipale::updateAffichage() {
+    // TODO
 }

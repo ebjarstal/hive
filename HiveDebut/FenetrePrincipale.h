@@ -99,6 +99,9 @@ private:
     Controleur* controleur;
 
     void afficherEmplacementsPossibles(VuePion* pion);
+    void afficherDeplacementsPossibles(VuePion* pion);
+    void updateAffichage();
+
     QList<VuePion*> pionsTemporairementGris;
     void resetPionsTemporairementGris();
 
