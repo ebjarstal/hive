@@ -14,6 +14,7 @@ public:
     Controleur(Partie* partie, QObject* parent = nullptr);
     Partie* partie;
 
+    void faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer);
     void placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer);
     void deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer);
 

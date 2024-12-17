@@ -416,6 +416,16 @@ void FenetrePrincipale::dessinerPionsPiochesJoueurs() {
 
 void FenetrePrincipale::onPionClique(VuePion* pion) {
 
+    // si le pion clique est un pion temporairement gris
+    // CAD si il y a un mouvement a faire lorsque on clique dessus
+    if (std::find(pionsTemporairementGris.begin(), pionsTemporairementGris.end(), pion) != pionsTemporairementGris.end()
+        && pionEnCoursDeTraitement != nullptr) {
+        // TODO:
+        controleur->faireMouvement(pionEnCoursDeTraitement, pion);
+        // updateAffichage();
+        return;
+    }
+
     resetPionsTemporairementModifies();
 
     // si il n'y a pas encore de pion selectionne

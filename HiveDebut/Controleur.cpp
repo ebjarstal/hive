@@ -42,6 +42,38 @@ void Controleur::commencerPartie() {
     // jouerTour() fait crash l'app qt
 }
 
+void Controleur::faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer) {
+    // s'assurer que les pions sont bien definis
+    if (pionABouger == nullptr || pionARemplacer == nullptr) {
+        return;
+    }
+
+    // s'assurer que le pion a remplacer est bien un pion deja pose sur le plateau
+    if (pionARemplacer->getEstPose() == false) {
+        return;
+    }
+
+    // determiner s'il s'agit d'un emplacement ou d'un deplacement
+    // s'il s'agit d'un emplacement:
+    if (pionABouger->getEstPose() == false) {
+        placerPion(pionABouger, pionARemplacer);
+    }
+    // s'il s'agit d'un deplacement
+    else {
+        deplacerPion(pionABouger, pionARemplacer);
+    }
+}
+
+void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
+    // encapsuler logique
+    std::cout << "faire la methode Controleur::placerPion" << std::endl;
+}
+
+void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
+    // encapsuler logique
+    std::cout << "faire la methode Controleur::deplacerPion" << std::endl;
+}
+
 void Controleur::setAQuiDeJouer(QString nomJoueur) {
     aQuiDeJouer = nomJoueur;
 }
@@ -62,14 +94,4 @@ void Controleur::jouerTour() {
 void Controleur::annulerMouvement() {
     partie->annulerMouvement();
     emit miseAJourPlateau();
-}
-
-void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
-    // encapsuler logique
-    std::cout << "faire la methode Controleur::placerPion" << std::endl;
-}
-
-void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
-    // encapsuler logique
-    std::cout << "faire la methode Controleur::deplacerPion" << std::endl;
 }
