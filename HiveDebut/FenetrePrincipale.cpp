@@ -32,6 +32,7 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     connect(controleur, &Controleur::partieTerminee, this, &FenetrePrincipale::onPartieTerminee);
     connect(controleur, &Controleur::afficherPlateauDebut, this, &FenetrePrincipale::afficherPlateauDebut);
     connect(controleur, &Controleur::afficherPiochesEtAQuiDeJouer, this, &FenetrePrincipale::afficherPiochesEtAQuiDeJouer);
+    connect(controleur, &Controleur::mouvementAnnule, this, &FenetrePrincipale::updateAffichage);
     connect(boutonCommencerPartieContreIA, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieContreIA);
     connect(boutonCommencerPartieDeuxJoueurs, &QPushButton::clicked, this, &FenetrePrincipale::commencerPartieDeuxJoueurs);
 }
@@ -341,8 +342,8 @@ void FenetrePrincipale::afficherPlateauDebut() {
 }
 
 void FenetrePrincipale::afficherPiochesEtAQuiDeJouer() {
-    dessinerPanneauJoueur(0, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);  // panneau du joueur 1 (a gauche)
-    dessinerPanneauJoueur(LARGEUR_ECRAN - 170, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);  // panneau du joueur 2 (a droite)
+    dessinerPanneauJoueur(0, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);  // panneau du joueur 1 (à gauche)
+    dessinerPanneauJoueur(LARGEUR_ECRAN - 170, 0, 170, HAUTEUR_ECRAN, Qt::darkGray, 0.5);  // panneau du joueur 2 (à droite)
 
     QGraphicsTextItem* textePiocheJoueur1 = new QGraphicsTextItem("Pioche " + QString::fromStdString(controleur->partie->getJoueur1()->getNom()));
     // Définir la position du texte
@@ -367,9 +368,24 @@ void FenetrePrincipale::afficherPiochesEtAQuiDeJouer() {
     texteTour->setDefaultTextColor(Qt::black);
     scene->addItem(texteTour);
 
-    // on dessine les pions de départ des joueurs
+    // Ajouter les boutons d'annulation de mouvement
+    boutonAnnulerMouvementJoueur1 = new QPushButton("Retour arrière", this);
+    boutonAnnulerMouvementJoueur1->setGeometry(220, 30, 150, 30);
+    boutonAnnulerMouvementJoueur1->show();
+
+    boutonAnnulerMouvementJoueur2 = new QPushButton("Retour arrière", this);
+    boutonAnnulerMouvementJoueur2->setGeometry(650, 30, 150, 30);
+    boutonAnnulerMouvementJoueur2->show();
+
+    // Connecter les boutons aux slots appropriés
+    connect(boutonAnnulerMouvementJoueur1, &QPushButton::clicked, controleur, &Controleur::annulerMouvementJoueur1);
+    connect(boutonAnnulerMouvementJoueur2, &QPushButton::clicked, controleur, &Controleur::annulerMouvementJoueur2);
+
+    // Dessiner les pions de départ des joueurs
     dessinerPionsPiochesJoueurs();
 }
+
+
 
 void FenetrePrincipale::dessinerPanneauJoueur(int x, int y, int largeur, int hauteur, QColor couleur, double opacite) {
     // dessine un panneau aux coordonnées spécifiées avec les propriétés spécifiées

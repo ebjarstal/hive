@@ -90,6 +90,9 @@ private:
     QGraphicsScene* scene;
     QGraphicsView* vuePartie;
 
+    QPushButton* boutonAnnulerMouvementJoueur1;
+    QPushButton* boutonAnnulerMouvementJoueur2;
+
     QGraphicsTextItem* texteTour;
 
     VuePion* pionEnCoursDeTraitement;
@@ -99,7 +102,6 @@ private:
 
     void afficherEmplacementsPossibles(VuePion* pion);
     void afficherDeplacementsPossibles(VuePion* pion);
-    void updateAffichage();
 
     QList<VuePion*> pionsTemporairementGris;
     void resetPionsTemporairementModifies();
@@ -113,6 +115,7 @@ private slots:
 
     void afficherPlateauDebut();
     void afficherPiochesEtAQuiDeJouer();
+    void updateAffichage();
 
     void dessinerPanneauJoueur(int x, int y, int largeur, int hauteur, QColor couleur, double opacite);
     void dessinerPionsPiochesJoueurs();

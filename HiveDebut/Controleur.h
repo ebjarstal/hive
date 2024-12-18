@@ -40,6 +40,7 @@ private:
     QString aQuiDeJouer;
 
 signals:
+    void mouvementAnnule();
     void afficherPlateauDebut();
     void afficherPiochesEtAQuiDeJouer();
     void partieTerminee(const QString& message);
@@ -47,5 +48,6 @@ signals:
 public slots:
     void commencerPartie();
     void jouerTour();
-    void annulerMouvement();
+    void annulerMouvementJoueur1();
+    void annulerMouvementJoueur2();
 };

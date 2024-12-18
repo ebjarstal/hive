@@ -143,17 +143,21 @@ void Controleur::jouerTour() {
     }
 }
 
-void Controleur::annulerMouvement() {
-    partie->annulerMouvement();
+void Controleur::annulerMouvementJoueur1() {
+    if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur1()->getNom()) && partie->getNbUndo() > 0) {
+        partie->annulerMouvement();
+        emit mouvementAnnule();
+    }
+}
+
+void Controleur::annulerMouvementJoueur2() {
+    if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur2()->getNom()) && partie->getNbUndo() > 0) {
+        partie->annulerMouvement();
+        emit mouvementAnnule();
+    }
 }
 
 void Controleur::updateVuePlateau() {
-    // Supprimer les VuePion existants
-    //QList<VuePion*> listePions = vuePlateau->getListePionsPlateau();
-    //for (VuePion* pion : listePions) {
-    //    delete pion;
-    //}
-
     // Réinitialiser le plateau
     vuePlateau->initialiserPlateau(190, 100);
 }
