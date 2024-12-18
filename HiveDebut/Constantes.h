@@ -11,6 +11,7 @@ const int    INDEX_PARTIE_EN_COURS = 5;
 
 const int    SCALE_BY = 25;
 const int    TAILLE_PLATEAU = 12;
+const int    NB_COUCHES = 5;
 const int    ESPACEMENT_PIONS = 2;
 const int    ESPACEMENT_VERTICAL_PIONS_PIOCHE = 5;
 const int    NB_PIONS_DEBUT = 5;

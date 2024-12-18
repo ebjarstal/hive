@@ -31,24 +31,39 @@ void VuePlateau::initialiserPlateau(int x, int y) {
 void VuePlateau::creerLignePions(int x, int y, int ligne, int nb_colonnes) {
     // crée une ligne de pions aux coordonnées indiquées (x, y) avec le nombre de colonnes spécifié (nb_colonnes)
     for (size_t i = 0, n = nb_colonnes; i < n; i++) {
-        Pion* pion = plateau->getGrille()[ligne][i][0];
-        VuePion* vuePion = new VuePion();
-        if (pion != nullptr) {
-            vuePion->setCouleur(pion->getCouleur());
-            vuePion->setType(QString::fromStdString(pion->getType()));
+        VuePion* vuePion = nullptr;
+        for (int z = 0; z < plateau->getNbCouches(); ++z) {
+            Pion* pion = plateau->getGrille()[ligne][i][z];
+            if (pion != nullptr) {
+                vuePion = new VuePion();
+                vuePion->setCouleur(pion->getCouleur());
+                vuePion->setType(QString::fromStdString(pion->getType()));
+                vuePion->setPionAssocie(pion);
+                vuePion->setEstPose(true);
+                vuePion->setLigne(ligne);
+                vuePion->setColonne(i);
+                vuePion->setZ(z);
+                grilleVuePions[ligne][i][z] = vuePion;
+            }
+        }
+        if (vuePion != nullptr) {
+            vuePion->setPos(x + (LARGEUR_PIONS + ESPACEMENT_PIONS) * i, y);
+            scene->addItem(vuePion);
         }
         else {
+            // Si aucune vuePion n'a été créée, créer une vuePion vide
+            vuePion = new VuePion();
             vuePion->setCouleur(Qt::white);
             vuePion->setType(QString(""));
+            vuePion->setPionAssocie(nullptr);
+            vuePion->setEstPose(true);
             vuePion->setLigne(ligne);
             vuePion->setColonne(i);
             vuePion->setZ(0);
+            vuePion->setPos(x + (LARGEUR_PIONS + ESPACEMENT_PIONS) * i, y);
+            scene->addItem(vuePion);
+            grilleVuePions[ligne][i][0] = vuePion;
         }
-        vuePion->setPionAssocie(pion);
-        vuePion->setEstPose(true);
-        vuePion->setPos(x + (LARGEUR_PIONS + ESPACEMENT_PIONS) * i, y);
-        scene->addItem(vuePion);
-        grilleVuePions[ligne][i][0] = vuePion;
     }
 }
 

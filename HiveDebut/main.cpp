@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     cin >> choix;
     if (choix == 0) {
 
-        Plateau plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, 5);
+        Plateau plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, NB_COUCHES);
         Partie partie(plateau);
         partie.setup();
         while (partie.partieTerminee() != true) {
