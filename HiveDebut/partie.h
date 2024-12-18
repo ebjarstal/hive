@@ -29,7 +29,7 @@ using namespace std;
 class Partie {
 private:
     Plateau& plateau;
-    UsineDePions* usine;
+    UsineDePions usine;
     std::stack<Command*> historique;
     Joueur* joueur1;
     Joueur* joueur2;
@@ -37,7 +37,7 @@ private:
 public:
 
     string nomPartie;
-    Partie(Plateau& p) : joueur1(nullptr), joueur2(nullptr), nombreTour(1), plateau(p), usine(nullptr) {}
+    Partie(Plateau& p) : joueur1(nullptr), joueur2(nullptr), nombreTour(1), plateau(p), usine() {}
     ~Partie();
     Plateau& getPlateau() { return plateau; }
     unsigned int getNombreTour() const { return nombreTour; }
