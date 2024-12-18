@@ -1,4 +1,4 @@
-Nombre de tour: 2
+Nombre de tour: 1
 Nombre d'undo: 2
 Joueur 1:
 Type: Humain
@@ -16,9 +16,10 @@ Pions en main:
   ID: 9  Type: K, Couleur: [31m
   ID: 10  Type: A, Couleur: [31m
   ID: 11  Type: A, Couleur: [31m
+  ID: 12  Type: M, Couleur: [31m
 Joueur 2:
 Type: Humain
-Nom: karl
+Nom: jouglet
 Couleur: [37m
 Pions en main:
   ID: 13  Type: R, Couleur: [37m
@@ -31,10 +32,7 @@ Pions en main:
   ID: 20  Type: K, Couleur: [37m
   ID: 21  Type: K, Couleur: [37m
   ID: 22  Type: A, Couleur: [37m
+  ID: 23  Type: A, Couleur: [37m
   ID: 24  Type: M, Couleur: [37m
 Plateau:
-  Position: (5, 5, 0),   ID: 12,  Type: M, Couleur: [31m
-  Position: (6, 5, 0),   ID: 23,  Type: A, Couleur: [37m
 Historique des mouvements:
-Pion ID: 12 De (-1, -1, -1) A (5, 5, 0) 1
-Pion ID: 23 De (-1, -1, -1) A (5, 6, 0) 2
