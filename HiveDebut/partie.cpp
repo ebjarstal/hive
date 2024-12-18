@@ -114,7 +114,7 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
 
 void Partie::choixExtension() {
     std::cout << "Voici les extensions disponible, veuillez choisir si vous voulez les activer ou non:\n";
-    std::cout << "(Pour plus d'info, bah dommage)\n";
+    std::cout << "(Pour plus d'info, voir les tables)\n";
     for (const auto& pair : usine->getNombreDePions()) {
         const std::string& type = pair.first;              // Clé (type)
         const std::pair<unsigned int, bool>& data = pair.second; // Valeur (nombre et état)
