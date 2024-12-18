@@ -18,11 +18,6 @@ public:
     Pion* creerPion(const std::string& type, const std::string& couleur);
     Pion* creerPion(int id, const std::string& type, const std::string& couleur);
 
-    // Méthode pour ajouter un nouveau type de pion (ex. pour des extensions)
-    /*void ajouterExtension(const std::string& type, unsigned int nombre) {
-        nombreDePions[type] = { nombre, false };
-    }*/
-
     //Méthode qui active une extension
     void setExtensionActive(const std::string& type) {
         if (nombreDePions.find(type) != nombreDePions.end()) {
@@ -30,15 +25,15 @@ public:
         }
     }
 
-    //Méthode qui active ou désactive une extension /!\ ne pas utiliser sur les insectes du jeu de base
-    void setOrUnsetExtensionActive(const std::string& type) {
+    //Méthode qui active ou désactive une extension 
+    /*void setOrUnsetExtensionActive(const std::string& type) {
         if (nombreDePions.find(type) != nombreDePions.end()) {
             if (type != "R" && type != "K" && type != "F" && type != "S" && type != "A") {
                 bool etat = nombreDePions[type].second;
                 nombreDePions[type].second = !etat;
             }
         }
-    }
+    }*/
 
     // Méthode pour lister les pions disponibles et leur nombre
     std::map<std::string, std::pair<unsigned int, bool>> getNombreDePions() const {

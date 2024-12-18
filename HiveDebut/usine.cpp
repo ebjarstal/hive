@@ -11,8 +11,9 @@ UsineDePions::UsineDePions() {
   
     //mettre les extension à false de base
     nombreDePions["X"] = { 1, false };  // Coccinelle
-    nombreDePions["C"] = { 1, false };  // Cloporte
     nombreDePions["M"] = { 1, false };  // Moustique
+
+    //nombreDePions["C"] = { 1, false };  // Cloporte --> pas implémenté
 
     //ajoute des types si besoin de plus
 }
@@ -27,8 +28,8 @@ Pion* UsineDePions::creerPion(const std::string& type, const std::string& couleu
         if (type == "K") return new Scarabee(couleur);
         if (type == "A") return new Araignee(couleur);
         if (type == "X") return new Coccinelle(couleur);
-        if (type == "C") return new Cloporte(couleur);
         if (type == "M") return new Moustique(couleur);
+        // if (type == "C") return new Cloporte(couleur);
     }
     return nullptr;  // Retourne nullptr si le type est invalide ou s'il n'y a plus de pions disponibles
  }
@@ -45,8 +46,8 @@ Pion* UsineDePions::creerPion(int id, const std::string& type, const std::string
         if (type == "K") return new Scarabee(id, couleur);
         if (type == "A") return new Araignee(id, couleur);
         if (type == "X") return new Coccinelle(id, couleur);
-        if (type == "C") return new Cloporte(id, couleur);
         if (type == "M") return new Moustique(id, couleur);
+        //if (type == "C") return new Cloporte(id, couleur);
     }
     return nullptr;  // Retourne nullptr si le type est invalide ou s'il n'y a plus de pions disponibles
 }
