@@ -32,6 +32,8 @@ void VuePlateau::creerLignePions(int x, int y, int ligne, int nb_colonnes) {
     // crée une ligne de pions aux coordonnées indiquées (x, y) avec le nombre de colonnes spécifié (nb_colonnes)
     for (size_t i = 0, n = nb_colonnes; i < n; i++) {
         VuePion* vuePion = nullptr;
+        VuePion* plusHautVuePionNonVide = nullptr;
+
         for (int z = 0; z < plateau->getNbCouches(); ++z) {
             Pion* pion = plateau->getGrille()[ligne][i][z];
             if (pion != nullptr) {
@@ -44,25 +46,30 @@ void VuePlateau::creerLignePions(int x, int y, int ligne, int nb_colonnes) {
                 vuePion->setColonne(i);
                 vuePion->setZ(z);
                 grilleVuePions[ligne][i][z] = vuePion;
+                plusHautVuePionNonVide = vuePion;
+            }
+            else {
+                // Si aucune vuePion n'a été créée, créer une vuePion vide pour la première couche et l'afficher
+                vuePion = new VuePion();
+                vuePion->setCouleur(Qt::white);
+                vuePion->setType(QString(""));
+                vuePion->setPionAssocie(nullptr);
+                vuePion->setEstPose(true);
+                vuePion->setLigne(ligne);
+                vuePion->setColonne(i);
+                vuePion->setZ(z);
+                vuePion->setPos(x + (LARGEUR_PIONS + ESPACEMENT_PIONS) * i, y);
+                grilleVuePions[ligne][i][z] = vuePion;
+                if (z == 0) {
+                    scene->addItem(vuePion);
+                }
             }
         }
-        if (vuePion != nullptr) {
-            vuePion->setPos(x + (LARGEUR_PIONS + ESPACEMENT_PIONS) * i, y);
-            scene->addItem(vuePion);
-        }
-        else {
-            // Si aucune vuePion n'a été créée, créer une vuePion vide
-            vuePion = new VuePion();
-            vuePion->setCouleur(Qt::white);
-            vuePion->setType(QString(""));
-            vuePion->setPionAssocie(nullptr);
-            vuePion->setEstPose(true);
-            vuePion->setLigne(ligne);
-            vuePion->setColonne(i);
-            vuePion->setZ(0);
-            vuePion->setPos(x + (LARGEUR_PIONS + ESPACEMENT_PIONS) * i, y);
-            scene->addItem(vuePion);
-            grilleVuePions[ligne][i][0] = vuePion;
+
+        if (plusHautVuePionNonVide != nullptr) {
+            // on affiche le plus haut vuepion non vide
+            plusHautVuePionNonVide->setPos(x + (LARGEUR_PIONS + ESPACEMENT_PIONS) * i, y);
+            scene->addItem(plusHautVuePionNonVide);
         }
     }
 }
@@ -85,6 +92,7 @@ VuePion* VuePlateau::getVuePion(int ligne, int colonne, int couche) const {
     if (ligne >= 0 && ligne < grilleVuePions.size() &&
         colonne >= 0 && colonne < grilleVuePions[ligne].size() &&
         couche >= 0 && couche < grilleVuePions[ligne][colonne].size()) {
+        std::cout << grilleVuePions[ligne][colonne][couche] << std::endl;
         return grilleVuePions[ligne][colonne][couche];
     }
     return nullptr;

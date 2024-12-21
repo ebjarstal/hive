@@ -567,11 +567,19 @@ void FenetrePrincipale::afficherDeplacementsPossibles(VuePion* pion) {
 
     // Parcourir les déplacements possibles et changer la couleur des VuePion correspondants en gris
     for (Mouvement* mouvement : deplacements) {
+        //std::cout << "De (" << mouvement->getOldLigne() << ", " << mouvement->getOldColonne() << ", " << mouvement->getOldZ() << ") à ("
+        //    << mouvement->getLigne() << ", " << mouvement->getColonne() << ", " << mouvement->getZ() << ")" << std::endl;
+
         VuePion* vuePion = controleur->vuePlateau->getVuePion(mouvement->getLigne(), mouvement->getColonne(), mouvement->getZ());
         if (vuePion != nullptr) {
             vuePion->setCouleur(Qt::black);
             vuePion->setOpacity(0.9);
             pionsTemporairementGris.append(vuePion);
+
+            // Vérifier si le vuePion est déjà dans la scène
+            if (!scene->items().contains(vuePion)) {
+                scene->addItem(vuePion);
+            }
         }
     }
 
@@ -587,6 +595,22 @@ void FenetrePrincipale::resetPionsTemporairementModifies() {
     for (VuePion* pionCourant : pionsTemporairementGris) {
         pionCourant->setCouleur(Qt::white);
         pionCourant->setOpacity(0.2);
+
+        if (pionCourant->getType().isEmpty() && pionCourant->getZ() > 0) {
+            int ligne = pionCourant->getLigne();
+            int colonne = pionCourant->getColonne();
+            int z = pionCourant->getZ();
+
+            bool foundNonEmptyBelow = false;
+            VuePion* vuePionBelow = controleur->vuePlateau->getVuePion(ligne, colonne, z-1);
+            if (vuePionBelow != nullptr && !vuePionBelow->getType().isEmpty()) {
+                foundNonEmptyBelow = true;
+            }
+
+            if (foundNonEmptyBelow) {
+                scene->removeItem(pionCourant);
+            }
+        }
     }
     pionsTemporairementGris.clear();
 }
