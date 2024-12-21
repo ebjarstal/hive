@@ -45,6 +45,7 @@ FenetrePrincipale::~FenetrePrincipale() {
 void FenetrePrincipale::onPartieTerminee(const QString& message) {
     // Afficher un message de fin de partie
     QMessageBox::information(this, "Partie terminée", message);
+    this->close();
 }
 
 QWidget* FenetrePrincipale::creerPage(const QString& title, QPushButton*& boutonRetour, bool ajouterBoutonRetour) {
@@ -219,12 +220,10 @@ void FenetrePrincipale::commencerPartieContreIA() {
         return;
     }
 
-    std::cout << "nomJoueur: " << nomJoueur.toStdString() << std::endl;
-    std::cout << "nomSauvegarde: " << nomSauvegarde.toStdString() << std::endl;
-    std::cout << "nbUndo: " << nbUndo << std::endl;
-
     Joueur* joueur1 = new JoueurHumain(nomJoueur.toStdString(), controleur->partie->initialiserPions(RED), RED, nbUndo,*(controleur->partie));
     Joueur* joueur2 = new JoueurIA("IA", controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie), nbUndo);
+    controleur->partie->setJoueur1(joueur1);
+    controleur->partie->setJoueur2(joueur2);
 
     controleur->partie->setNomPartie(nomSauvegarde.toStdString());
     controleur->partie->getJoueur1()->setNbUndo(nbUndo);
@@ -248,26 +247,15 @@ void FenetrePrincipale::commencerPartieDeuxJoueurs() {
         return;
     }
 
-    std::cout << "nomJoueur1: " << nomJoueur1.toStdString() << std::endl;
-    std::cout << "nomJoueur2: " << nomJoueur2.toStdString() << std::endl;
-    std::cout << "nomSauvegarde: " << nomSauvegarde.toStdString() << std::endl;
-    std::cout << "nbUndo: " << nbUndo << std::endl;
-
     Joueur* joueur1 = new JoueurHumain(nomJoueur1.toStdString(), controleur->partie->initialiserPions(RED), RED, nbUndo, *(controleur->partie));
     Joueur* joueur2 = new JoueurHumain(nomJoueur2.toStdString(), controleur->partie->initialiserPions(WHITE), WHITE, nbUndo, *(controleur->partie));
     controleur->partie->setJoueur1(joueur1);
     controleur->partie->setJoueur2(joueur2);
 
-    std::cout << "1" << std::endl;
-
     controleur->partie->setNomPartie(nomSauvegarde.toStdString());
-    std::cout << "1.1" << std::endl;
     controleur->partie->getJoueur1()->setNbUndo(nbUndo);
-    std::cout << "1.2" << std::endl;
     controleur->partie->getJoueur2()->setNbUndo(nbUndo);
-    std::cout << "1.3" << std::endl;
     controleur->partie->setJoueur1(joueur1);
-    std::cout << "1.4" << std::endl;
     controleur->partie->setJoueur2(joueur2);
     // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
 
@@ -286,7 +274,6 @@ void FenetrePrincipale::chargerPartieSauvegarde() {
     partie->setNomPartie(nomFichierSauvegardeStd);
 
     if (GestionnaireSauvegarde::chargerPartie(*partie)) {
-        std::cout << "Partie chargée avec succès depuis " << nomFichierSauvegardeStd << std::endl;
         controleur->commencerPartie();
         stackedWidget->setCurrentIndex(INDEX_PARTIE_EN_COURS); // Rediriger vers la page "Partie en cours"
     }
@@ -601,13 +588,13 @@ void FenetrePrincipale::resetPionsTemporairementModifies() {
             int colonne = pionCourant->getColonne();
             int z = pionCourant->getZ();
 
-            bool foundNonEmptyBelow = false;
+            bool existePionDessousNonVide = false;
             VuePion* vuePionBelow = controleur->vuePlateau->getVuePion(ligne, colonne, z-1);
             if (vuePionBelow != nullptr && !vuePionBelow->getType().isEmpty()) {
-                foundNonEmptyBelow = true;
+                existePionDessousNonVide = true;
             }
 
-            if (foundNonEmptyBelow) {
+            if (existePionDessousNonVide) {
                 scene->removeItem(pionCourant);
             }
         }

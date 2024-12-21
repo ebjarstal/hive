@@ -92,7 +92,6 @@ VuePion* VuePlateau::getVuePion(int ligne, int colonne, int couche) const {
     if (ligne >= 0 && ligne < grilleVuePions.size() &&
         colonne >= 0 && colonne < grilleVuePions[ligne].size() &&
         couche >= 0 && couche < grilleVuePions[ligne][colonne].size()) {
-        std::cout << grilleVuePions[ligne][colonne][couche] << std::endl;
         return grilleVuePions[ligne][colonne][couche];
     }
     return nullptr;

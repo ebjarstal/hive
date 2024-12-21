@@ -9,9 +9,6 @@
 Controleur::Controleur(Partie* partie, QObject* parent) : QObject(parent), partie(partie), vuePlateau(nullptr) {}
 
 void Controleur::commencerPartie() {
-    // emit miseAJourPlateau();
-
-    std::cout << "2" << std::endl;
 
     GestionnaireSauvegarde::sauvegarde(*partie);  // sauvegarde la nouvelle partie
     partie->getPlateau().afficher();  // affiche le plateau en console (a supprimer)
@@ -27,8 +24,6 @@ void Controleur::commencerPartie() {
 
     emit afficherPlateauDebut();  // affiche le plateau en qt
     emit afficherPiochesEtAQuiDeJouer();  // affiche les pioches en qt
-
-    // jouerTour() fait crash l'app qt
 }
 
 void Controleur::updatePioches() {
@@ -123,6 +118,7 @@ void Controleur::setAQuiDeJouer(QString nomJoueur) {
 }
 
 void Controleur::jouerTour() {
+
     // Alterner le joueur courant
     if (aQuiDeJouer == QString::fromStdString(partie->getJoueur1()->getNom())) {
         aQuiDeJouer = QString::fromStdString(partie->getJoueur2()->getNom());
@@ -131,8 +127,17 @@ void Controleur::jouerTour() {
         aQuiDeJouer = QString::fromStdString(partie->getJoueur1()->getNom());
     }
 
+    // faire jouer l'ia si c'est à son tour
+    if (aQuiDeJouer == QString("IA")) {
+        partie->getJoueur2()->Jouer(partie->getPlateau(), *partie);
+        aQuiDeJouer = QString::fromStdString(partie->getJoueur1()->getNom());
+        partie->setNombreTour(partie->getNombreTour() + 1);
+    }
+
     // Incrémenter le nombre de tours joués
-    partie->setNombreTour(partie->getNombreTour() + 1);
+    if (aQuiDeJouer == QString::fromStdString(partie->getJoueur2()->getNom())) {
+        partie->setNombreTour(partie->getNombreTour() + 1);
+    }
 
     // Sauvegarder la partie après chaque tour
     GestionnaireSauvegarde::sauvegarde(*partie);
