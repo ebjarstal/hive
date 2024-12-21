@@ -127,7 +127,7 @@ void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau, std::vector<std::tu
         int colonne = std::get<2>(pionsSurPlateau[i]);
         int z = std::get<3>(pionsSurPlateau[i]);
 
-        std::cout << i << ": (" << pionsEnMain[i]->getType() << ") " << pionsEnMain[i]->getNom()<< " en (" << ligne << ", " << colonne << ", " << z << ")" << std::endl;
+        std::cout << i << ": (" << pion->getType() << ") " << pion->getNom()<< " en (" << ligne << ", " << colonne << ", " << z << ")" << std::endl;
     }
 }
 
