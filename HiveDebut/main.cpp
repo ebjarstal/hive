@@ -14,7 +14,8 @@ int main() {
     unsigned int length = 20;
 
     Plateau plateau(length, length, 5);
-    Partie partie(plateau);
+    UsineDePions* usine = new UsineDePions;
+    Partie partie(plateau, usine);
     partie.setup();
     while (partie.partieTerminee() != true) {
         GestionnaireSauvegarde::sauvegarde(partie);

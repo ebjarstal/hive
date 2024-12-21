@@ -37,7 +37,7 @@ private:
 public:
 
     string nomPartie;
-    Partie(Plateau& p) : joueur1(nullptr), joueur2(nullptr), nombreTour(1), plateau(p), usine(nullptr) {}
+    Partie(Plateau& p, UsineDePions* u) : joueur1(nullptr), joueur2(nullptr), nombreTour(1), plateau(p), usine(u) {}
     ~Partie();
     Plateau& getPlateau() { return plateau; }
     unsigned int getNombreTour() const { return nombreTour; }
@@ -59,6 +59,7 @@ public:
     void creationPartie(const std::string dossierSauvegarde);  // Cree une partie
     void choixExtension();
     std::vector<Pion*> initialiserPions(const std::string& couleur);  // Initialise les pions des 2 joueurs
+    UsineDePions* getUsine() const { return usine; }
 
     void jouerUnTour(Joueur* j);
 
