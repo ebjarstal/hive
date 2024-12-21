@@ -97,14 +97,14 @@ Pion* JoueurHumain::choisirPionSurPlateau(Plateau& plateau, std::vector<std::tup
 void JoueurHumain::afficherPions(const std::vector<Pion*>& pions) {
     std::cout << "Pions disponibles en main : " << std::endl;
     for (size_t i = 0; i < pions.size(); ++i) {
-        std::cout << i << ": " << pions[i]->getType() << std::endl;
+        std::cout << i << ": (" << pionsEnMain[i]->getType() << ") " << pionsEnMain[i]->getNom() << std::endl;
     }
 }
 
 void JoueurHumain::afficherPionsEnMain() {
     std::cout << "Pions disponibles en main : " << std::endl;
     for (size_t i = 0; i < pionsEnMain.size(); ++i) {
-        std::cout << i << ": " << pionsEnMain[i]->getType() << std::endl;
+        std::cout << i << ": (" << pionsEnMain[i]->getType() << ") " << pionsEnMain[i]->getNom() << std::endl;
     }
 }
 
@@ -127,7 +127,7 @@ void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau, std::vector<std::tu
         int colonne = std::get<2>(pionsSurPlateau[i]);
         int z = std::get<3>(pionsSurPlateau[i]);
 
-        std::cout << i << ": " << pion->getType() << " en (" << ligne << ", " << colonne << ", " << z << ")" << std::endl;
+        std::cout << i << ": (" << pionsEnMain[i]->getType() << ") " << pionsEnMain[i]->getNom()<< " en (" << ligne << ", " << colonne << ", " << z << ")" << std::endl;
     }
 }
 
