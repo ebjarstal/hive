@@ -38,7 +38,7 @@ Pion* UsineDePions::creerPion(const std::string& type, const std::string& couleu
 
 Pion* UsineDePions::creerPion(int id, const std::string& type, const std::string& couleur) {
     auto it = nombreDePions.find(type);
-    if (it != nombreDePions.end() && it->second.second && it->second.first > 0) {
+    if (it != nombreDePions.end() && it->second.first > 0) {
 
         if (type == "R") return new Reine(id, couleur);
         if (type == "S") return new Sauterelle(id, couleur);

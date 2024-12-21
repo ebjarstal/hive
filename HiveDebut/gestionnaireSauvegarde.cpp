@@ -55,8 +55,7 @@ bool GestionnaireSauvegarde::chargementSauvegardePartie(Partie& p, const std::st
     }
 }
 bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
-    UsineDePions usine_j1;
-    UsineDePions usine_j2;
+    UsineDePions* u = p.getUsine();
 
     std::string nomFichier = "sauvegardes/" + p.nomPartie + ".txt"; // Utiliser nomPartie pour le fichier
     std::ifstream fichier(nomFichier);
@@ -101,7 +100,7 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         // Extraire la couleur
         std::string couleur = ligne.substr(posCouleur + 11);
 
-        Pion* pion = usine_j1.creerPion(id, type, couleur); // Création avec ID
+        Pion* pion = u->creerPion(id, type, couleur); // Création avec ID
         Pion::ajouterPion(pion);
         pionsJ1.push_back(pion); // Ajouter aux pions du joueur
     }
@@ -141,7 +140,7 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         // Extraire la couleur
         std::string couleur = ligne.substr(posCouleur + 11);
 
-        Pion* pion = usine_j2.creerPion(id, type, couleur); // Création avec ID
+        Pion* pion = u->creerPion(id, type, couleur); // Création avec ID
         Pion::ajouterPion(pion);
         pionsJ2.push_back(pion);                  // Ajouter aux pions du joueur
     }
@@ -178,12 +177,12 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         std::string couleur = ligne.substr(posCouleur + 11);
         // Créer ou récupérer le pion et le placer sur le plateau
         if (couleur == p.getJoueur1()->getCouleur()) {
-            Pion* pion = usine_j1.creerPion(id, type, couleur); // Avec ID
+            Pion* pion = u->creerPion(id, type, couleur); // Avec ID
             Pion::ajouterPion(pion);
             GestionnairePions::setPion(lignePlateau, colonne, couche, pion, p.getPlateau());
         }
         else {
-            Pion* pion = usine_j2.creerPion(id, type, couleur); // Avec ID
+            Pion* pion = u->creerPion(id, type, couleur); // Avec ID
             Pion::ajouterPion(pion);
             GestionnairePions::setPion(lignePlateau, colonne, couche, pion, p.getPlateau());
         }
