@@ -1,0 +1,28 @@
+Nombre de tour: 3
+Joueur 1:
+Type: Humain
+Nom: j1
+NbUndo: 2
+Couleur: [31m
+Pions en main:
+  ID: 2  Type: A, Couleur: [31m
+  ID: 3  Type: F, Couleur: [31m
+  ID: 4  Type: F, Couleur: [31m
+  ID: 5  Type: F, Couleur: [31m
+  ID: 6  Type: K, Couleur: [31m
+  ID: 7  Type: K, Couleur: [31m
+  ID: 9  Type: S, Couleur: [31m
+  ID: 10  Type: S, Couleur: [31m
+  ID: 11  Type: S, Couleur: [31m
+Joueur 2:
+Type: Humain
+Nom: j2
+NbUndo: 2
+Couleur: [37m
+Pions en main:
+Plateau:
+  Position: (9, 8, 0),   ID: 1,  Type: A, Couleur: [31m
+  Position: (9, 9, 0),   ID: 8,  Type: R, Couleur: [31m
+Historique des mouvements:
+Pion ID: 8 De (-1, -1, -1) A (9, 9, 0) 1
+Pion ID: 1 De (-1, -1, -1) A (8, 9, 0) 1

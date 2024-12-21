@@ -24,7 +24,7 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     connect(boutonQuitter, &QPushButton::clicked, this, &FenetrePrincipale::close);
 
     // Initialiser le contrôleur de jeu
-    Plateau* plateau = new Plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, 5);
+    Plateau* plateau = new Plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, NB_COUCHES);
     Partie* partie = new Partie(*plateau);
     controleur = new Controleur(partie, this);
 
