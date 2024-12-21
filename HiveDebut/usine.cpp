@@ -3,23 +3,24 @@
 
 UsineDePions::UsineDePions() {
     // Initialisation des nombres de pions pour chaque type de pion standard
-    nombreDePions["R"] = 1;  // Reine
-    nombreDePions["S"] = 3;  // Sauterelle
-    nombreDePions["F"] = 3;  // Fourmi
-    nombreDePions["K"] = 2;  // Scarabee
-    nombreDePions["A"] = 3;  // Araignee
+    nombreDePions["R"] = { 1,true };  // Reine
+    nombreDePions["S"] = { 3, true };  // Sauterelle
+    nombreDePions["F"] = { 3, true };  // Fourmi
+    nombreDePions["K"] = { 2, true };  // Scarabee
+    nombreDePions["A"] = { 2, true };  // Araignee
+  
+    //mettre les extension à false de base
+    nombreDePions["X"] = { 1, false };  // Coccinelle
+    nombreDePions["M"] = { 1, false };  // Moustique
 
-    nombreDePions["X"] = 1;  // Coccinelle
-    nombreDePions["C"] = 1;  // Cloporte
-    nombreDePions["M"] = 1;  // Moustique
+    //nombreDePions["C"] = { 1, false };  // Cloporte --> pas implémenté
 
     //ajoute des types si besoin de plus
 }
 
 Pion* UsineDePions::creerPion(const std::string& type, const std::string& couleur) {
-    if (getNombreDePions()[type] > 0) {
-        // Décrémente le nombre de pions restants pour ce type
-        nombreDePions[type]--;
+    auto it = nombreDePions.find(type);
+    if (it != nombreDePions.end() && it->second.second && it->second.first > 0) {
 
         if (type == "R") return new Reine(couleur);
         if (type == "S") return new Sauterelle(couleur);
@@ -27,16 +28,15 @@ Pion* UsineDePions::creerPion(const std::string& type, const std::string& couleu
         if (type == "K") return new Scarabee(couleur);
         if (type == "A") return new Araignee(couleur);
         if (type == "X") return new Coccinelle(couleur);
-        if (type == "C") return new Cloporte(couleur);
         if (type == "M") return new Moustique(couleur);
+        // if (type == "C") return new Cloporte(couleur);
     }
     return nullptr;  // Retourne nullptr si le type est invalide ou s'il n'y a plus de pions disponibles
 }
 
 Pion* UsineDePions::creerPion(int id, const std::string& type, const std::string& couleur) {
-    if (getNombreDePions()[type] > 0) {
-        // Décrémente le nombre de pions restants pour ce type
-        nombreDePions[type]--;
+    auto it = nombreDePions.find(type);
+    if (it != nombreDePions.end() && it->second.first > 0) {
 
         if (type == "R") return new Reine(id, couleur);
         if (type == "S") return new Sauterelle(id, couleur);
@@ -44,8 +44,8 @@ Pion* UsineDePions::creerPion(int id, const std::string& type, const std::string
         if (type == "K") return new Scarabee(id, couleur);
         if (type == "A") return new Araignee(id, couleur);
         if (type == "X") return new Coccinelle(id, couleur);
-        if (type == "C") return new Cloporte(id, couleur);
         if (type == "M") return new Moustique(id, couleur);
+        //if (type == "C") return new Cloporte(id, couleur);
     }
     return nullptr;  // Retourne nullptr si le type est invalide ou s'il n'y a plus de pions disponibles
 }

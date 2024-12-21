@@ -28,7 +28,7 @@ bool Joueur::isMainVide() {
     else return false;
 }
 
-Joueur::Joueur(vector<Pion*> pEm, string c, Partie& p, string n) : pionsEnMain(pEm), couleur(c), partie(p), nom(n) {
+Joueur::Joueur(vector<Pion*> pEm, string c, Partie& p, string n, unsigned int nb) : nbUndo(nb), pionsEnMain(pEm), couleur(c), partie(p), nom(n) {
 
 }
 
@@ -97,14 +97,14 @@ Pion* JoueurHumain::choisirPionSurPlateau(Plateau& plateau, std::vector<std::tup
 void JoueurHumain::afficherPions(const std::vector<Pion*>& pions) {
     std::cout << "Pions disponibles en main : " << std::endl;
     for (size_t i = 0; i < pions.size(); ++i) {
-        std::cout << i << ": " << pions[i]->getType() << std::endl;
+        std::cout << i << ": (" << pionsEnMain[i]->getType() << ") " << pionsEnMain[i]->getNom() << std::endl;
     }
 }
 
 void JoueurHumain::afficherPionsEnMain() {
     std::cout << "Pions disponibles en main : " << std::endl;
     for (size_t i = 0; i < pionsEnMain.size(); ++i) {
-        std::cout << i << ": " << pionsEnMain[i]->getType() << std::endl;
+        std::cout << i << ": (" << pionsEnMain[i]->getType() << ") " << pionsEnMain[i]->getNom() << std::endl;
     }
 }
 
@@ -127,29 +127,33 @@ void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau, std::vector<std::tu
         int colonne = std::get<2>(pionsSurPlateau[i]);
         int z = std::get<3>(pionsSurPlateau[i]);
 
-        std::cout << i << ": " << pion->getType() << " en (" << ligne << ", " << colonne << ", " << z << ")" << std::endl;
+        std::cout << i << ": (" << pion->getType() << ") " << pion->getNom() << " en (" << ligne << ", " << colonne << ", " << z << ")" << std::endl;
     }
 }
 
-void JoueurIA::Jouer(Plateau& plateau) {
+void JoueurIA::Jouer(Plateau& plateau, Partie& partie) {
     Mouvement* mvt = trouverMeilleurMouvement(plateau, *this, 2);
     Command* commande = new MouvementCommand(partie, mvt);
     GestionnaireCommand::executeCommand(partie, commande);
 }
 
-void JoueurHumain::Jouer(Plateau& plateau) {
+void JoueurHumain::Jouer(Plateau& plateau, Partie& partie) {
 
     std::cout << "C'est a " << getNom() << " de jouer !" << endl;
     int choix;
     if (isMainVide()) {
         choix = 2; // Si la main est vide, le joueur ne peut que d placer un pion
     }
-    else if (partie.canUndo() && peutBougerPions()) {
-        std::cout << "Voulez-vous poser (1), deplacer (2) ou annuler un mouvement (" << partie.getNbUndo() << " restants) (3) ? ";
+    else if (partie.getNombreTour() == 4 && !peutBougerPions()) { //peutBougerPions renvoie false si la Reine est toujours en main
+        std::cout << "Vous devez poser votre pion Reine\n";
+        choix = 4;
+    }
+    else if (canUndo() && peutBougerPions()) {
+        std::cout << "Voulez-vous poser (1), deplacer (2) ou annuler un mouvement (" << getNbUndo() << " restants) (3) ? ";
         std::cin >> choix;
     }
-    else if (partie.canUndo()) {
-        std::cout << "Voulez-vous poser (1) ou annuler un mouvement (" << partie.getNbUndo() << " restants) (3) ? ";
+    else if (canUndo()) {
+        std::cout << "Voulez-vous poser (1) ou annuler un mouvement (" << getNbUndo() << " restants) (3) ? ";
         std::cin >> choix;
     }
     else if (peutBougerPions()) {
@@ -161,23 +165,30 @@ void JoueurHumain::Jouer(Plateau& plateau) {
     }
 
     if (choix == 1) {
-        poserPionHumain(plateau);  // Appel de la m thode pour poser un pion
+        poserPionHumain(plateau, partie);  // Appel de la m thode pour poser un pion
+    }
+    else if (choix == 4) {
+        poserReineHumain(plateau);
     }
     else if (choix == 2 && !plateau.isVide()) {
         deplacerPionHumain(plateau);  // Appel de la m thode pour d placer un pion
     }
-    else if (choix == 3 && partie.canUndo()){
-        partie.annulerMouvement();
+    else if (choix == 3 && canUndo()) {
+        nbUndo--;
+        partie.annulerMouvement(*this);
         plateau.afficher();
-        Jouer(plateau);
+        Jouer(plateau, partie);
     }
     else {
-        std::cout << "Choix invalide." << std::endl;
         return; // Ajout d'un retour par d faut
     }
 }
 
-Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
+bool Joueur::canUndo() {
+    return !partie.getHistorique().empty() && partie.getHistorique().size() >= 2 && getNbUndo() >= 1;
+}
+
+Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau, Partie& partie) {
 
     afficherPions(pionsEnMain);
     Pion* pionChoisi = choisirPion(pionsEnMain);
@@ -186,16 +197,14 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
 
     if (emplacements.empty()) {
         std::cout << "Il n'existe aucun emplacement possible pour ce pion. Veuillez reessayer." << std::endl;
-        Jouer(plateau);
+        Jouer(plateau, partie);
         return nullptr;
     }
 
     afficherEmplacements(emplacements);
     Mouvement* emplacementChoisi = choisirEmplacement(emplacements);
 
-    auto poserPionCommand = new MouvementCommand(partie, emplacementChoisi);
-    GestionnaireCommand::executeCommand(partie, poserPionCommand);
-
+    JouerMouvement(partie, emplacementChoisi);
 
     for (Mouvement* m : emplacements) {
         if (m != emplacementChoisi) {
@@ -203,6 +212,11 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau) {
         }
     }
     return emplacementChoisi;
+}
+
+void JoueurHumain::JouerMouvement(Partie& partie, Mouvement* emplacementChoisi) {
+    auto command = new MouvementCommand(partie, emplacementChoisi);
+    GestionnaireCommand::executeCommand(partie, command);
 }
 
 Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
@@ -227,8 +241,7 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
     afficherEmplacements(deplacementsValides);
     Mouvement* deplacementChoisi = choisirEmplacement(deplacementsValides);
 
-    auto deplacerPionCommand = new MouvementCommand(partie, deplacementChoisi);
-    GestionnaireCommand::executeCommand(partie, deplacerPionCommand);
+    JouerMouvement(partie, deplacementChoisi);
 
     for (Mouvement* m : deplacementsValides) {
         if (m != deplacementChoisi) {
@@ -395,4 +408,37 @@ int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, b
     }
 
     return meilleurScore;
+}
+
+Mouvement* JoueurHumain::poserReineHumain(Plateau& plateau) {
+    Pion* pionReine = nullptr;  // Initialisation à nullptr
+
+    // Récupère le pion Reine en main
+    for (Pion* pion : pionsEnMain) {
+        if (pion->getType() == "R") {
+            pionReine = pion;
+            break;  // Pas besoin de continuer la boucle une fois la Reine trouvée
+        }
+    }
+
+    // Vérifier si la Reine a été trouvée
+    if (pionReine == nullptr) {
+        std::cerr << "Erreur : Aucun pion de type 'R' n'est disponible dans la main !" << std::endl;
+        return nullptr;  // Gestion du cas d'erreur
+    }
+
+    std::vector<Mouvement*> emplacements = pionReine->emplacementsPossibles(*pionReine, plateau);
+
+    // Affiche les déplacements de la Reine
+    afficherEmplacements(emplacements);
+    Mouvement* emplacementChoisi = choisirEmplacement(emplacements);
+
+    JouerMouvement(partie, emplacementChoisi);
+
+    for (Mouvement* m : emplacements) {
+        if (m != emplacementChoisi) {
+            delete m;
+        }
+    }
+    return emplacementChoisi;
 }

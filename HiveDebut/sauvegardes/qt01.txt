@@ -1,0 +1,63 @@
+Nombre de tour: 26
+Joueur 1:
+Type: Humain
+Nom: j2
+NbUndo: 0
+Couleur: [31m
+Pions en main:
+  ID: 1  Type: A, Couleur: [31m
+  ID: 2  Type: A, Couleur: [31m
+  ID: 4  Type: F, Couleur: [31m
+  ID: 5  Type: F, Couleur: [31m
+  ID: 7  Type: K, Couleur: [31m
+  ID: 11  Type: S, Couleur: [31m
+Joueur 2:
+Type: Humain
+Nom: j2
+NbUndo: 0
+Couleur: [37m
+Pions en main:
+  ID: 12  Type: A, Couleur: [37m
+  ID: 15  Type: F, Couleur: [37m
+  ID: 16  Type: F, Couleur: [37m
+  ID: 19  Type: R, Couleur: [37m
+  ID: 20  Type: S, Couleur: [37m
+Plateau:
+  Position: (5, 3, 0),   ID: 3,  Type: F, Couleur: [31m
+  Position: (5, 4, 0),   ID: 10,  Type: S, Couleur: [31m
+  Position: (6, 4, 0),   ID: 18,  Type: K, Couleur: [37m
+  Position: (7, 4, 0),   ID: 14,  Type: F, Couleur: [37m
+  Position: (3, 5, 0),   ID: 6,  Type: K, Couleur: [31m
+  Position: (4, 5, 0),   ID: 9,  Type: S, Couleur: [31m
+  Position: (5, 5, 0),   ID: 8,  Type: R, Couleur: [31m
+  Position: (6, 5, 0),   ID: 13,  Type: A, Couleur: [37m
+  Position: (7, 5, 0),   ID: 21,  Type: S, Couleur: [37m
+  Position: (8, 5, 0),   ID: 17,  Type: K, Couleur: [37m
+  Position: (8, 6, 0),   ID: 22,  Type: S, Couleur: [37m
+Historique des mouvements:
+Pion ID: 8 De (-1, -1, -1) A (5, 5, 0) 1
+Pion ID: 13 De (-1, -1, -1) A (5, 6, 0) 2
+Pion ID: 10 De (-1, -1, -1) A (4, 5, 0) 1
+Pion ID: 21 De (-1, -1, -1) A (5, 7, 0) 2
+Pion ID: 3 De (-1, -1, -1) A (3, 5, 0) 1
+Pion ID: 17 De (-1, -1, -1) A (5, 8, 0) 2
+Pion ID: 18 De (-1, -1, -1) A (4, 7, 0) 2
+Pion ID: 9 De (-1, -1, -1) A (5, 4, 0) 1
+Pion ID: 22 De (-1, -1, -1) A (6, 8, 0) 2
+Pion ID: 6 De (-1, -1, -1) A (6, 5, 0) 1
+Pion ID: 18 De (4, 7, 0) A (4, 6, 0) 2
+Pion ID: 6 De (6, 5, 0) A (5, 4, 1) 1
+Pion ID: 14 De (-1, -1, -1) A (4, 7, 0) 2
+Pion ID: 6 De (5, 4, 1) A (6, 5, 0) 1
+Pion ID: 6 De (6, 5, 0) A (6, 4, 0) 1
+Pion ID: 6 De (6, 4, 0) A (5, 3, 0) 1
+Pion ID: 6 De (5, 3, 0) A (4, 4, 0) 1
+Pion ID: 6 De (4, 4, 0) A (3, 4, 0) 1
+Pion ID: 6 De (3, 4, 0) A (2, 5, 0) 1
+Pion ID: 6 De (2, 5, 0) A (2, 6, 0) 1
+Pion ID: 6 De (2, 6, 0) A (3, 6, 0) 1
+Pion ID: 6 De (3, 6, 0) A (2, 6, 0) 1
+Pion ID: 6 De (2, 6, 0) A (2, 5, 0) 1
+Pion ID: 6 De (2, 5, 0) A (3, 4, 0) 1
+Pion ID: 6 De (3, 4, 0) A (4, 4, 0) 1
+Pion ID: 6 De (4, 4, 0) A (5, 3, 0) 1

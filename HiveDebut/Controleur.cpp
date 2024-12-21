@@ -11,6 +11,8 @@ Controleur::Controleur(Partie* partie, QObject* parent) : QObject(parent), parti
 void Controleur::commencerPartie() {
     // emit miseAJourPlateau();
 
+    std::cout << "2" << std::endl;
+
     GestionnaireSauvegarde::sauvegarde(*partie);  // sauvegarde la nouvelle partie
     partie->getPlateau().afficher();  // affiche le plateau en console (a supprimer)
 
@@ -144,15 +146,15 @@ void Controleur::jouerTour() {
 }
 
 void Controleur::annulerMouvementJoueur1() {
-    if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur1()->getNom()) && partie->getNbUndo() > 0) {
-        partie->annulerMouvement();
+    if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur1()->getNom()) && partie->getJoueur1()->getNbUndo() > 0) {
+        partie->annulerMouvement(*partie->getJoueur1());
         emit mouvementAnnule();
     }
 }
 
 void Controleur::annulerMouvementJoueur2() {
-    if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur2()->getNom()) && partie->getNbUndo() > 0) {
-        partie->annulerMouvement();
+    if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur2()->getNom()) && partie->getJoueur2()->getNbUndo() > 0) {
+        partie->annulerMouvement(*partie->getJoueur2());
         emit mouvementAnnule();
     }
 }

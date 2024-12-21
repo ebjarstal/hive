@@ -64,17 +64,6 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
 
     std::cout << "Nouvelle partie creee : " << nomPartie << std::endl;
 
-    int nbUndoCin = -1;
-    while (nbUndoCin < 0) {
-        std::cout << "Entrez le nombre de retour en arriere : ";
-        std::cin >> nbUndoCin;
-
-        if (nbUndoCin < 0) {
-            std::cout << "Erreur : Vous devez entrer un nombre positif." << std::endl;
-        }
-    }
-    nbUndo = nbUndoCin;
-
     // Initialisation de la partie
     int nbJoueur = 0;
     while (nbJoueur != 1 && nbJoueur != 2) {
@@ -96,77 +85,72 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
         nomJoueur2 = "IA"; // Nom par défaut pour l'IA
     }
 
+
+    int nbUndoCin = -1;
+    while (nbUndoCin < 0) {
+        std::cout << "Entrez le nombre de retour en arriere : ";
+        std::cin >> nbUndoCin;
+
+        if (nbUndoCin < 0) {
+            std::cout << "Erreur : Vous devez entrer un nombre positif." << std::endl;
+        }
+    }
+
+    usine = new UsineDePions;
+    choixExtension();
+
+
     std::cout << "Nombre de joueurs selectionne : " << nbJoueur << std::endl;
 
     if (nbJoueur == 1) {
-        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, *this);
-        joueur2 = new JoueurIA(nomJoueur2, initialiserPions(WHITE), WHITE, *this);
+        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, nbUndoCin, *this);
+        joueur2 = new JoueurIA(nomJoueur2, initialiserPions(WHITE), WHITE, *this, nbUndoCin);
     }
     else {
-        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, *this);
-        joueur2 = new JoueurHumain(nomJoueur2, initialiserPions(WHITE), WHITE, *this);
+        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, nbUndoCin, *this);
+        joueur2 = new JoueurHumain(nomJoueur2, initialiserPions(WHITE), WHITE, nbUndoCin, *this);
     }
+}
+
+void Partie::choixExtension() {
+    std::cout << "Voici les extensions disponible, veuillez choisir si vous voulez les activer ou non:\n";
+    for (const auto& pair : usine->getNombreDePions()) {
+        const std::string& type = pair.first;              // Clé (type)
+        const std::pair<unsigned int, bool>& data = pair.second; // Valeur (nombre et état)
+        if (type != "R" && type != "K" && type != "F" && type != "S" && type != "A") {
+            int choix;
+            std::cout << "Type : " << type << "\nVoulez-vous l'activer ? (1 pour oui, 0 pour non)\n";
+            std::cin >> choix;
+            if (choix == 1) {
+                usine->setExtensionActive(type);
+            }
+        }
+    }
+    return;
 }
 
 std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
     std::vector<Pion*> pions;
-    UsineDePions usine;
 
-    // Créer les pions et les ajouter via la méthode Pion::ajouterPion
-    // Reine
-    Pion* pionR = usine.creerPion("R", couleur);
-    Pion::ajouterPion(pionR);  // Appel de Pion::ajouterPion pour ajouter le pion au gestionnaire
-    pions.push_back(pionR);  // Si vous avez besoin de garder une copie locale du pion
+    for (const auto& pair : usine->getNombreDePions()) {
+        const std::string& type = pair.first;              // Clé (type)
+        const std::pair<unsigned int, bool>& data = pair.second; // Valeur (nombre et état)
 
-    // Sauterelle
-    Pion* pionS1 = usine.creerPion("S", couleur);
-    Pion::ajouterPion(pionS1);
-    pions.push_back(pionS1);
-    Pion* pionS2 = usine.creerPion("S", couleur);
-    Pion::ajouterPion(pionS2);
-    pions.push_back(pionS2);
-    Pion* pionS3 = usine.creerPion("S", couleur);
-    Pion::ajouterPion(pionS3);
-    pions.push_back(pionS3);
-
-    // Fourmi
-    Pion* pionF1 = usine.creerPion("F", couleur);
-    Pion::ajouterPion(pionF1);
-    pions.push_back(pionF1);
-    Pion* pionF2 = usine.creerPion("F", couleur);
-    Pion::ajouterPion(pionF2);
-    pions.push_back(pionF2);
-    Pion* pionF3 = usine.creerPion("F", couleur);
-    Pion::ajouterPion(pionF3);
-    pions.push_back(pionF3);
-
-    // Scarabee
-    Pion* pionK1 = usine.creerPion("K", couleur);
-    Pion::ajouterPion(pionK1);
-    pions.push_back(pionK1);
-    Pion* pionK2 = usine.creerPion("K", couleur);
-    Pion::ajouterPion(pionK2);
-    pions.push_back(pionK2);
-    
-    // Araignee
-    Pion* pionA1 = usine.creerPion("A", couleur);
-    Pion::ajouterPion(pionA1);
-    pions.push_back(pionA1);
-    Pion* pionA2 = usine.creerPion("A", couleur);
-    Pion::ajouterPion(pionA2);
-    pions.push_back(pionA2);
-
-    // Coccinelle
-    Pion* pionM = usine.creerPion("M", couleur);
-    Pion::ajouterPion(pionM);
-    pions.push_back(pionM);
+        int nbpion = data.first;
+        while (nbpion > 0 && data.second) {
+            Pion* pionQuelconque = usine->creerPion(type, couleur);
+            Pion::ajouterPion(pionQuelconque);
+            pions.push_back(pionQuelconque);
+            nbpion--;
+        }
+    }
 
     return pions;
 }
 
 void Partie::jouerUnTour(Joueur* j) {
     // Le joueur joue son tour
-    j->Jouer(getPlateau());  // Joue le mouvement
+    j->Jouer(getPlateau(), *this);  // Joue le mouvement
 
     if (j == getJoueur2()) {
         nombreTour += 1;
@@ -186,11 +170,10 @@ void Partie::jouerUnTour(Joueur* j) {
     }
 }
 
-void Partie::annulerMouvement() {
+void Partie::annulerMouvement(Joueur& j) {
     if (historique.size() >= 2) {
         GestionnaireCommand::undoCommand(*this);
         GestionnaireCommand::undoCommand(*this);
-        nbUndo--;
     }
     else {
         std::cout << "Aucun mouvement à annuler." << std::endl;

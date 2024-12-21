@@ -21,7 +21,8 @@ int main(int argc, char* argv[]) {
     if (choix == 0) {
 
         Plateau plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, NB_COUCHES);
-        Partie partie(plateau);
+        UsineDePions* usine = new UsineDePions;
+        Partie partie(plateau, usine);
         partie.setup();
         while (partie.partieTerminee() != true) {
             GestionnaireSauvegarde::sauvegarde(partie);

@@ -27,15 +27,19 @@ protected:
     vector<Pion*> pionsEnMain;
     string couleur;
     string nom;
-    Joueur(vector<Pion*> pEm, string c, Partie& p, string n); // uniquement Partie peut le creer et avec param car extension
+    unsigned int nbUndo;
+    Joueur(vector<Pion*> pEm, string c, Partie& p, string n, unsigned int nb); // uniquement Partie peut le creer et avec param car extension
 public:
     string getCouleur() { return couleur; }
     string getNom() { return nom; }
+    unsigned int getNbUndo() { return nbUndo; }
+    bool canUndo();
+    void setNbUndo(unsigned int nb) { nbUndo = nb; }
     vector<Pion*>& getPionsEnMain() { return pionsEnMain; }
     bool peutBougerPions();
     bool isMainVide();
     virtual bool estIA() const = 0;
-    virtual void Jouer(Plateau& plateau) = 0; // Methode virtuelle pure
+    virtual void Jouer(Plateau& plateau, Partie& partie) = 0; // Methode virtuelle pure
     virtual ~Joueur(); // Destructeur virtuel pour eviter des fuites memoire
 };
 
@@ -52,12 +56,14 @@ private:
     void afficherEmplacements(const std::vector<Mouvement*>& emplacements); // Afficher les emplacements
     void afficherPionsSurPlateau(Plateau& plateau, std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau); // Afficher les pions sur le plateau
 
-    Mouvement* poserPionHumain(Plateau& plateau);  // Poser un pion
+    Mouvement* poserPionHumain(Plateau& plateau, Partie& partie);  // Poser un pion
     Mouvement* deplacerPionHumain(Plateau& plateau);  // Deplacer un pion
+    Mouvement* poserReineHumain(Plateau& plateau); //Poser le pion Reine si ne l'a pas fait après 4 tours
+    void JouerMouvement(Partie& partie, Mouvement* emplacementChoisi);
 
 public:
-    JoueurHumain(string n, std::vector<Pion*> pionsEnMain, string couleur, Partie& p) : Joueur(pionsEnMain, couleur, p, n) {}
-    void Jouer(Plateau& plateau) override;
+    JoueurHumain(string n, std::vector<Pion*> pionsEnMain, string couleur, unsigned int nb, Partie& p) : Joueur(pionsEnMain, couleur, p, n, nb) {}
+    void Jouer(Plateau& plateau, Partie& partie) override;
     bool estIA() const override { return false; }
     ~JoueurHumain() override = default;
 };
@@ -65,8 +71,8 @@ public:
 
 class JoueurIA : public Joueur {
 public:
-    JoueurIA(string n, std::vector<Pion*> pionsEnMain, string couleur, Partie& p) : Joueur(pionsEnMain, couleur, p, n) {}
-    void Jouer(Plateau& plateau) override;
+    JoueurIA(string n, std::vector<Pion*> pionsEnMain, string couleur, Partie& p, unsigned int nb) : Joueur(pionsEnMain, couleur, p, n, nb) {}
+    void Jouer(Plateau& plateau, Partie& partie) override;
 
     Mouvement* trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCourant, int profondeurMax);
     int evaluerPartie(Plateau& plateau, Joueur& j, bool isMaximizingPlayer);

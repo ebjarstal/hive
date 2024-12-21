@@ -25,7 +25,8 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
 
     // Initialiser le contrôleur de jeu
     Plateau* plateau = new Plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, NB_COUCHES);
-    Partie* partie = new Partie(*plateau);
+    UsineDePions* usine = new UsineDePions;
+    Partie* partie = new Partie(*plateau, usine);
     controleur = new Controleur(partie, this);
 
     // Connecter les signaux et les slots
@@ -222,11 +223,12 @@ void FenetrePrincipale::commencerPartieContreIA() {
     std::cout << "nomSauvegarde: " << nomSauvegarde.toStdString() << std::endl;
     std::cout << "nbUndo: " << nbUndo << std::endl;
 
-    Joueur* joueur1 = new JoueurHumain(nomJoueur.toStdString(), controleur->partie->initialiserPions(RED), RED, *(controleur->partie));
-    Joueur* joueur2 = new JoueurIA("IA", controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie));
+    Joueur* joueur1 = new JoueurHumain(nomJoueur.toStdString(), controleur->partie->initialiserPions(RED), RED, nbUndo,*(controleur->partie));
+    Joueur* joueur2 = new JoueurIA("IA", controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie), nbUndo);
 
     controleur->partie->setNomPartie(nomSauvegarde.toStdString());
-    controleur->partie->setNbUndo(nbUndo);
+    controleur->partie->getJoueur1()->setNbUndo(nbUndo);
+    controleur->partie->getJoueur2()->setNbUndo(nbUndo);
     controleur->partie->setJoueur1(joueur1);
     controleur->partie->setJoueur2(joueur2);
     // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
@@ -251,12 +253,21 @@ void FenetrePrincipale::commencerPartieDeuxJoueurs() {
     std::cout << "nomSauvegarde: " << nomSauvegarde.toStdString() << std::endl;
     std::cout << "nbUndo: " << nbUndo << std::endl;
 
-    Joueur* joueur1 = new JoueurHumain(nomJoueur1.toStdString(), controleur->partie->initialiserPions(RED), RED, *(controleur->partie));
-    Joueur* joueur2 = new JoueurHumain(nomJoueur2.toStdString(), controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie));
+    Joueur* joueur1 = new JoueurHumain(nomJoueur1.toStdString(), controleur->partie->initialiserPions(RED), RED, nbUndo, *(controleur->partie));
+    Joueur* joueur2 = new JoueurHumain(nomJoueur2.toStdString(), controleur->partie->initialiserPions(WHITE), WHITE, nbUndo, *(controleur->partie));
+    controleur->partie->setJoueur1(joueur1);
+    controleur->partie->setJoueur2(joueur2);
+
+    std::cout << "1" << std::endl;
 
     controleur->partie->setNomPartie(nomSauvegarde.toStdString());
-    controleur->partie->setNbUndo(nbUndo);
+    std::cout << "1.1" << std::endl;
+    controleur->partie->getJoueur1()->setNbUndo(nbUndo);
+    std::cout << "1.2" << std::endl;
+    controleur->partie->getJoueur2()->setNbUndo(nbUndo);
+    std::cout << "1.3" << std::endl;
     controleur->partie->setJoueur1(joueur1);
+    std::cout << "1.4" << std::endl;
     controleur->partie->setJoueur2(joueur2);
     // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
 
