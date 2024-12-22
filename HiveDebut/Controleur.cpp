@@ -19,18 +19,22 @@ void Controleur::commencerPartie() {
         aQuiDeJouer = QString::fromStdString(partie->getJoueur2()->getNom());
     }
 
-    // Recréer les pions en main des joueurs en fonction des extensions activées
-    partie->getJoueur1()->getPionsEnMain().clear();
-    partie->getJoueur2()->getPionsEnMain().clear();
-    std::vector<Pion*> pionsJoueur1 = partie->initialiserPions(RED);
-    std::vector<Pion*> pionsJoueur2 = partie->initialiserPions(WHITE);
-    partie->getJoueur1()->getPionsEnMain().insert(partie->getJoueur1()->getPionsEnMain().end(), pionsJoueur1.begin(), pionsJoueur1.end());
-    partie->getJoueur2()->getPionsEnMain().insert(partie->getJoueur2()->getPionsEnMain().end(), pionsJoueur2.begin(), pionsJoueur2.end());
-
-    updatePioches();
-
     emit afficherPlateauDebut();  // affiche le plateau en qt
     emit afficherPiochesEtAQuiDeJouer();  // affiche les pioches en qt
+}
+
+Controleur::~Controleur() {
+    // Supprimer les pions dans les pioches
+    qDeleteAll(piocheJoueur1);
+    piocheJoueur1.clear();
+    qDeleteAll(piocheJoueur2);
+    piocheJoueur2.clear();
+
+    // Supprimer la vue du plateau
+    delete vuePlateau;
+
+    // Supprimer la partie
+    delete partie;
 }
 
 void Controleur::updatePioches() {
@@ -140,7 +144,7 @@ void Controleur::jouerTour() {
     }
 
     // Incrémenter le nombre de tours joués
-    if (aQuiDeJouer == QString::fromStdString(partie->getJoueur2()->getNom())) {
+    if (aQuiDeJouer == QString::fromStdString(partie->getJoueur1()->getNom())) {
         partie->setNombreTour(partie->getNombreTour() + 1);
     }
 
@@ -167,6 +171,16 @@ void Controleur::annulerMouvementJoueur2() {
         partie->annulerMouvement(*partie->getJoueur2());
         emit mouvementAnnule();
     }
+}
+
+void Controleur::initialiserPioches() {
+    // Recréer les pions en main des joueurs en fonction des extensions activées
+    partie->getJoueur1()->getPionsEnMain().clear();
+    partie->getJoueur2()->getPionsEnMain().clear();
+    std::vector<Pion*> pionsJoueur1 = partie->initialiserPions(RED);
+    std::vector<Pion*> pionsJoueur2 = partie->initialiserPions(WHITE);
+    partie->getJoueur1()->getPionsEnMain().insert(partie->getJoueur1()->getPionsEnMain().end(), pionsJoueur1.begin(), pionsJoueur1.end());
+    partie->getJoueur2()->getPionsEnMain().insert(partie->getJoueur2()->getPionsEnMain().end(), pionsJoueur2.begin(), pionsJoueur2.end());
 }
 
 void Controleur::updateVuePlateau() {

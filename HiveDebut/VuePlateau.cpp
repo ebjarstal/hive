@@ -5,6 +5,23 @@ VuePlateau::VuePlateau(QGraphicsScene* scene, Plateau* plateau)
     : scene(scene), plateau(plateau) {
 }
 
+VuePlateau::~VuePlateau() {
+    // Supprimer les pions dans la grille de vue des pions
+    for (auto& ligne : grilleVuePions) {
+        for (auto& colonne : ligne) {
+            for (VuePion* pion : colonne) {
+                delete pion;
+            }
+        }
+    }
+
+    // Supprimer la scène si elle a été allouée dynamiquement
+    delete scene;
+
+    // Supprimer le plateau si il a été alloué dynamiquement
+    delete plateau;
+}
+
 void VuePlateau::initialiserPlateau(int x, int y) {
     grilleVuePions.clear();
 

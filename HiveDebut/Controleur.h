@@ -16,9 +16,11 @@ class Controleur : public QObject {
 
 public:
     Controleur(Partie* partie, QObject* parent = nullptr);
+    Controleur::~Controleur();
     Partie* partie;
     VuePlateau* vuePlateau;
 
+    void initialiserPioches();
     void faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer);
     void placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer);
     void deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer);

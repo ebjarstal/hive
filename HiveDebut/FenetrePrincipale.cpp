@@ -26,7 +26,6 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
 
     QVBoxLayout* mainLayout = new QVBoxLayout(widgetCentral);
     mainLayout->addWidget(stackedWidget);
-
     connect(boutonQuitter, &QPushButton::clicked, this, &FenetrePrincipale::close);
 
     // Connecter les signaux et les slots
@@ -39,7 +38,41 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
 }
 
 FenetrePrincipale::~FenetrePrincipale() {
-    // TODO
+    // Supprimer les checkboxes dynamiques
+    for (QCheckBox* checkbox : checkboxesExtensions) {
+        delete checkbox;
+    }
+    checkboxesExtensions.clear();
+
+    // Supprimer les widgets dynamiquement alloués
+    delete champNomJoueur1IA;
+    delete champNomSauvegardeIA;
+    delete champNombreRetoursIA;
+    delete champNomJoueur1DeuxJoueurs;
+    delete champNomJoueur2DeuxJoueurs;
+    delete champNomSauvegardeDeuxJoueurs;
+    delete champNombreRetoursDeuxJoueurs;
+    delete labelNomSauvegarde;
+    delete labelFichierCharge;
+    delete boutonNouvellePartie;
+    delete boutonChargerPartie;
+    delete boutonQuitter;
+    delete boutonRetourNouvellePartie;
+    delete boutonRetourChargerPartie;
+    delete boutonCommencerPartieContreIA;
+    delete boutonCommencerPartieDeuxJoueurs;
+    delete boutonOuvrirFichier;
+    delete boutonChargerPartieSauvegarde;
+    delete boutonAnnulerMouvementJoueur1;
+    delete boutonAnnulerMouvementJoueur2;
+    delete texteTour;
+    delete vuePartie;
+    delete scene;
+    delete stackedWidget;
+    delete widgetCentral;
+
+    // Supprimer le contrôleur
+    delete controleur;
 }
 
 void FenetrePrincipale::onPartieTerminee(const QString& message) {
@@ -150,7 +183,7 @@ void FenetrePrincipale::initPageJouerContreIA() {
     for (const auto& pair : extensions) {
         const std::string& type = pair.first;
         if (type != "R" && type != "K" && type != "F" && type != "S" && type != "A") {
-            QCheckBox* checkbox = new QCheckBox("Extension: " + QString::fromStdString(type), this);
+            QCheckBox* checkbox = new QCheckBox(QString::fromStdString(type), this);
             layout->addWidget(checkbox, 0, Qt::AlignCenter);
             checkboxesExtensions.push_back(checkbox);
         }
@@ -178,7 +211,7 @@ void FenetrePrincipale::initPageJouerDeuxJoueurs() {
     for (const auto& pair : extensions) {
         const std::string& type = pair.first;
         if (type != "R" && type != "K" && type != "F" && type != "S" && type != "A") {
-            QCheckBox* checkbox = new QCheckBox("Extension: " + QString::fromStdString(type), this);
+            QCheckBox* checkbox = new QCheckBox(QString::fromStdString(type), this);
             layout->addWidget(checkbox, 0, Qt::AlignCenter);
             checkboxesExtensions.push_back(checkbox);
         }
@@ -258,7 +291,9 @@ void FenetrePrincipale::commencerPartieContreIA() {
     // Activer les extensions en fonction des checkbox
     activerExtensions();
 
+    controleur->initialiserPioches();
     controleur->commencerPartie();
+    updateAffichage();
 }
 
 void FenetrePrincipale::commencerPartieDeuxJoueurs() {
@@ -285,7 +320,9 @@ void FenetrePrincipale::commencerPartieDeuxJoueurs() {
     // Activer les extensions en fonction des checkbox
     activerExtensions();
 
+    controleur->initialiserPioches();
     controleur->commencerPartie();
+    updateAffichage();
 }
 
 void FenetrePrincipale::chargerPartieSauvegarde() {
@@ -306,6 +343,8 @@ void FenetrePrincipale::chargerPartieSauvegarde() {
     else {
         QMessageBox::warning(this, "Erreur", "Erreur lors du chargement de la partie.");
     }
+    controleur->updatePioches();
+    updateAffichage();
 }
 
 void FenetrePrincipale::afficherNouvellePartie() {

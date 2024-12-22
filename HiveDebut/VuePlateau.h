@@ -9,6 +9,7 @@
 class VuePlateau {
 public:
     VuePlateau(QGraphicsScene* scene, Plateau* plateau);
+    ~VuePlateau();
 
     void initialiserPlateau(int x, int y);
     void creerLignePions(int x, int y, int ligne, int nb_colonnes);
