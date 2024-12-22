@@ -487,7 +487,6 @@ void FenetrePrincipale::dessinerPionsPiochesJoueurs() {
 }
 
 void FenetrePrincipale::onPionClique(VuePion* pion) {
-
     // si le pion clique est un pion temporairement gris
     // CAD si il y a un mouvement a faire lorsque on clique dessus
     if (std::find(pionsTemporairementGris.begin(), pionsTemporairementGris.end(), pion) != pionsTemporairementGris.end()
@@ -496,16 +495,12 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         // et de la grille de vuepion à l'aide des classes du jeu console
 
         // force le joueur à placer sa reine si nécessaire
-        if (controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur1()->getNom())
-            && controleur->doitBougerReine(*controleur->partie->getJoueur1()) == true
-            && pionEnCoursDeTraitement->getType() != QString("R")) {
+        if (controleur->doitPlacerReine(*controleur->partie->getJoueur1(), pionEnCoursDeTraitement)) {
             resetPionsTemporairementModifies();
             pionEnCoursDeTraitement = nullptr;
             updateAffichage();
         }
-        else if (controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur2()->getNom())
-            && controleur->doitBougerReine(*controleur->partie->getJoueur2()) == true
-            && pionEnCoursDeTraitement->getType() != QString("R")) {
+        else if (controleur->doitPlacerReine(*controleur->partie->getJoueur2(), pionEnCoursDeTraitement)) {
             resetPionsTemporairementModifies();
             pionEnCoursDeTraitement = nullptr;
             updateAffichage();
@@ -541,8 +536,10 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             }
             // si click sur pion pose sur plateau
             else {
-                pionEnCoursDeTraitement = pion;
-                afficherDeplacementsPossibles(pion);
+                if (controleur->reinePlacee(*controleur->partie->getJoueur1())) {
+                    pionEnCoursDeTraitement = pion;
+                    afficherDeplacementsPossibles(pion);
+                }
                 return;
             }
         }
@@ -557,9 +554,10 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
             }
             // si click sur pion pose sur plateau
             else {
-                pionEnCoursDeTraitement = pion;
-                afficherDeplacementsPossibles(pion);
-                return;
+                if (controleur->reinePlacee(*controleur->partie->getJoueur2())) {
+                    pionEnCoursDeTraitement = pion;
+                    afficherDeplacementsPossibles(pion);
+                }
             }
         }
     }

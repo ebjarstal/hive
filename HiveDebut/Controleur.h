@@ -24,10 +24,9 @@ public:
     void faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer);
     void placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer);
     void deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer);
-    bool doitBougerReine(Joueur& j) {
-        std::cout << partie->getNombreTour() << " " << j.peutBougerPions() << std::endl;
-        return partie->getNombreTour() >= 4 && j.peutBougerPions() == false;
-    }
+    bool doitBougerReine(Joueur& j);
+    bool doitPlacerReine(Joueur& j, VuePion* pionAPlacer);
+    bool reinePlacee(Joueur& j);
 
     // getters
     QList<VuePion*> getPiocheJoueur1() { return piocheJoueur1; }
