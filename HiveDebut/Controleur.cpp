@@ -162,6 +162,7 @@ void Controleur::jouerTour() {
 void Controleur::annulerMouvementJoueur1() {
     if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur1()->getNom()) && partie->getJoueur1()->getNbUndo() > 0) {
         partie->annulerMouvement(*partie->getJoueur1());
+        partie->getJoueur1()->setNbUndo(partie->getJoueur1()->getNbUndo() - 1);
         GestionnaireSauvegarde::sauvegarde(*partie);
         emit mouvementAnnule();
     }
@@ -170,6 +171,7 @@ void Controleur::annulerMouvementJoueur1() {
 void Controleur::annulerMouvementJoueur2() {
     if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur2()->getNom()) && partie->getJoueur2()->getNbUndo() > 0) {
         partie->annulerMouvement(*partie->getJoueur2());
+        partie->getJoueur2()->setNbUndo(partie->getJoueur2()->getNbUndo() - 1);
         GestionnaireSauvegarde::sauvegarde(*partie);
         emit mouvementAnnule();
     }
