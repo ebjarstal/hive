@@ -75,7 +75,9 @@ private:
 
     QCheckBox* checkboxExtensionMoustique;
     QCheckBox* checkboxExtensionCoccinelle;
-    QCheckBox* checkboxExtensionAraignee;
+    std::vector<QCheckBox*> checkboxesExtensions;
+    void activerExtensions();
+
     QPushButton* boutonCommencerPartieContreIA;
     QPushButton* boutonCommencerPartieDeuxJoueurs;
 

@@ -7,13 +7,11 @@ bool GestionnaireMouvements::cassageRuche(Pion& p, Plateau& plateau) {
 
     // Verification si le pion est pose
     if (GestionnairePions::estPose(p) == false) {
-        std::cout << "Le pion n est pas pose sur le plateau\n";
         return true;
     }
 
     // On doit avoir des voisins, nous sommes pas censé aller dans cette boucle
     if (GestionnaireVoisins::nombreVoisins(p, plateau) == 0) {
-        std::cout << "Le pion n a pas de voisins\n";
         return false;
     }
 

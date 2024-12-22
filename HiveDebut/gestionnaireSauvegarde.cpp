@@ -326,7 +326,6 @@ void GestionnaireSauvegarde::sauvegarde(Partie& p) {
     }
 
     fichier.close();
-    std::cout << "Sauvegarde de la partie réussie dans '" << nomFichier << "'." << std::endl;
 }
 
 std::vector<std::string> GestionnaireSauvegarde::listerSauvegardes() {

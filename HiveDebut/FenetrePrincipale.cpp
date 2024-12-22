@@ -1,6 +1,12 @@
 ﻿#include "FenetrePrincipale.h"
 
 FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
+    // Initialiser le contrôleur de jeu
+    Plateau* plateau = new Plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, NB_COUCHES);
+    UsineDePions* usine = new UsineDePions;
+    Partie* partie = new Partie(*plateau, usine);
+    controleur = new Controleur(partie, this);
+
     setWindowTitle("Hive (version Qt)");
     setFixedSize(LARGEUR_ECRAN, HAUTEUR_ECRAN); // Bloquer la taille de la fenêtre
 
@@ -22,12 +28,6 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     mainLayout->addWidget(stackedWidget);
 
     connect(boutonQuitter, &QPushButton::clicked, this, &FenetrePrincipale::close);
-
-    // Initialiser le contrôleur de jeu
-    Plateau* plateau = new Plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, NB_COUCHES);
-    UsineDePions* usine = new UsineDePions;
-    Partie* partie = new Partie(*plateau, usine);
-    controleur = new Controleur(partie, this);
 
     // Connecter les signaux et les slots
     connect(controleur, &Controleur::partieTerminee, this, &FenetrePrincipale::onPartieTerminee);
@@ -144,9 +144,18 @@ void FenetrePrincipale::initPageJouerContreIA() {
     ajouterLabelAvecLineEditTexte(layout, "Nom du joueur:", champNomJoueur1IA);
     ajouterLabelAvecLineEditTexte(layout, "Nom de la sauvegarde:", champNomSauvegardeIA);
     ajouterLabelAvecLineEditNombre(layout, "Nombre de retours en arrière possibles:", champNombreRetoursIA);
-    ajouterCheckbox(layout, "Extension Moustique", checkboxExtensionMoustique);
-    ajouterCheckbox(layout, "Extension Coccinelle", checkboxExtensionCoccinelle);
-    ajouterCheckbox(layout, "Extension Araignée", checkboxExtensionAraignee);
+
+    // Récupérer les extensions disponibles
+    auto extensions = controleur->partie->getUsine()->getNombreDePions();
+    for (const auto& pair : extensions) {
+        const std::string& type = pair.first;
+        if (type != "R" && type != "K" && type != "F" && type != "S" && type != "A") {
+            QCheckBox* checkbox = new QCheckBox("Extension: " + QString::fromStdString(type), this);
+            layout->addWidget(checkbox, 0, Qt::AlignCenter);
+            checkboxesExtensions.push_back(checkbox);
+        }
+    }
+
     ajouterBouton(layout, "Commencer la partie", boutonCommencerPartieContreIA);
 
     layout->addStretch(1);
@@ -163,9 +172,18 @@ void FenetrePrincipale::initPageJouerDeuxJoueurs() {
     ajouterLabelAvecLineEditTexte(layout, "Nom du joueur 2:", champNomJoueur2DeuxJoueurs);
     ajouterLabelAvecLineEditTexte(layout, "Nom de la sauvegarde:", champNomSauvegardeDeuxJoueurs);
     ajouterLabelAvecLineEditNombre(layout, "Nombre de retours en arrière possibles:", champNombreRetoursDeuxJoueurs);
-    ajouterCheckbox(layout, "Extension Moustique", checkboxExtensionMoustique);
-    ajouterCheckbox(layout, "Extension Coccinelle", checkboxExtensionCoccinelle);
-    ajouterCheckbox(layout, "Extension Araignée", checkboxExtensionAraignee);
+
+    // Récupérer les extensions disponibles
+    auto extensions = controleur->partie->getUsine()->getNombreDePions();
+    for (const auto& pair : extensions) {
+        const std::string& type = pair.first;
+        if (type != "R" && type != "K" && type != "F" && type != "S" && type != "A") {
+            QCheckBox* checkbox = new QCheckBox("Extension: " + QString::fromStdString(type), this);
+            layout->addWidget(checkbox, 0, Qt::AlignCenter);
+            checkboxesExtensions.push_back(checkbox);
+        }
+    }
+
     ajouterBouton(layout, "Commencer la partie", boutonCommencerPartieDeuxJoueurs);
 
     layout->addStretch(1);
@@ -209,6 +227,14 @@ void FenetrePrincipale::ouvrirFileDialog() {
     }
 }
 
+void FenetrePrincipale::activerExtensions() {
+    for (QCheckBox* checkbox : checkboxesExtensions) {
+        if (checkbox->isChecked()) {
+            controleur->partie->getUsine()->setExtensionActive(checkbox->text().toStdString());
+        }
+    }
+}
+
 void FenetrePrincipale::commencerPartieContreIA() {
     QString nomJoueur = champNomJoueur1IA->text();
     QString nomSauvegarde = champNomSauvegardeIA->text();
@@ -220,7 +246,7 @@ void FenetrePrincipale::commencerPartieContreIA() {
         return;
     }
 
-    Joueur* joueur1 = new JoueurHumain(nomJoueur.toStdString(), controleur->partie->initialiserPions(RED), RED, nbUndo,*(controleur->partie));
+    Joueur* joueur1 = new JoueurHumain(nomJoueur.toStdString(), controleur->partie->initialiserPions(RED), RED, nbUndo, *(controleur->partie));
     Joueur* joueur2 = new JoueurIA("IA", controleur->partie->initialiserPions(WHITE), WHITE, *(controleur->partie), nbUndo);
     controleur->partie->setJoueur1(joueur1);
     controleur->partie->setJoueur2(joueur2);
@@ -228,9 +254,9 @@ void FenetrePrincipale::commencerPartieContreIA() {
     controleur->partie->setNomPartie(nomSauvegarde.toStdString());
     controleur->partie->getJoueur1()->setNbUndo(nbUndo);
     controleur->partie->getJoueur2()->setNbUndo(nbUndo);
-    controleur->partie->setJoueur1(joueur1);
-    controleur->partie->setJoueur2(joueur2);
-    // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
+
+    // Activer les extensions en fonction des checkbox
+    activerExtensions();
 
     controleur->commencerPartie();
 }
@@ -255,9 +281,9 @@ void FenetrePrincipale::commencerPartieDeuxJoueurs() {
     controleur->partie->setNomPartie(nomSauvegarde.toStdString());
     controleur->partie->getJoueur1()->setNbUndo(nbUndo);
     controleur->partie->getJoueur2()->setNbUndo(nbUndo);
-    controleur->partie->setJoueur1(joueur1);
-    controleur->partie->setJoueur2(joueur2);
-    // partie->setExtensions(extensionMoustique, extensionCoccinelle, extensionAraignee);
+
+    // Activer les extensions en fonction des checkbox
+    activerExtensions();
 
     controleur->commencerPartie();
 }

@@ -8,6 +8,7 @@
 #include <string>
 #include "partie.h"
 #include "mouvement.h"
+#include "joueur.h"
 #include "gestionnaireCommand.h"
 
 class Controleur : public QObject {
@@ -21,6 +22,10 @@ public:
     void faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer);
     void placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer);
     void deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer);
+    bool doitBougerReine(Joueur& j) { 
+        std::cout << j.peutBougerPions() << std::endl;
+        std::cout << partie->getNombreTour() << std::endl;
+        return partie->getNombreTour() >= 4 && j.peutBougerPions() == false; }
 
     // getters
     QList<VuePion*> getPiocheJoueur1() { return piocheJoueur1; }

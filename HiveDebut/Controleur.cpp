@@ -11,7 +11,6 @@ Controleur::Controleur(Partie* partie, QObject* parent) : QObject(parent), parti
 void Controleur::commencerPartie() {
 
     GestionnaireSauvegarde::sauvegarde(*partie);  // sauvegarde la nouvelle partie
-    partie->getPlateau().afficher();  // affiche le plateau en console (a supprimer)
 
     if (partie->getNombreTour() % 2 == 1) {
         aQuiDeJouer = QString::fromStdString(partie->getJoueur1()->getNom());
@@ -19,6 +18,14 @@ void Controleur::commencerPartie() {
     else {
         aQuiDeJouer = QString::fromStdString(partie->getJoueur2()->getNom());
     }
+
+    // Recréer les pions en main des joueurs en fonction des extensions activées
+    partie->getJoueur1()->getPionsEnMain().clear();
+    partie->getJoueur2()->getPionsEnMain().clear();
+    std::vector<Pion*> pionsJoueur1 = partie->initialiserPions(RED);
+    std::vector<Pion*> pionsJoueur2 = partie->initialiserPions(WHITE);
+    partie->getJoueur1()->getPionsEnMain().insert(partie->getJoueur1()->getPionsEnMain().end(), pionsJoueur1.begin(), pionsJoueur1.end());
+    partie->getJoueur2()->getPionsEnMain().insert(partie->getJoueur2()->getPionsEnMain().end(), pionsJoueur2.begin(), pionsJoueur2.end());
 
     updatePioches();
 
@@ -78,11 +85,10 @@ void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
     auto poserPionCommand = new MouvementCommand(*partie, emplacementChoisi);
     GestionnaireCommand::executeCommand(*partie, poserPionCommand);
 
-    // retirer le pion de la pioche du joueur1
+    // retirer le pion de la pioche du joueur concerné
     if (piocheJoueur1.removeOne(pionAPlacer)) {
         piocheJoueur1.resize(piocheJoueur1.size());
     }
-    // on check pour joueur2
     else if (piocheJoueur2.removeOne(pionAPlacer)) {
         piocheJoueur2.resize(piocheJoueur2.size());
     }
@@ -103,11 +109,10 @@ void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
     auto poserPionCommand = new MouvementCommand(*partie, emplacementChoisi);
     GestionnaireCommand::executeCommand(*partie, poserPionCommand);
 
-    // retirer le pion de la pioche du joueur1
+    // retirer le pion de la pioche du joueur concerné
     if (piocheJoueur1.removeOne(pionADeplacer)) {
         piocheJoueur1.resize(piocheJoueur1.size());
     }
-    // on check pour joueur2
     else if (piocheJoueur2.removeOne(pionADeplacer)) {
         piocheJoueur2.resize(piocheJoueur2.size());
     }

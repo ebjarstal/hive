@@ -9,17 +9,14 @@ const int    INDEX_JOUER_DEUX_JOUEURS = 3;
 const int    INDEX_CHARGER_PARTIE = 4;
 const int    INDEX_PARTIE_EN_COURS = 5;
 
-const int    SCALE_BY = 25;
-const int    TAILLE_PLATEAU = 12;
+const int    SCALE_BY = 20;
+const int    TAILLE_PLATEAU = 15;
 const int    NB_COUCHES = 5;
 const int    ESPACEMENT_PIONS = 2;
-const int    ESPACEMENT_VERTICAL_PIONS_PIOCHE = 5;
+const int    ESPACEMENT_VERTICAL_PIONS_PIOCHE = 2;
 const int    NB_PIONS_DEBUT = 5;
 const int    LARGEUR_ECRAN = 1024;
 const int    HAUTEUR_ECRAN = 768;
-
-const QString JOUEUR1 = QString("joueur1");
-const QString JOUEUR2 = QString("joueur2");
 
 const double p1_x = 1;
 const double p1_y = 0;
