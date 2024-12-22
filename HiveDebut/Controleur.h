@@ -16,7 +16,7 @@ class Controleur : public QObject {
 
 public:
     Controleur(Partie* partie, QObject* parent = nullptr);
-    Controleur::~Controleur();
+    ~Controleur();
     Partie* partie;
     VuePlateau* vuePlateau;
 
@@ -24,10 +24,9 @@ public:
     void faireMouvement(VuePion* pionABouger, VuePion* pionARemplacer);
     void placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer);
     void deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer);
-    bool doitBougerReine(Joueur& j) { 
-        std::cout << j.peutBougerPions() << std::endl;
-        std::cout << partie->getNombreTour() << std::endl;
-        return partie->getNombreTour() >= 4 && j.peutBougerPions() == false; }
+    bool doitBougerReine(Joueur& j) {
+        return partie->getNombreTour() >= 4 && j.peutBougerPions() == false;
+    }
 
     // getters
     QList<VuePion*> getPiocheJoueur1() { return piocheJoueur1; }
