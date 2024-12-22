@@ -25,6 +25,7 @@ public:
     void placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer);
     void deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer);
     bool doitBougerReine(Joueur& j) {
+        std::cout << partie->getNombreTour() << " " << j.peutBougerPions() << std::endl;
         return partie->getNombreTour() >= 4 && j.peutBougerPions() == false;
     }
 

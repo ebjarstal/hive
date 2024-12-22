@@ -494,13 +494,31 @@ void FenetrePrincipale::onPionClique(VuePion* pion) {
         && pionEnCoursDeTraitement != nullptr) {
         // fait le mouvement qu'il y a à faire du cote de la grille de pion
         // et de la grille de vuepion à l'aide des classes du jeu console
-        controleur->faireMouvement(pionEnCoursDeTraitement, pion);
-        controleur->jouerTour();
-        resetPionsTemporairementModifies();
-        pionEnCoursDeTraitement = nullptr;
 
-        // on met l'affichage a jour
-        updateAffichage();
+        // force le joueur à placer sa reine si nécessaire
+        if (controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur1()->getNom())
+            && controleur->doitBougerReine(*controleur->partie->getJoueur1()) == true
+            && pionEnCoursDeTraitement->getType() != QString("R")) {
+            resetPionsTemporairementModifies();
+            pionEnCoursDeTraitement = nullptr;
+            updateAffichage();
+        }
+        else if (controleur->getAQuiDeJouer() == QString::fromStdString(controleur->partie->getJoueur2()->getNom())
+            && controleur->doitBougerReine(*controleur->partie->getJoueur2()) == true
+            && pionEnCoursDeTraitement->getType() != QString("R")) {
+            resetPionsTemporairementModifies();
+            pionEnCoursDeTraitement = nullptr;
+            updateAffichage();
+        }
+        // sinon le coup est joué
+        else {
+            controleur->faireMouvement(pionEnCoursDeTraitement, pion);
+            controleur->jouerTour();
+            resetPionsTemporairementModifies();
+            pionEnCoursDeTraitement = nullptr;
+            // on met l'affichage a jour
+            updateAffichage();
+        }
         return;
     }
 
