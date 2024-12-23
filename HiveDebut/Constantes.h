@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QString>
+#include <Qstring>
 
 const int    INDEX_MENU = 0;
 const int    INDEX_NOUVELLE_PARTIE = 1;
