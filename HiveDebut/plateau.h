@@ -25,8 +25,6 @@
 #define WHITE "\033[37m"
 #define RESET "\033[37m"
 
-using namespace std;
-
 class Plateau {
 public:
     Plateau(unsigned int l, unsigned int c, unsigned int z);

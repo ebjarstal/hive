@@ -11,8 +11,6 @@
 #define WHITE "\033[37m"
 #define RESET "\033[37m"
 
-using namespace std;
-
 // Déclaration de Plateau au préalable pour éviter les problèmes de compilation
 class Plateau;
 

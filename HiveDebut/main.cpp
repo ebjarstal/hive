@@ -12,12 +12,10 @@
 #include <QApplication>
 #include "FenetrePrincipale.h"
 
-using namespace std;
-
 int main(int argc, char* argv[]) {
     int choix = 0;
-    cout << "Interface console (0) ou interface Qt (1) ?" << endl;
-    cin >> choix;
+    std::cout << "Interface console (0) ou interface Qt (1) ?" << std::endl;
+    std::cin >> choix;
     if (choix == 0) {
 
         Plateau plateau(TAILLE_PLATEAU, TAILLE_PLATEAU, NB_COUCHES);
@@ -40,7 +38,7 @@ int main(int argc, char* argv[]) {
         return app.exec();
     }
     else {
-        cout << "Choix invalide" << endl;
+        std::cout << "Choix invalide" << std::endl;
     }
     return 0;
 }

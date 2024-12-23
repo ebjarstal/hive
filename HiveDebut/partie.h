@@ -24,8 +24,6 @@
 #define WHITE "\033[37m"
 #define RESET "\033[37m"
 
-using namespace std;
-
 class Partie {
 private:
     Plateau& plateau;
@@ -36,7 +34,7 @@ private:
     unsigned int nombreTour;
 public:
 
-    string nomPartie;
+    std::string nomPartie;
     Partie(Plateau& p, UsineDePions* u) : joueur1(nullptr), joueur2(nullptr), nombreTour(1), plateau(p), usine(u) {}
     ~Partie();
     Plateau& getPlateau() { return plateau; }

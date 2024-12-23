@@ -5,7 +5,7 @@
 #include "VuePlateau.h"
 #include <QObject>
 #include <QList>
-#include <string>
+#include <QString>
 #include "partie.h"
 #include "mouvement.h"
 #include "joueur.h"

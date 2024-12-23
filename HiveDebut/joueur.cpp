@@ -28,7 +28,7 @@ bool Joueur::isMainVide() {
     else return false;
 }
 
-Joueur::Joueur(vector<Pion*> pEm, string c, Partie& p, string n, unsigned int nb) : nbUndo(nb), pionsEnMain(pEm), couleur(c), partie(p), nom(n) {
+Joueur::Joueur(std::vector<Pion*> pEm, std::string c, Partie& p, std::string n, unsigned int nb) : nbUndo(nb), pionsEnMain(pEm), couleur(c), partie(p), nom(n) {
 
 }
 
@@ -139,7 +139,7 @@ void JoueurIA::Jouer(Plateau& plateau, Partie& partie) {
 
 void JoueurHumain::Jouer(Plateau& plateau, Partie& partie) {
 
-    std::cout << "C'est a " << getNom() << " de jouer !" << endl;
+    std::cout << "C'est a " << getNom() << " de jouer !" << std::endl;
     int choix;
     if (isMainVide()) {
         choix = 2; // Si la main est vide, le joueur ne peut que d placer un pion

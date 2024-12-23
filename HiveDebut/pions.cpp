@@ -455,7 +455,7 @@ std::vector<Mouvement*> Moustique::deplacementsPossibles(Pion& p, Joueur& j, Pla
 
    for (const auto& voisinType : voisinsTypes) {
        if (voisinType != nullptr) {
-           string v_type = voisinType->getType();
+           std::string v_type = voisinType->getType();
 
            // Vérifier si l'élément existe déjà
            if (typesVus.find(v_type) == typesVus.end()) {

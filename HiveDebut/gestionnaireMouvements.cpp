@@ -105,7 +105,7 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
     if (!pionsJoueur.empty()) {
         // Cas normal : générer les mouvements pour les pions déjà en jeu
         for (std::tuple<Pion*, int, int, int> tuple : pionsJoueur) {
-            Pion* pion = get<0>(tuple);
+            Pion* pion = std::get<0>(tuple);
 
             // Obtenir les emplacements possibles pour ce pion
             std::vector<Mouvement*> deplacementsValides = pion->deplacementsPossibles(*pion, joueur, p);

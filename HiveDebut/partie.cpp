@@ -36,7 +36,7 @@ void Partie::setup() {
             creationPartie(dossierSauvegarde);
         }
         else {
-            cout << "ERREUR : Chiffre invalide.\n\n";
+            std::cout << "ERREUR : Chiffre invalide.\n\n";
         }
     }
 }

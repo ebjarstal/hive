@@ -12,17 +12,15 @@
 #define WHITE "\033[37m"
 #define RESET "\033[37m"
 
-using namespace std;
-
 class Plateau;
 class Joueur;
 
 class Pion {
 protected:
     static std::map<int, Pion*> pions;
-    string type;
-    string couleur;
-    string nom;
+    std::string type;
+    std::string couleur;
+    std::string nom;
 
     static int prochainId;
     int id;
@@ -33,8 +31,8 @@ protected:
 
 public:
     virtual ~Pion() { auto it = pions.find(id); if (it != pions.end()) pions.erase(it); }
-    Pion(int id, string t, string c, string n) : id(id), type(t), couleur(c), nom(n) {}
-    Pion(string t, string c, string n) : id(prochainId++), type(t), couleur(c), nom(n) {}
+    Pion(int id, std::string t, std::string c, std::string n) : id(id), type(t), couleur(c), nom(n) {}
+    Pion(std::string t, std::string c, std::string n) : id(prochainId++), type(t), couleur(c), nom(n) {}
 
     static void ajouterPion(Pion* pion) { pions[pion->getId()] = pion; }
     static Pion* getPionById(int id) { return pions[id]; }
@@ -43,9 +41,9 @@ public:
     void reset() { ligne = -1; colonne = -1; z = -1; }
 
     int getId() const { return id; }
-    const string& getType() const { return type; }
-    string getCouleur() const { return couleur; }
-    const string getNom() const { return nom; }
+    const std::string& getType() const { return type; }
+    std::string getCouleur() const { return couleur; }
+    const std::string getNom() const { return nom; }
     int getLigne() const { return ligne; }
     void setLigne(int new_ligne) { ligne = new_ligne; }
     int getColonne() const { return colonne; }
@@ -60,57 +58,57 @@ public:
 
 class Reine : public Pion {
 public:
-    Reine(int id, string c) : Pion(id, "R", c, "Reine") {}
-    Reine(string c) : Pion("R", c, "Reine") {}
+    Reine(int id, std::string c) : Pion(id, "R", c, "Reine") {}
+    Reine(std::string c) : Pion("R", c, "Reine") {}
     virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Sauterelle : public Pion {
 public:
-    Sauterelle(int id, string c) : Pion(id, "S", c, "Sauterelle") {}
-    Sauterelle(string c) : Pion("S", c, "Sauterelle") {}
+    Sauterelle(int id, std::string c) : Pion(id, "S", c, "Sauterelle") {}
+    Sauterelle(std::string c) : Pion("S", c, "Sauterelle") {}
     virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Araignee : public Pion {
 public:
-    Araignee(int id, string c) : Pion(id, "A", c, "Araignee") {}
-    Araignee(string c) : Pion("A", c, "Araignee") {}
+    Araignee(int id, std::string c) : Pion(id, "A", c, "Araignee") {}
+    Araignee(std::string c) : Pion("A", c, "Araignee") {}
     virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 
 class Fourmi : public Pion {
 public:
-    Fourmi(int id, string c) : Pion(id, "F", c, "Fourmi") {}
-    Fourmi(string c) : Pion("F", c, "Fourmi") {}
+    Fourmi(int id, std::string c) : Pion(id, "F", c, "Fourmi") {}
+    Fourmi(std::string c) : Pion("F", c, "Fourmi") {}
     virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Scarabee : public Pion {
 public:
-    Scarabee(int id, string c) : Pion(id, "K", c, "Scarabee") {}
-    Scarabee(string c) : Pion("K", c, "Scarabee") {}
+    Scarabee(int id, std::string c) : Pion(id, "K", c, "Scarabee") {}
+    Scarabee(std::string c) : Pion("K", c, "Scarabee") {}
     virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Coccinelle : public Pion {
 public:
-    Coccinelle(int id, string c) : Pion(id, "X", c, "Coccinelle") {}
-    Coccinelle(string c) : Pion("X", c, "Coccinelle") {}
+    Coccinelle(int id, std::string c) : Pion(id, "X", c, "Coccinelle") {}
+    Coccinelle(std::string c) : Pion("X", c, "Coccinelle") {}
     virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Cloporte : public Pion {
 public:
-    Cloporte(int id, string c) : Pion(id, "C", c, "Cloporte") {}
-    Cloporte(string c) : Pion("C", c, "Cloporte") {}
+    Cloporte(int id, std::string c) : Pion(id, "C", c, "Cloporte") {}
+    Cloporte(std::string c) : Pion("C", c, "Cloporte") {}
     virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };
 
 class Moustique : public Pion {
 public:
-    Moustique(int id, string c) : Pion(id, "M", c, "Moustique") {}
-    Moustique(string c) : Pion("M", c, "Moustique") {}
+    Moustique(int id, std::string c) : Pion(id, "M", c, "Moustique") {}
+    Moustique(std::string c) : Pion("M", c, "Moustique") {}
     virtual std::vector<Mouvement*> deplacementsPossibles(Pion& p, Joueur& j, Plateau& plateau) override;
 };

@@ -60,7 +60,7 @@ void GestionnairePions::deletePion(Pion& p, Plateau& plateau) {
     }
 }
 
-std::vector<Pion*> GestionnairePions::getPionsEnJeu(Plateau& plateau, string couleur) {
+std::vector<Pion*> GestionnairePions::getPionsEnJeu(Plateau& plateau, std::string couleur) {
     // Récupérer tous les pions sur le plateau
     std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = getPions(plateau);
 

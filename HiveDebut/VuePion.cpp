@@ -48,7 +48,7 @@ void VuePion::setAttributs(QColor nouvelleCouleur, bool estPose, QString type) {
     setType(type);
 }
 
-void VuePion::setCouleur(string nouvelleCouleur) {
+void VuePion::setCouleur(std::string nouvelleCouleur) {
     if (nouvelleCouleur == RED) {
         couleur = Qt::darkRed;
     }

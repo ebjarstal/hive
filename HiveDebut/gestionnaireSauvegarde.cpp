@@ -242,12 +242,12 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
 
 void GestionnaireSauvegarde::sauvegarde(Partie& p) {
 
-    string nomPartie = p.nomPartie;
+    std::string nomPartie = p.nomPartie;
     int nombreTour = p.getNombreTour();
     Joueur* joueur1 = p.getJoueur1();
     Joueur* joueur2 = p.getJoueur2();
     Plateau& plateau = p.getPlateau();
-    stack<Command*>& historique = p.getHistorique();
+    std::stack<Command*>& historique = p.getHistorique();
 
     std::string nomFichier = "sauvegardes/" + nomPartie + ".txt"; // Utiliser nomPartie pour le fichier
     std::ofstream fichier(nomFichier);
