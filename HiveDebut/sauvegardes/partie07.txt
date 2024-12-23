@@ -1,3 +1,0 @@
-Nombre de tour: 1
-Joueur 1:
-Type: IA

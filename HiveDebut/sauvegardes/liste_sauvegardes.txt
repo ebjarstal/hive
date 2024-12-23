@@ -8,3 +8,5 @@ main05
 qt01
 qt02
 console01
+bug01
+fds

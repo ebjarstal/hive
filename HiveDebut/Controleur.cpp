@@ -9,7 +9,6 @@
 Controleur::Controleur(Partie* partie, QObject* parent) : QObject(parent), partie(partie), vuePlateau(nullptr) {}
 
 void Controleur::commencerPartie() {
-
     GestionnaireSauvegarde::sauvegarde(*partie);  // sauvegarde la nouvelle partie
 
     if (partie->getNombreTour() % 2 == 1) {
@@ -98,7 +97,6 @@ void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
     }
 }
 
-
 void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
     int old_ligne = pionADeplacer->getPionAssocie()->getLigne();
     int old_colonne = pionADeplacer->getPionAssocie()->getColonne();
@@ -127,7 +125,6 @@ void Controleur::setAQuiDeJouer(QString nomJoueur) {
 }
 
 void Controleur::jouerTour() {
-
     // Alterner le joueur courant
     if (aQuiDeJouer == QString::fromStdString(partie->getJoueur1()->getNom())) {
         aQuiDeJouer = QString::fromStdString(partie->getJoueur2()->getNom());
@@ -162,6 +159,7 @@ void Controleur::jouerTour() {
 void Controleur::annulerMouvementJoueur1() {
     if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur1()->getNom()) && partie->getJoueur1()->getNbUndo() > 0) {
         partie->annulerMouvement(*partie->getJoueur1());
+        partie->getJoueur1()->setNbUndo(partie->getJoueur1()->getNbUndo() - 1);
         GestionnaireSauvegarde::sauvegarde(*partie);
         emit mouvementAnnule();
     }
@@ -170,6 +168,7 @@ void Controleur::annulerMouvementJoueur1() {
 void Controleur::annulerMouvementJoueur2() {
     if (getAQuiDeJouer() == QString::fromStdString(partie->getJoueur2()->getNom()) && partie->getJoueur2()->getNbUndo() > 0) {
         partie->annulerMouvement(*partie->getJoueur2());
+        partie->getJoueur2()->setNbUndo(partie->getJoueur2()->getNbUndo() - 1);
         GestionnaireSauvegarde::sauvegarde(*partie);
         emit mouvementAnnule();
     }
@@ -188,4 +187,24 @@ void Controleur::initialiserPioches() {
 void Controleur::updateVuePlateau() {
     // Réinitialiser le plateau
     vuePlateau->initialiserPlateau(190, 100);
+}
+
+bool Controleur::doitBougerReine(Joueur& j) {
+    return partie->getNombreTour() >= 4 && j.peutBougerPions() == false;
+}
+
+bool Controleur::doitPlacerReine(Joueur& j, VuePion* pionAPlacer) {
+    if (doitBougerReine(j) && pionAPlacer->getType() != QString("R")) {
+        return true;
+    }
+    return false;
+}
+
+bool Controleur::reinePlacee(Joueur& j) {
+    for (Pion* pion : j.getPionsEnMain()) {
+        if (pion->getType() == "R") {
+            return false;
+        }
+    }
+    return true;
 }
