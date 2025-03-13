@@ -1,2 +1,1 @@
-
-Ne pas oublier de commenter le code pour qu'il soit lisible par tout le monde!
+Ce projet a été mené dans le cadre du cours intitulé "LO21: Programmation Orientée Objet" à l'UTC lors du semestre d'automne 2024. Il s'agit d'un portage du jeu de société "Hive" en C++ avec une interface graphique créée avec le framework Qt.
