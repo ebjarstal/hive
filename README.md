@@ -1,6 +1,16 @@
+## Note
+
+For reference, Claude Code was used in March 2026 to refactor parts of the project and make it more presentable. The game's implementation was done by us (the students) back in Fall 2024, with minimal use of AIs/LLMs. The students involved in this project are:
+
+- Charlie Grosdemange
+- Éric Bjärstål
+- Héloïse De Wever
+- Lucas Dompnier
+- Yann Chabance
+
 # Hive: C++ Board Game
 
-A C++ implementation of the **Hive** board game, developed as a university project for the UTC LO21 course (autumn 2024). Includes a console interface and a Qt GUI with a hexagonal board.
+A C++ implementation of the **Hive** board game, developed as a university project for the UTC LO21 course (Object-oriented programming) in Fall 2024. Includes a console interface and a Qt GUI with a hexagonal board.
 
 ## Features
 
