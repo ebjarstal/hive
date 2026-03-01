@@ -38,41 +38,9 @@ FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
 }
 
 FenetrePrincipale::~FenetrePrincipale() {
-    // Supprimer les checkboxes dynamiques
-    for (QCheckBox* checkbox : checkboxesExtensions) {
-        delete checkbox;
-    }
-    checkboxesExtensions.clear();
-
-    // Supprimer les widgets dynamiquement alloués
-    delete champNomJoueur1IA;
-    delete champNomSauvegardeIA;
-    delete champNombreRetoursIA;
-    delete champNomJoueur1DeuxJoueurs;
-    delete champNomJoueur2DeuxJoueurs;
-    delete champNomSauvegardeDeuxJoueurs;
-    delete champNombreRetoursDeuxJoueurs;
-    delete labelNomSauvegarde;
-    delete labelFichierCharge;
-    delete boutonNouvellePartie;
-    delete boutonChargerPartie;
-    delete boutonQuitter;
-    delete boutonRetourNouvellePartie;
-    delete boutonRetourChargerPartie;
-    delete boutonCommencerPartieContreIA;
-    delete boutonCommencerPartieDeuxJoueurs;
-    delete boutonOuvrirFichier;
-    delete boutonChargerPartieSauvegarde;
-    delete boutonAnnulerMouvementJoueur1;
-    delete boutonAnnulerMouvementJoueur2;
-    delete texteTour;
-    delete vuePartie;
-    delete scene;
-    delete stackedWidget;
-    delete widgetCentral;
-
-    // Supprimer le contrôleur
-    delete controleur;
+    // All Qt objects were created with 'this' (or a Qt-parented ancestor) as parent.
+    // Qt's QObject destructor chain deletes all children automatically — no manual
+    // deletes needed here. Doing so would cause a double-free segfault.
 }
 
 void FenetrePrincipale::onPartieTerminee(const QString& message) {
