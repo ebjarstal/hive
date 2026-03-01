@@ -1,0 +1,7 @@
+TestPartie
+QuickTest
+QuickTest2
+QuickTest3
+AsanTest
+AsanTest2
+AsanClean
