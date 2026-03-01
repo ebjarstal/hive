@@ -5,11 +5,8 @@
 
 
 Joueur::~Joueur() {
-    // Libérer chaque pion pointé dans le vecteur pionsEnMain
-    for (Pion* pion : pionsEnMain) {
-        delete pion;
-    }
-    pionsEnMain.clear(); // Vide le vecteur après la suppression des pointeurs
+    // pionsEnMain contient des pointeurs non-propriétaires (owned by Partie::tousLesPions)
+    pionsEnMain.clear();
 }
 
 bool Joueur::peutBougerPions() {
@@ -133,8 +130,8 @@ void JoueurHumain::afficherPionsSurPlateau(Plateau& plateau, std::vector<std::tu
 
 void JoueurIA::Jouer(Plateau& plateau, Partie& partie) {
     Mouvement* mvt = trouverMeilleurMouvement(plateau, *this, 2);
-    Command* commande = new MouvementCommand(partie, mvt);
-    GestionnaireCommand::executeCommand(partie, commande);
+    auto commande = std::make_unique<MouvementCommand>(partie, mvt);
+    GestionnaireCommand::executeCommand(partie, std::move(commande));
 }
 
 void JoueurHumain::Jouer(Plateau& plateau, Partie& partie) {
@@ -142,7 +139,7 @@ void JoueurHumain::Jouer(Plateau& plateau, Partie& partie) {
     std::cout << "C'est a " << getNom() << " de jouer !" << endl;
     int choix;
     if (isMainVide()) {
-        choix = 2; // Si la main est vide, le joueur ne peut que d placer un pion
+        choix = 2; // Si la main est vide, le joueur ne peut que déplacer un pion
     }
     else if (partie.getNombreTour() == 4 && !peutBougerPions()) { //peutBougerPions renvoie false si la Reine est toujours en main
         std::cout << "Vous devez poser votre pion Reine\n";
@@ -165,13 +162,13 @@ void JoueurHumain::Jouer(Plateau& plateau, Partie& partie) {
     }
 
     if (choix == 1) {
-        poserPionHumain(plateau, partie);  // Appel de la m thode pour poser un pion
+        poserPionHumain(plateau, partie);  // Appel de la méthode pour poser un pion
     }
     else if (choix == 4) {
         poserReineHumain(plateau);
     }
     else if (choix == 2 && !plateau.isVide()) {
-        deplacerPionHumain(plateau);  // Appel de la m thode pour d placer un pion
+        deplacerPionHumain(plateau);  // Appel de la méthode pour déplacer un pion
     }
     else if (choix == 3 && canUndo()) {
         nbUndo--;
@@ -180,7 +177,7 @@ void JoueurHumain::Jouer(Plateau& plateau, Partie& partie) {
         Jouer(plateau, partie);
     }
     else {
-        return; // Ajout d'un retour par d faut
+        return; // Ajout d'un retour par défaut
     }
 }
 
@@ -215,8 +212,8 @@ Mouvement* JoueurHumain::poserPionHumain(Plateau& plateau, Partie& partie) {
 }
 
 void JoueurHumain::JouerMouvement(Partie& partie, Mouvement* emplacementChoisi) {
-    auto command = new MouvementCommand(partie, emplacementChoisi);
-    GestionnaireCommand::executeCommand(partie, command);
+    auto command = std::make_unique<MouvementCommand>(partie, emplacementChoisi);
+    GestionnaireCommand::executeCommand(partie, std::move(command));
 }
 
 Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
@@ -253,30 +250,32 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
 }
 
 Mouvement* JoueurIA::trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCourant, int profondeurMax) {
-    int meilleurScore = -10000; // Valeur initiale très basse pour maximiser
+    int meilleurScore = -10000;
     Mouvement* meilleurMouvement = nullptr;
     std::vector<Mouvement*> mouvementsPossibles = GestionnaireMouvements::genererTousLesMouvements(plateau, joueurCourant);
     for (Mouvement* mouvement : mouvementsPossibles) {
-
-        Command* command = new MouvementCommand(partie, mouvement);
-        GestionnaireCommand::executeCommand(partie, command);
+        // Passer une copie au command pour qu'il puisse la libérer après undo,
+        // tout en gardant le pointeur original vivant pour identifier le meilleur coup.
+        Mouvement* copie = new Mouvement(*mouvement);
+        auto command = std::make_unique<MouvementCommand>(partie, copie);
+        GestionnaireCommand::executeCommand(partie, std::move(command));
 
         // Évaluer avec minimax
         int score = minimax(plateau, profondeurMax - 1, partie.joueurAdverse(joueurCourant), true, -10000, 10000);
 
-        // Annuler le mouvement
+        // Annuler le mouvement (libère la commande et la copie automatiquement)
         GestionnaireCommand::undoCommand(partie);
 
         // Vérifier si ce mouvement est le meilleur
         if (score > meilleurScore) {
             meilleurScore = score;
             if (meilleurMouvement) {
-                delete meilleurMouvement; // Libérer l'ancien mouvement
+                delete meilleurMouvement;
             }
-            meilleurMouvement = mouvement; // Sauvegarder le nouveau meilleur
+            meilleurMouvement = mouvement;
         }
         else {
-            delete mouvement; // Libérer les mouvements non retenus
+            delete mouvement;
         }
     }
 
@@ -322,7 +321,8 @@ int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& joueur, bool isMaximizingP
         // Évaluer la mobilité et les types de pions
         if (!GestionnaireMouvements::cassageRuche(*pion, plateau)) {
             auto mouvements = pion->deplacementsPossibles(*pion, joueur, plateau);
-            int options = mouvements.size();
+            int options = static_cast<int>(mouvements.size());
+            for (Mouvement* m : mouvements) delete m;
 
             if (estJoueur) {
                 optionsJoueur += options;
@@ -376,15 +376,15 @@ int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, b
     std::vector<Mouvement*> mouvementsPossibles = GestionnaireMouvements::genererTousLesMouvements(plateau, joueurCourant);
 
     for (Mouvement* mouvement : mouvementsPossibles) {
-
-        // Appliquer le mouvement
-        Command* command = new MouvementCommand(partie, mouvement);
-        GestionnaireCommand::executeCommand(partie, command);
+        // Passer une copie au command pour libération propre après undo
+        Mouvement* copie = new Mouvement(*mouvement);
+        auto command = std::make_unique<MouvementCommand>(partie, copie);
+        GestionnaireCommand::executeCommand(partie, std::move(command));
 
         // Appeler récursivement minimax
         int score = minimax(plateau, profondeur - 1, partie.joueurAdverse(joueurCourant), !isMaximizingPlayer, alpha, beta);
 
-        // Annuler le mouvement
+        // Annuler le mouvement (libère la commande et la copie automatiquement)
         GestionnaireCommand::undoCommand(partie);
 
         if (isMaximizingPlayer) {
@@ -402,7 +402,7 @@ int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, b
         }
     }
 
-    // Libérer la mémoire des mouvements générés
+    // Libérer la mémoire des mouvements originaux générés
     for (Mouvement* mouvement : mouvementsPossibles) {
         delete mouvement;
     }

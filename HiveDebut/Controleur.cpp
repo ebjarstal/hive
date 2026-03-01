@@ -85,8 +85,8 @@ void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
 
     // les trois lignes suivantes permettent d'executer le placement du pion du cote du vrai plateau
     Mouvement* emplacementChoisi = new Mouvement(pionAPlacer->getPionAssocie()->getId(), new_ligne, new_colonne, new_couche, -1, -1, -1);
-    auto poserPionCommand = new MouvementCommand(*partie, emplacementChoisi);
-    GestionnaireCommand::executeCommand(*partie, poserPionCommand);
+    auto poserPionCommand = std::make_unique<MouvementCommand>(*partie, emplacementChoisi);
+    GestionnaireCommand::executeCommand(*partie, std::move(poserPionCommand));
 
     // retirer le pion de la pioche du joueur concerné
     if (!piocheJoueur1.removeOne(pionAPlacer)) {
@@ -105,8 +105,8 @@ void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
 
     // les trois lignes suivantes permettent d'executer le placement du pion du cote du vrai plateau
     Mouvement* emplacementChoisi = new Mouvement(pionADeplacer->getPionAssocie()->getId(), new_ligne, new_colonne, new_couche, old_ligne, old_colonne, old_couche);
-    auto poserPionCommand = new MouvementCommand(*partie, emplacementChoisi);
-    GestionnaireCommand::executeCommand(*partie, poserPionCommand);
+    auto poserPionCommand = std::make_unique<MouvementCommand>(*partie, emplacementChoisi);
+    GestionnaireCommand::executeCommand(*partie, std::move(poserPionCommand));
 
     // retirer le pion de la pioche du joueur concerné
     if (!piocheJoueur1.removeOne(pionADeplacer)) {

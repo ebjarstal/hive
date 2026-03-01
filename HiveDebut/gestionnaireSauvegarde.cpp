@@ -37,7 +37,7 @@ bool GestionnaireSauvegarde::chargementSauvegardePartie(Partie& p, const std::st
         }
 
         int choixSauvegarde = 0;
-        while (choixSauvegarde < 1 || choixSauvegarde > fichiersSauvegarde.size()) {
+        while (choixSauvegarde < 1 || choixSauvegarde > static_cast<int>(fichiersSauvegarde.size())) {
             std::cout << "Choisissez une sauvegarde a charger (1-" << fichiersSauvegarde.size() << ") : ";
             std::cin >> choixSauvegarde;
         }
@@ -55,7 +55,7 @@ bool GestionnaireSauvegarde::chargementSauvegardePartie(Partie& p, const std::st
 bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
     UsineDePions* u = p.getUsine();
 
-    std::string nomFichier = "sauvegardes/" + p.nomPartie + ".txt"; // Utiliser nomPartie pour le fichier
+    std::string nomFichier = "sauvegardes/" + p.nomPartie + ".txt";
     std::ifstream fichier(nomFichier);
     if (!fichier) {
         std::cerr << "Erreur : Impossible d'ouvrir le fichier de sauvegarde." << std::endl;
@@ -98,11 +98,12 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         // Extraire la couleur
         std::string couleur = ligne.substr(posCouleur + 11);
 
-        Pion* pion = u->creerPion(id, type, couleur); // Cr�ation avec ID
-        Pion::ajouterPion(pion);
-        pionsJ1.push_back(pion); // Ajouter aux pions du joueur
+        auto pion = std::unique_ptr<Pion>(u->creerPion(id, type, couleur));
+        Pion::ajouterPion(pion.get());
+        pionsJ1.push_back(pion.get());
+        p.addPion(std::move(pion));
     }
-    // Cr�er le joueur 1
+    // Créer le joueur 1
     if (typeJ1 == "Humain")
         p.setJoueur1(new JoueurHumain(nomJ1, pionsJ1, couleurJ1, nbUndoJ1, p));
     else
@@ -138,19 +139,20 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         // Extraire la couleur
         std::string couleur = ligne.substr(posCouleur + 11);
 
-        Pion* pion = u->creerPion(id, type, couleur); // Cr�ation avec ID
-        Pion::ajouterPion(pion);
-        pionsJ2.push_back(pion);                  // Ajouter aux pions du joueur
+        auto pion = std::unique_ptr<Pion>(u->creerPion(id, type, couleur));
+        Pion::ajouterPion(pion.get());
+        pionsJ2.push_back(pion.get());
+        p.addPion(std::move(pion));
     }
-    // Cr�er le joueur 2
+    // Créer le joueur 2
     if (typeJ2 == "Humain")
         p.setJoueur2(new JoueurHumain(nomJ2, pionsJ2, couleurJ2, nbUndoJ2, p));
     else
         p.setJoueur2(new JoueurIA(nomJ2, pionsJ2, couleurJ2, p, nbUndoJ2));
 
-    // Charger l'�tat du plateau
+    // Charger l'état du plateau
     while (std::getline(fichier, ligne) && ligne.find("Position") != std::string::npos) {
-        // Extraire les coordonn�es
+        // Extraire les coordonnées
         size_t pos1 = ligne.find("(") + 1;
         size_t pos2 = ligne.find(",");
         int colonne = std::stoi(ligne.substr(pos1, pos2 - pos1));
@@ -173,17 +175,12 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         std::string type = ligne.substr(posType, posCouleur - posType);
 
         std::string couleur = ligne.substr(posCouleur + 11);
-        // Cr�er ou r�cup�rer le pion et le placer sur le plateau
-        if (couleur == p.getJoueur1()->getCouleur()) {
-            Pion* pion = u->creerPion(id, type, couleur); // Avec ID
-            Pion::ajouterPion(pion);
-            GestionnairePions::setPion(lignePlateau, colonne, couche, pion, p.getPlateau());
-        }
-        else {
-            Pion* pion = u->creerPion(id, type, couleur); // Avec ID
-            Pion::ajouterPion(pion);
-            GestionnairePions::setPion(lignePlateau, colonne, couche, pion, p.getPlateau());
-        }
+
+        // Créer le pion et le placer sur le plateau (owned by tousLesPions)
+        auto pion = std::unique_ptr<Pion>(u->creerPion(id, type, couleur));
+        Pion::ajouterPion(pion.get());
+        GestionnairePions::setPion(lignePlateau, colonne, couche, pion.get(), p.getPlateau());
+        p.addPion(std::move(pion));
     }
 
     // Charger l'historique des mouvements
@@ -193,7 +190,7 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         size_t pos2 = ligne.find(" ", pos1);
         int pionId = std::stoi(ligne.substr(pos1, pos2 - pos1));
 
-        // Extraire les anciennes coordonn�es
+        // Extraire les anciennes coordonnées
         pos1 = ligne.find("(") + 1;
         pos2 = ligne.find(",");
         int oldLigne = std::stoi(ligne.substr(pos1, pos2 - pos1));
@@ -206,7 +203,7 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         pos2 = ligne.find(")", pos1);
         int oldZ = std::stoi(ligne.substr(pos1, pos2 - pos1));
 
-        // Extraire les nouvelles coordonn�es
+        // Extraire les nouvelles coordonnées
         pos1 = ligne.find("(", pos2) + 1;
         pos2 = ligne.find(",", pos1);
         int newLigne = std::stoi(ligne.substr(pos1, pos2 - pos1));
@@ -224,15 +221,13 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         pos2 = ligne.find("|", pos1);
         int newJoueur = std::stoi(ligne.substr(pos1, pos2 - pos1));
 
-        // Cr�er un mouvement en utilisant l'ID du pion
-        Joueur& j = *p.getJoueur2();
+        // Créer un mouvement en utilisant l'ID du pion
         Mouvement* mvt = new Mouvement(pionId, newLigne, newColonne, newZ, oldLigne, oldColonne, oldZ);
         if (newJoueur == 1) {
             Joueur& j = *p.getJoueur1();
         }
 
-        auto mouvementCommand = new MouvementCommand(p, mvt);
-        p.getHistorique().push(mouvementCommand);
+        p.getHistorique().push(std::make_unique<MouvementCommand>(p, mvt));
     }
     fichier.close();
     return true;
@@ -245,16 +240,16 @@ void GestionnaireSauvegarde::sauvegarde(Partie& p) {
     Joueur* joueur1 = p.getJoueur1();
     Joueur* joueur2 = p.getJoueur2();
     Plateau& plateau = p.getPlateau();
-    stack<Command*>& historique = p.getHistorique();
+    auto& historique = p.getHistorique();
 
-    std::string nomFichier = "sauvegardes/" + nomPartie + ".txt"; // Utiliser nomPartie pour le fichier
+    std::string nomFichier = "sauvegardes/" + nomPartie + ".txt";
     std::ofstream fichier(nomFichier);
     if (!fichier) {
         std::cerr << "Erreur : Impossible d'ouvrir le fichier de sauvegarde." << std::endl;
         return;
     }
 
-    // Sauvegarder les donn�es de base
+    // Sauvegarder les données de base
     fichier << "Nombre de tour: " << nombreTour << std::endl;
 
     // Sauvegarde des joueurs
@@ -290,36 +285,36 @@ void GestionnaireSauvegarde::sauvegarde(Partie& p) {
             }
         }
     }
-    // V�rification de la pr�sence de callback dans l'historique
+
+    // Vérification de la présence de callback dans l'historique
     fichier << "Historique des mouvements:" << std::endl;
     bool callbackDetected = false;
-    std::stack<Command*> historiqueInversee;
+    std::stack<std::unique_ptr<Command>> historiqueInversee;
 
     while (!historique.empty()) {
-        Command* cmd = historique.top();
-        MouvementCommand* mouvCmd = dynamic_cast<MouvementCommand*>(cmd);
+        auto cmd = std::move(historique.top());
+        historique.pop();
+        MouvementCommand* mouvCmd = dynamic_cast<MouvementCommand*>(cmd.get());
 
         if (mouvCmd && mouvCmd->getMouvement()->hasCallback()) {
             callbackDetected = true;
         }
 
-        historiqueInversee.push(cmd);
-        historique.pop();
+        historiqueInversee.push(std::move(cmd));
     }
 
-    // Si une callback est d�tect�e, ne pas sauvegarder les d�tails des mouvements
+    // Si une callback est détectée, ne pas sauvegarder les détails des mouvements
     if (!callbackDetected) {
         while (!historiqueInversee.empty()) {
-            Command* cmd = historiqueInversee.top();
-            fichier << cmd->getDescription() << std::endl;
-            historique.push(historiqueInversee.top());
+            fichier << historiqueInversee.top()->getDescription() << std::endl;
+            historique.push(std::move(historiqueInversee.top()));
             historiqueInversee.pop();
         }
     }
 
     // Restaurer l'historique original
     while (!historiqueInversee.empty()) {
-        historique.push(historiqueInversee.top());
+        historique.push(std::move(historiqueInversee.top()));
         historiqueInversee.pop();
     }
 

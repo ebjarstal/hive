@@ -4,6 +4,10 @@
 #include "joueur.h"
 #include "mouvement.h"
 
+MouvementCommand::~MouvementCommand() {
+	if (mouv) { delete mouv; mouv = nullptr; }
+}
+
 MouvementCommand::MouvementCommand(Partie& p, Mouvement* mouv) : partie(p), mouv(mouv), plateau(partie.getPlateau()) {
 	pion = Pion::getPionById(mouv->getPionId());
 	joueur = partie.getJoueur1();

@@ -1,24 +1,5 @@
 #include "partie.h"
 
-Partie::~Partie() {
-    // Si les joueurs ont été créés dynamiquement ailleurs, vérifiez et libérez la mémoire.
-    if (joueur1) {
-        delete joueur1;
-        joueur1 = nullptr;
-    }
-    if (joueur2) {
-        delete joueur2;
-        joueur2 = nullptr;
-    }
-
-    // Nettoyage de l'historique des commandes (pile de Commandes).
-    while (!historique.empty()) {
-        delete historique.top();  // Libère chaque commande.
-        historique.pop();         // Retire l'élément de la pile.
-    }
-}
-
-
 void Partie::setup() {
     // Créer le dossier "sauvegardes" s'il n'existe pas
     const std::string dossierSauvegarde = "sauvegardes";
@@ -96,19 +77,19 @@ void Partie::creationPartie(const std::string dossierSauvegarde) {
         }
     }
 
-    usine = new UsineDePions;
+    usine = std::make_unique<UsineDePions>();
     choixExtension();
 
 
     std::cout << "Nombre de joueurs selectionne : " << nbJoueur << std::endl;
 
     if (nbJoueur == 1) {
-        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, nbUndoCin, *this);
-        joueur2 = new JoueurIA(nomJoueur2, initialiserPions(WHITE), WHITE, *this, nbUndoCin);
+        joueur1.reset(new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, nbUndoCin, *this));
+        joueur2.reset(new JoueurIA(nomJoueur2, initialiserPions(WHITE), WHITE, *this, nbUndoCin));
     }
     else {
-        joueur1 = new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, nbUndoCin, *this);
-        joueur2 = new JoueurHumain(nomJoueur2, initialiserPions(WHITE), WHITE, nbUndoCin, *this);
+        joueur1.reset(new JoueurHumain(nomJoueur1, initialiserPions(RED), RED, nbUndoCin, *this));
+        joueur2.reset(new JoueurHumain(nomJoueur2, initialiserPions(WHITE), WHITE, nbUndoCin, *this));
     }
 }
 
@@ -133,14 +114,15 @@ std::vector<Pion*> Partie::initialiserPions(const std::string& couleur) {
     std::vector<Pion*> pions;
 
     for (const auto& pair : usine->getNombreDePions()) {
-        const std::string& type = pair.first;              // Clé (type)
-        const std::pair<unsigned int, bool>& data = pair.second; // Valeur (nombre et état)
+        const std::string& type = pair.first;
+        const std::pair<unsigned int, bool>& data = pair.second;
 
         int nbpion = data.first;
         while (nbpion > 0 && data.second) {
-            Pion* pionQuelconque = usine->creerPion(type, couleur);
-            Pion::ajouterPion(pionQuelconque);
-            pions.push_back(pionQuelconque);
+            auto pion = std::unique_ptr<Pion>(usine->creerPion(type, couleur));
+            Pion::ajouterPion(pion.get());
+            pions.push_back(pion.get());
+            tousLesPions.push_back(std::move(pion));
             nbpion--;
         }
     }
@@ -214,10 +196,10 @@ Joueur* Partie::determinerGagnant() const {
         std::string couleurReine = *couleursReines.begin();
 
         if (joueur1 && joueur1->getCouleur() != couleurReine) {
-            return joueur1;
+            return joueur1.get();
         }
         if (joueur2 && joueur2->getCouleur() != couleurReine) {
-            return joueur2;
+            return joueur2.get();
         }
     }
     else if (couleursReines.size() > 1) {

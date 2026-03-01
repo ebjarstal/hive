@@ -5,17 +5,8 @@ Plateau::Plateau(unsigned int l, unsigned int c, unsigned int z) : nb_lignes(l),
     grille.resize(l, std::vector<std::vector<Pion*>>(c, std::vector<Pion*>(z, nullptr))); // Initialiser la grille avec des nullptr
 }
 
-// Destructeur pour supprimer les objets Pion alloues dynamiquement
+// Destructeur: la grille contient des pointeurs non-propriétaires (owned by Partie::tousLesPions)
 Plateau::~Plateau() {
-    for (auto& couche : grille) {
-        for (auto& ligne : couche) {
-            for (Pion* pion : ligne) {
-                delete pion;
-                pion = nullptr;
-            }
-        }
-    }
-    std::cout << "Pions du plateau supprimes" << std::endl;
 }
 
 void Plateau::afficher() {
