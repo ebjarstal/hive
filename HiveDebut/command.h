@@ -13,7 +13,7 @@ public:
 	virtual ~Command() {}
 	virtual void execute() = 0;
 	virtual void undo() = 0;
-	virtual std::string getDescription() const = 0;  // Méthode pour la description
+	virtual std::string getDescription() const = 0;  // MÃ©thode pour la description
 };
 
 class MouvementCommand : public Command {

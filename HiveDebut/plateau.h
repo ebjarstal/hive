@@ -18,7 +18,6 @@
 #include <set>
 #include <filesystem>
 #include <algorithm>
-#include <direct.h>
 
 // Permet d'utiliser les couleurs dans la console
 #define RED "\033[31m"
@@ -35,7 +34,7 @@ public:
     void afficher();
     bool isVide() const;
     void redimensionnerPlateau();
-    bool estValide(int ligne, int colonne, int z = 0) const;  // Méthode non statique car elle dépend des dimensions du Plateau
+    bool estValide(int ligne, int colonne, int z = 0) const;  // Mï¿½thode non statique car elle dï¿½pend des dimensions du Plateau
 
     unsigned int getNbLignes() const { return nb_lignes; }
     unsigned int getNbColonnes() const { return nb_colonnes; }

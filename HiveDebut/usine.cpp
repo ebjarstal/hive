@@ -9,11 +9,11 @@ UsineDePions::UsineDePions() {
     nombreDePions["K"] = { 2, true };  // Scarabee
     nombreDePions["A"] = { 2, true };  // Araignee
   
-    //mettre les extension à false de base
+    //mettre les extension Ã  false de base
     nombreDePions["X"] = { 1, false };  // Coccinelle
     nombreDePions["M"] = { 1, false };  // Moustique
 
-    //nombreDePions["C"] = { 1, false };  // Cloporte --> pas implémenté
+    //nombreDePions["C"] = { 1, false };  // Cloporte --> pas implÃ©mentÃ©
 
     //ajoute des types si besoin de plus
 }

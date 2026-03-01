@@ -7,7 +7,7 @@
 
 VuePion::VuePion(QGraphicsItem* parent)
     : QObject(), QGraphicsPolygonItem(parent), estPose(false) {
-    // dessiner l'hexagone avec les points nécessaires
+    // dessiner l'hexagone avec les points nÃ©cessaires
     QVector<QPointF> hexPoints;
     hexPoints << QPointF(1, 0) << QPointF(2, 0.58) << QPointF(2, 1.73)
         << QPointF(1, 2.31) << QPointF(0, 1.73) << QPointF(0, 0.58);
@@ -17,7 +17,7 @@ VuePion::VuePion(QGraphicsItem* parent)
         hexPoints[i] *= SCALE_BY;
     }
 
-    // crée un hexagone avec les points de taille augmentée
+    // crÃ©e un hexagone avec les points de taille augmentÃ©e
     QPolygonF hexagone(hexPoints);
 
     // dessine l'hexagone
@@ -59,7 +59,7 @@ void VuePion::setCouleur(string nouvelleCouleur) {
         couleur = Qt::white;
     }
 
-    // donne le look métallique
+    // donne le look mÃ©tallique
     QLinearGradient gradient(0, 0, 1, 1);
     gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
     gradient.setColorAt(0, couleur.lighter(150));
@@ -77,7 +77,7 @@ void VuePion::setCouleur(string nouvelleCouleur) {
 void VuePion::setCouleur(QColor nouvelleCouleur) {
     couleur = nouvelleCouleur;
 
-    // donne le look métallique
+    // donne le look mÃ©tallique
     QLinearGradient gradient(0, 0, 1, 1);
     gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
     gradient.setColorAt(0, couleur.lighter(150));
@@ -98,7 +98,7 @@ QString VuePion::getType() {
 
 void VuePion::setType(QString nouveauType) {
     type = nouveauType;
-    update(); // Redessiner l'élément pour afficher le nouveau type
+    update(); // Redessiner l'Ã©lÃ©ment pour afficher le nouveau type
 }
 
 bool VuePion::getEstPose() {
@@ -114,7 +114,7 @@ void VuePion::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 }
 
 void VuePion::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
-    // Appeler la méthode de base pour dessiner l'hexagone
+    // Appeler la mÃ©thode de base pour dessiner l'hexagone
     QGraphicsPolygonItem::paint(painter, option, widget);
 
     // Dessiner le texte au centre de l'hexagone

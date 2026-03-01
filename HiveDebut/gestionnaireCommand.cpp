@@ -1,17 +1,17 @@
-#include "GestionnaireCommand.h"
+#include "gestionnaireCommand.h"
 #include "partie.h"
 
 void GestionnaireCommand::executeCommand(Partie& partie, Command* cmd) {
-    // Exécuter la commande
+    // ExÃ©cuter la commande
     cmd->execute();
-    // Ajouter la commande à l'historique
+    // Ajouter la commande Ã  l'historique
     partie.getHistorique().push(cmd);
 }
 
 void GestionnaireCommand::undoCommand(Partie& partie) {
     if (!partie.getHistorique().empty()) {
 
-        // Obtenir la dernière commande
+        // Obtenir la derniÃ¨re commande
         auto cmd = std::move(partie.getHistorique().top());
         partie.getHistorique().pop();
 

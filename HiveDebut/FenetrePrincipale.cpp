@@ -1,4 +1,4 @@
-﻿#include "FenetrePrincipale.h"
+#include "FenetrePrincipale.h"
 
 FenetrePrincipale::FenetrePrincipale(QWidget* parent) : QMainWindow(parent) {
     // Initialiser le contrôleur de jeu

@@ -19,14 +19,14 @@ Plateau::~Plateau() {
 }
 
 void Plateau::afficher() {
-    // Calculer la largeur maximale nécessaire pour le numéro de ligne
+    // Calculer la largeur maximale nÃ©cessaire pour le numÃ©ro de ligne
     size_t largeurLigne = std::to_string(nb_lignes - 1).size();
 
     // Stocker les informations des cases avec plusieurs pions (pile)
     std::vector<std::string> casesEmpilees;
 
     for (unsigned int ligne = 0; ligne < nb_lignes; ++ligne) {
-        // Afficher le numéro de ligne avec un espace réservé
+        // Afficher le numÃ©ro de ligne avec un espace rÃ©servÃ©
         std::cout << std::setw(largeurLigne) << ligne << " ";
 
         // Imprimer les espaces seulement pour une ligne sur deux
@@ -55,12 +55,12 @@ void Plateau::afficher() {
                     ++z;
                 }
 
-                // Afficher uniquement le pion situé au niveau z le plus élevé (dernier dans le vecteur)
+                // Afficher uniquement le pion situÃ© au niveau z le plus Ã©levÃ© (dernier dans le vecteur)
                 if (!pionsEmpiles.empty()) {
                     std::cout << pionsEmpiles.back() << " "; // Pion au sommet
                 }
 
-                // Ajouter les autres pions (recouverts) dans la légende
+                // Ajouter les autres pions (recouverts) dans la lÃ©gende
                 if (pionsEmpiles.size() > 1) {
                     std::ostringstream details;
                     details << "Case (" << ligne << ", " << colonne << "): ";
@@ -74,7 +74,7 @@ void Plateau::afficher() {
         std::cout << std::endl;
     }
 
-    // Afficher la légende des cases avec des pions empilés
+    // Afficher la lÃ©gende des cases avec des pions empilÃ©s
     if (!casesEmpilees.empty()) {
         std::cout << "\nPions empiles :\n";
         for (const auto& ligne : casesEmpilees) {

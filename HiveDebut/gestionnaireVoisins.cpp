@@ -166,14 +166,14 @@ std::vector<Pion*> GestionnaireVoisins::getRuche(Pion* p, Plateau& plateau){
     return ruche;
 }
 
-// Obtenir les coordonées des cases vides autour d'un pion d'après une référence
+// Obtenir les coordonÃ©es des cases vides autour d'un pion d'aprÃ¨s une rÃ©fÃ©rence
 std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(Pion& p, Plateau& plateau) {
     std::vector<std::tuple<int, int, int>> casesVides;
 
     int ligne = p.getLigne();
     int colonne = p.getColonne();
 
-    // Liste des déplacements possibles pour un hexagone, dépendant de la parité de la ligne
+    // Liste des dÃ©placements possibles pour un hexagone, dÃ©pendant de la paritÃ© de la ligne
     std::vector<std::tuple<int, int, int>> directions;
 
     if (ligne % 2 == 0) { // Ligne paire
@@ -192,7 +192,7 @@ std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(
         int voisinLigne = ligne + std::get<0>(direction);
         int voisinColonne = colonne + std::get<1>(direction);
 
-        // Vérifie si la case voisine est vide
+        // VÃ©rifie si la case voisine est vide
         if (GestionnairePions::getPion(voisinLigne, voisinColonne, plateau) == nullptr) {
             casesVides.emplace_back(voisinLigne, voisinColonne, 0);
         }
@@ -200,11 +200,11 @@ std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(
     return casesVides;
 }
 
-// Obtenir les coordonées des cases vides autour d'un pion d'après des coordonées
+// Obtenir les coordonÃ©es des cases vides autour d'un pion d'aprÃ¨s des coordonÃ©es
 std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(int ligne, int colonne, int z, Plateau& plateau) {
     std::vector<std::tuple<int, int, int>> casesVides;
 
-    // Liste des déplacements possibles pour un hexagone, dépendant de la parité de la ligne
+    // Liste des dÃ©placements possibles pour un hexagone, dÃ©pendant de la paritÃ© de la ligne
     std::vector<std::tuple<int, int, int>> directions;
 
     if (ligne % 2 == 0) { // Ligne paire
@@ -223,7 +223,7 @@ std::vector<std::tuple<int, int, int>> GestionnaireVoisins::getCasesVidesAutour(
         int voisinLigne = ligne + std::get<0>(direction);
         int voisinColonne = colonne + std::get<1>(direction);
 
-        // Vérifie si la case voisine est vide
+        // VÃ©rifie si la case voisine est vide
         if (GestionnairePions::getPion(voisinLigne, voisinColonne, plateau, 0) == nullptr) {
             casesVides.emplace_back(voisinLigne, voisinColonne, 0);
         }

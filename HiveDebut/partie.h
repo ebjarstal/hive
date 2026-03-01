@@ -11,13 +11,10 @@
 #include <iostream>
 #include <stack>
 #include <fstream>
-#include <windows.h>
 #include <sstream>
 #include <map>
 #include <algorithm>
 #include <set>
-
-#define NOMINMAX
 
 // Permet d'utiliser les couleurs dans la console
 #define RED "\033[31m"
@@ -56,7 +53,7 @@ public:
 
     void setup(); // Met en place une partie
 
-    int choixChargementOuCreationPartie(); // Donne le choix au joueur de charger ou créer une partie
+    int choixChargementOuCreationPartie(); // Donne le choix au joueur de charger ou crï¿½er une partie
     void creationPartie(const std::string dossierSauvegarde);  // Cree une partie
     void choixExtension();
     std::vector<Pion*> initialiserPions(const std::string& couleur);  // Initialise les pions des 2 joueurs

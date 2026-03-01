@@ -41,7 +41,7 @@ void Controleur::updatePioches() {
     piocheJoueur1.clear();
     piocheJoueur2.clear();
 
-    // Recréer les pioches de chaque joueur
+    // RecrÃ©er les pioches de chaque joueur
     for (size_t i = 0; i < partie->getJoueur1()->getPionsEnMain().size(); i++) {
         VuePion* pion = new VuePion();
         pion->setAttributs(std::string(RED), false, QString::fromStdString(partie->getJoueur1()->getPionsEnMain()[i]->getType()));
@@ -88,12 +88,9 @@ void Controleur::placerPion(VuePion* pionAPlacer, VuePion* pionARemplacer) {
     auto poserPionCommand = new MouvementCommand(*partie, emplacementChoisi);
     GestionnaireCommand::executeCommand(*partie, poserPionCommand);
 
-    // retirer le pion de la pioche du joueur concerné
-    if (piocheJoueur1.removeOne(pionAPlacer)) {
-        piocheJoueur1.resize(piocheJoueur1.size());
-    }
-    else if (piocheJoueur2.removeOne(pionAPlacer)) {
-        piocheJoueur2.resize(piocheJoueur2.size());
+    // retirer le pion de la pioche du joueur concernÃ©
+    if (!piocheJoueur1.removeOne(pionAPlacer)) {
+        piocheJoueur2.removeOne(pionAPlacer);
     }
 }
 
@@ -111,12 +108,9 @@ void Controleur::deplacerPion(VuePion* pionADeplacer, VuePion* pionARemplacer) {
     auto poserPionCommand = new MouvementCommand(*partie, emplacementChoisi);
     GestionnaireCommand::executeCommand(*partie, poserPionCommand);
 
-    // retirer le pion de la pioche du joueur concerné
-    if (piocheJoueur1.removeOne(pionADeplacer)) {
-        piocheJoueur1.resize(piocheJoueur1.size());
-    }
-    else if (piocheJoueur2.removeOne(pionADeplacer)) {
-        piocheJoueur2.resize(piocheJoueur2.size());
+    // retirer le pion de la pioche du joueur concernÃ©
+    if (!piocheJoueur1.removeOne(pionADeplacer)) {
+        piocheJoueur2.removeOne(pionADeplacer);
     }
 }
 
@@ -133,22 +127,22 @@ void Controleur::jouerTour() {
         aQuiDeJouer = QString::fromStdString(partie->getJoueur1()->getNom());
     }
 
-    // faire jouer l'ia si c'est à son tour
+    // faire jouer l'ia si c'est Ã  son tour
     if (aQuiDeJouer == QString("IA")) {
         partie->getJoueur2()->Jouer(partie->getPlateau(), *partie);
         aQuiDeJouer = QString::fromStdString(partie->getJoueur1()->getNom());
         partie->setNombreTour(partie->getNombreTour() + 1);
     }
 
-    // Incrémenter le nombre de tours joués
+    // IncrÃ©menter le nombre de tours jouÃ©s
     if (aQuiDeJouer == QString::fromStdString(partie->getJoueur1()->getNom())) {
         partie->setNombreTour(partie->getNombreTour() + 1);
     }
 
-    // Sauvegarder la partie après chaque tour
+    // Sauvegarder la partie aprÃ¨s chaque tour
     GestionnaireSauvegarde::sauvegarde(*partie);
 
-    // Déterminer le gagnant après chaque tour
+    // DÃ©terminer le gagnant aprÃ¨s chaque tour
     if (partie->partieTerminee()) {
         Joueur* gagnant = partie->determinerGagnant();
         QString message = gagnant ? QString("%1 gagne !!").arg(QString::fromStdString(gagnant->getNom())) : "Egalite !!";
@@ -175,7 +169,7 @@ void Controleur::annulerMouvementJoueur2() {
 }
 
 void Controleur::initialiserPioches() {
-    // Recréer les pions en main des joueurs en fonction des extensions activées
+    // RecrÃ©er les pions en main des joueurs en fonction des extensions activÃ©es
     partie->getJoueur1()->getPionsEnMain().clear();
     partie->getJoueur2()->getPionsEnMain().clear();
     std::vector<Pion*> pionsJoueur1 = partie->initialiserPions(RED);
@@ -185,7 +179,7 @@ void Controleur::initialiserPioches() {
 }
 
 void Controleur::updateVuePlateau() {
-    // Réinitialiser le plateau
+    // RÃ©initialiser le plateau
     vuePlateau->initialiserPlateau(190, 100);
 }
 

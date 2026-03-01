@@ -5,11 +5,11 @@
 
 
 Joueur::~Joueur() {
-    // Libérer chaque pion pointé dans le vecteur pionsEnMain
+    // LibÃ©rer chaque pion pointÃ© dans le vecteur pionsEnMain
     for (Pion* pion : pionsEnMain) {
         delete pion;
     }
-    pionsEnMain.clear(); // Vide le vecteur après la suppression des pointeurs
+    pionsEnMain.clear(); // Vide le vecteur aprÃ¨s la suppression des pointeurs
 }
 
 bool Joueur::peutBougerPions() {
@@ -253,7 +253,7 @@ Mouvement* JoueurHumain::deplacerPionHumain(Plateau& plateau) {
 }
 
 Mouvement* JoueurIA::trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCourant, int profondeurMax) {
-    int meilleurScore = -10000; // Valeur initiale très basse pour maximiser
+    int meilleurScore = -10000; // Valeur initiale trÃ¨s basse pour maximiser
     Mouvement* meilleurMouvement = nullptr;
     std::vector<Mouvement*> mouvementsPossibles = GestionnaireMouvements::genererTousLesMouvements(plateau, joueurCourant);
     for (Mouvement* mouvement : mouvementsPossibles) {
@@ -261,22 +261,22 @@ Mouvement* JoueurIA::trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCo
         Command* command = new MouvementCommand(partie, mouvement);
         GestionnaireCommand::executeCommand(partie, command);
 
-        // Évaluer avec minimax
+        // Ã‰valuer avec minimax
         int score = minimax(plateau, profondeurMax - 1, partie.joueurAdverse(joueurCourant), true, -10000, 10000);
 
         // Annuler le mouvement
         GestionnaireCommand::undoCommand(partie);
 
-        // Vérifier si ce mouvement est le meilleur
+        // VÃ©rifier si ce mouvement est le meilleur
         if (score > meilleurScore) {
             meilleurScore = score;
             if (meilleurMouvement) {
-                delete meilleurMouvement; // Libérer l'ancien mouvement
+                delete meilleurMouvement; // LibÃ©rer l'ancien mouvement
             }
             meilleurMouvement = mouvement; // Sauvegarder le nouveau meilleur
         }
         else {
-            delete mouvement; // Libérer les mouvements non retenus
+            delete mouvement; // LibÃ©rer les mouvements non retenus
         }
     }
 
@@ -286,11 +286,11 @@ Mouvement* JoueurIA::trouverMeilleurMouvement(Plateau& plateau, Joueur& joueurCo
 int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& joueur, bool isMaximizingPlayer) {
     int score = 0;
 
-    // 1. Vérifier si la partie est terminée
+    // 1. VÃ©rifier si la partie est terminÃ©e
     if (partie.partieTerminee()) {
         Joueur* gagnant = partie.determinerGagnant();
         if (gagnant == &joueur) {
-            return isMaximizingPlayer ? 1000 : -1000; // Victoire ou défaite
+            return isMaximizingPlayer ? 1000 : -1000; // Victoire ou dÃ©faite
         }
         else {
             return isMaximizingPlayer ? -1000 : 1000;
@@ -319,7 +319,7 @@ int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& joueur, bool isMaximizingP
             else reineAdverse = pion;
         }
 
-        // Évaluer la mobilité et les types de pions
+        // Ã‰valuer la mobilitÃ© et les types de pions
         if (!GestionnaireMouvements::cassageRuche(*pion, plateau)) {
             auto mouvements = pion->deplacementsPossibles(*pion, joueur, plateau);
             int options = mouvements.size();
@@ -327,7 +327,7 @@ int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& joueur, bool isMaximizingP
             if (estJoueur) {
                 optionsJoueur += options;
 
-                // Bonus basé sur le type de pion
+                // Bonus basÃ© sur le type de pion
                 score += (isMaximizingPlayer ? 1 : -1) * (pion->getType() == "F" ? 5
                     : pion->getType() == "K" ? 10
                     : pion->getType() == "A" ? 3
@@ -336,7 +336,7 @@ int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& joueur, bool isMaximizingP
             else {
                 optionsAdversaire += options;
 
-                // Pénalité basée sur le type de pion adverse
+                // PÃ©nalitÃ© basÃ©e sur le type de pion adverse
                 score -= (isMaximizingPlayer ? 1 : -1) * (pion->getType() == "F" ? 5
                     : pion->getType() == "K" ? 10
                     : pion->getType() == "A" ? 3
@@ -354,11 +354,11 @@ int JoueurIA::evaluerPartie(Plateau& plateau, Joueur& joueur, bool isMaximizingP
         voisinsReineAdverse = GestionnaireVoisins::nombreVoisins(*reineAdverse, plateau);
     }
 
-    // Bonus ou pénalité pour le blocage des reines
+    // Bonus ou pÃ©nalitÃ© pour le blocage des reines
     score += (isMaximizingPlayer ? 1 : -1) * ((10 - voisinsReineAdverse) * 10); // Bonus pour bloquer la reine adverse
-    score -= (isMaximizingPlayer ? 1 : -1) * (voisinsReineJoueur * 10);         // Pénalité si la reine du joueur est bloquée
+    score -= (isMaximizingPlayer ? 1 : -1) * (voisinsReineJoueur * 10);         // PÃ©nalitÃ© si la reine du joueur est bloquÃ©e
 
-    // 4. Ajouter les scores de mobilité
+    // 4. Ajouter les scores de mobilitÃ©
     score += (isMaximizingPlayer ? 1 : -1) * (optionsJoueur * 2);
     score -= (isMaximizingPlayer ? 1 : -1) * (optionsAdversaire * 2);
 
@@ -381,7 +381,7 @@ int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, b
         Command* command = new MouvementCommand(partie, mouvement);
         GestionnaireCommand::executeCommand(partie, command);
 
-        // Appeler récursivement minimax
+        // Appeler rÃ©cursivement minimax
         int score = minimax(plateau, profondeur - 1, partie.joueurAdverse(joueurCourant), !isMaximizingPlayer, alpha, beta);
 
         // Annuler le mouvement
@@ -402,7 +402,7 @@ int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, b
         }
     }
 
-    // Libérer la mémoire des mouvements générés
+    // LibÃ©rer la mÃ©moire des mouvements gÃ©nÃ©rÃ©s
     for (Mouvement* mouvement : mouvementsPossibles) {
         delete mouvement;
     }
@@ -411,17 +411,17 @@ int JoueurIA::minimax(Plateau& plateau, int profondeur, Joueur& joueurCourant, b
 }
 
 Mouvement* JoueurHumain::poserReineHumain(Plateau& plateau) {
-    Pion* pionReine = nullptr;  // Initialisation à nullptr
+    Pion* pionReine = nullptr;  // Initialisation Ã  nullptr
 
-    // Récupère le pion Reine en main
+    // RÃ©cupÃ¨re le pion Reine en main
     for (Pion* pion : pionsEnMain) {
         if (pion->getType() == "R") {
             pionReine = pion;
-            break;  // Pas besoin de continuer la boucle une fois la Reine trouvée
+            break;  // Pas besoin de continuer la boucle une fois la Reine trouvÃ©e
         }
     }
 
-    // Vérifier si la Reine a été trouvée
+    // VÃ©rifier si la Reine a Ã©tÃ© trouvÃ©e
     if (pionReine == nullptr) {
         std::cerr << "Erreur : Aucun pion de type 'R' n'est disponible dans la main !" << std::endl;
         return nullptr;  // Gestion du cas d'erreur
@@ -429,7 +429,7 @@ Mouvement* JoueurHumain::poserReineHumain(Plateau& plateau) {
 
     std::vector<Mouvement*> emplacements = pionReine->emplacementsPossibles(*pionReine, plateau);
 
-    // Affiche les déplacements de la Reine
+    // Affiche les dÃ©placements de la Reine
     afficherEmplacements(emplacements);
     Mouvement* emplacementChoisi = choisirEmplacement(emplacements);
 

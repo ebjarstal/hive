@@ -55,7 +55,7 @@ private:
     bool    estPose;
     QString type;
 
-    // pour les pions "vides", le pion associé est un nullptr donc on stocke les coordonnées ici
+    // pour les pions "vides", le pion associÃ© est un nullptr donc on stocke les coordonnÃ©es ici
     int ligne;
     int colonne;
     int z;

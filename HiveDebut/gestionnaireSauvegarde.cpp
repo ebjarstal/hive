@@ -1,14 +1,12 @@
 #include "gestionnaireSauvegarde.h"
 #include "partie.h"
+#include <filesystem>
+#include <cerrno>
 
 void GestionnaireSauvegarde::creerDossierSiInexistant(const std::string& cheminDossier) {
-    if (_mkdir(cheminDossier.c_str()) == 0) {
-        std::cout << "Dossier cree avec succes : " << cheminDossier << std::endl;
-    }
-    else if (errno == EEXIST) {
-        std::cout << "Le dossier existe deja : " << cheminDossier << std::endl;
-    }
-    else {
+    std::error_code ec;
+    std::filesystem::create_directory(cheminDossier, ec);
+    if (ec && ec.value() != EEXIST) {
         std::cerr << "Erreur : Impossible de creer le dossier " << cheminDossier << std::endl;
     }
 }
@@ -100,11 +98,11 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         // Extraire la couleur
         std::string couleur = ligne.substr(posCouleur + 11);
 
-        Pion* pion = u->creerPion(id, type, couleur); // Création avec ID
+        Pion* pion = u->creerPion(id, type, couleur); // Crï¿½ation avec ID
         Pion::ajouterPion(pion);
         pionsJ1.push_back(pion); // Ajouter aux pions du joueur
     }
-    // Créer le joueur 1
+    // Crï¿½er le joueur 1
     if (typeJ1 == "Humain")
         p.setJoueur1(new JoueurHumain(nomJ1, pionsJ1, couleurJ1, nbUndoJ1, p));
     else
@@ -140,19 +138,19 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         // Extraire la couleur
         std::string couleur = ligne.substr(posCouleur + 11);
 
-        Pion* pion = u->creerPion(id, type, couleur); // Création avec ID
+        Pion* pion = u->creerPion(id, type, couleur); // Crï¿½ation avec ID
         Pion::ajouterPion(pion);
         pionsJ2.push_back(pion);                  // Ajouter aux pions du joueur
     }
-    // Créer le joueur 2
+    // Crï¿½er le joueur 2
     if (typeJ2 == "Humain")
         p.setJoueur2(new JoueurHumain(nomJ2, pionsJ2, couleurJ2, nbUndoJ2, p));
     else
         p.setJoueur2(new JoueurIA(nomJ2, pionsJ2, couleurJ2, p, nbUndoJ2));
 
-    // Charger l'état du plateau
+    // Charger l'ï¿½tat du plateau
     while (std::getline(fichier, ligne) && ligne.find("Position") != std::string::npos) {
-        // Extraire les coordonnées
+        // Extraire les coordonnï¿½es
         size_t pos1 = ligne.find("(") + 1;
         size_t pos2 = ligne.find(",");
         int colonne = std::stoi(ligne.substr(pos1, pos2 - pos1));
@@ -175,7 +173,7 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         std::string type = ligne.substr(posType, posCouleur - posType);
 
         std::string couleur = ligne.substr(posCouleur + 11);
-        // Créer ou récupérer le pion et le placer sur le plateau
+        // Crï¿½er ou rï¿½cupï¿½rer le pion et le placer sur le plateau
         if (couleur == p.getJoueur1()->getCouleur()) {
             Pion* pion = u->creerPion(id, type, couleur); // Avec ID
             Pion::ajouterPion(pion);
@@ -195,7 +193,7 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         size_t pos2 = ligne.find(" ", pos1);
         int pionId = std::stoi(ligne.substr(pos1, pos2 - pos1));
 
-        // Extraire les anciennes coordonnées
+        // Extraire les anciennes coordonnï¿½es
         pos1 = ligne.find("(") + 1;
         pos2 = ligne.find(",");
         int oldLigne = std::stoi(ligne.substr(pos1, pos2 - pos1));
@@ -208,7 +206,7 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         pos2 = ligne.find(")", pos1);
         int oldZ = std::stoi(ligne.substr(pos1, pos2 - pos1));
 
-        // Extraire les nouvelles coordonnées
+        // Extraire les nouvelles coordonnï¿½es
         pos1 = ligne.find("(", pos2) + 1;
         pos2 = ligne.find(",", pos1);
         int newLigne = std::stoi(ligne.substr(pos1, pos2 - pos1));
@@ -226,7 +224,7 @@ bool GestionnaireSauvegarde::chargerPartie(Partie& p) {
         pos2 = ligne.find("|", pos1);
         int newJoueur = std::stoi(ligne.substr(pos1, pos2 - pos1));
 
-        // Créer un mouvement en utilisant l'ID du pion
+        // Crï¿½er un mouvement en utilisant l'ID du pion
         Joueur& j = *p.getJoueur2();
         Mouvement* mvt = new Mouvement(pionId, newLigne, newColonne, newZ, oldLigne, oldColonne, oldZ);
         if (newJoueur == 1) {
@@ -256,7 +254,7 @@ void GestionnaireSauvegarde::sauvegarde(Partie& p) {
         return;
     }
 
-    // Sauvegarder les données de base
+    // Sauvegarder les donnï¿½es de base
     fichier << "Nombre de tour: " << nombreTour << std::endl;
 
     // Sauvegarde des joueurs
@@ -292,7 +290,7 @@ void GestionnaireSauvegarde::sauvegarde(Partie& p) {
             }
         }
     }
-    // Vérification de la présence de callback dans l'historique
+    // Vï¿½rification de la prï¿½sence de callback dans l'historique
     fichier << "Historique des mouvements:" << std::endl;
     bool callbackDetected = false;
     std::stack<Command*> historiqueInversee;
@@ -309,7 +307,7 @@ void GestionnaireSauvegarde::sauvegarde(Partie& p) {
         historique.pop();
     }
 
-    // Si une callback est détectée, ne pas sauvegarder les détails des mouvements
+    // Si une callback est dï¿½tectï¿½e, ne pas sauvegarder les dï¿½tails des mouvements
     if (!callbackDetected) {
         while (!historiqueInversee.empty()) {
             Command* cmd = historiqueInversee.top();

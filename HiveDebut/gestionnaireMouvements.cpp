@@ -10,7 +10,7 @@ bool GestionnaireMouvements::cassageRuche(Pion& p, Plateau& plateau) {
         return true;
     }
 
-    // On doit avoir des voisins, nous sommes pas censé aller dans cette boucle
+    // On doit avoir des voisins, nous sommes pas censÃ© aller dans cette boucle
     if (GestionnaireVoisins::nombreVoisins(p, plateau) == 0) {
         return false;
     }
@@ -20,7 +20,7 @@ bool GestionnaireMouvements::cassageRuche(Pion& p, Plateau& plateau) {
 
     std::vector<Pion*> ruche_ref;
 
-    // Sauvegarde des données du pion qui va etre supprimé
+    // Sauvegarde des donnÃ©es du pion qui va etre supprimÃ©
     int ref_l = p.getLigne();
     int ref_c = p.getColonne();
     int ref_z = p.getZ();
@@ -65,7 +65,7 @@ std::vector<std::tuple<Pion*, int, int, int>> GestionnaireMouvements::getPionsBo
 }
 
 
-// Booléen si le déplacement casse la ruche ou non
+// BoolÃ©en si le dÃ©placement casse la ruche ou non
 bool GestionnaireMouvements::deplacementCasseRuche(Pion* pion, int newLigne, int newColonne, int newZ, Plateau& plateau) {
     std::vector<Pion*> rucheAvant = GestionnaireVoisins::getRuche(pion, plateau);
 
@@ -95,25 +95,25 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
     for (Pion* pion : pionsEnMain) {
         // Obtenir les emplacements valides pour poser ce pion
         std::vector<Mouvement*> placementsPossibles = pion->emplacementsPossibles(*pion, p);
-        //std::cout << "Nombre placements possibles de mouvements générés : " << placementsPossibles.size() << std::endl;
-        // Ajouter les mouvements de placement à la liste des mouvements possibles
+        //std::cout << "Nombre placements possibles de mouvements gÃ©nÃ©rÃ©s : " << placementsPossibles.size() << std::endl;
+        // Ajouter les mouvements de placement Ã  la liste des mouvements possibles
         mouvements.insert(mouvements.end(), placementsPossibles.begin(), placementsPossibles.end());
     }
 
-    //std::cout << "Nombre premiere etape de mouvements générés : " << mouvements.size() << std::endl;
-    // Cas où le joueur n'a aucun pion sur le plateau : générer les placements possibles
+    //std::cout << "Nombre premiere etape de mouvements gÃ©nÃ©rÃ©s : " << mouvements.size() << std::endl;
+    // Cas oÃ¹ le joueur n'a aucun pion sur le plateau : gÃ©nÃ©rer les placements possibles
     if (!pionsJoueur.empty()) {
-        // Cas normal : générer les mouvements pour les pions déjà en jeu
+        // Cas normal : gÃ©nÃ©rer les mouvements pour les pions dÃ©jÃ  en jeu
         for (std::tuple<Pion*, int, int, int> tuple : pionsJoueur) {
             Pion* pion = get<0>(tuple);
 
             // Obtenir les emplacements possibles pour ce pion
             std::vector<Mouvement*> deplacementsValides = pion->deplacementsPossibles(*pion, joueur, p);
 
-            // Ajouter les déplacements valides à la liste des mouvements possibles
+            // Ajouter les dÃ©placements valides Ã  la liste des mouvements possibles
             mouvements.insert(mouvements.end(), deplacementsValides.begin(), deplacementsValides.end());
 
-            // Libérer les emplacements inutilisés
+            // LibÃ©rer les emplacements inutilisÃ©s
             for (Mouvement* emplacement : deplacementsValides) {
                 if (std::find(deplacementsValides.begin(), deplacementsValides.end(), emplacement) == deplacementsValides.end()) {
                     delete emplacement;
@@ -126,7 +126,7 @@ std::vector<Mouvement*> GestionnaireMouvements::genererTousLesMouvements(Plateau
 }
 
 bool GestionnaireMouvements::estPassageOuvert(int ligne1, int colonne1, int ligne2, int colonne2, Plateau& plateau) {
-    // Récupérer les voisins de la première case
+    // RÃ©cupÃ©rer les voisins de la premiÃ¨re case
     std::vector<std::tuple<int, int, int>> voisins1 = GestionnaireVoisins::getVoisinsCoords(ligne1, colonne1, plateau, 0);
     std::vector<std::tuple<int, int, int>> voisins2 = GestionnaireVoisins::getVoisinsCoords(ligne2, colonne2, plateau, 0);
 
@@ -139,7 +139,7 @@ bool GestionnaireMouvements::estPassageOuvert(int ligne1, int colonne1, int lign
         setVoisins2.begin(), setVoisins2.end(),
         std::back_inserter(voisinsCommuns));
 
-    // Vérifier si au moins un des voisins communs est vide
+    // VÃ©rifier si au moins un des voisins communs est vide
     for (const auto& voisin : voisinsCommuns) {
         int v_ligne = std::get<0>(voisin);
         int v_colonne = std::get<1>(voisin);
@@ -150,5 +150,5 @@ bool GestionnaireMouvements::estPassageOuvert(int ligne1, int colonne1, int lign
         }
     }
 
-    return false; // Aucun voisin commun vide, passage bloqué
+    return false; // Aucun voisin commun vide, passage bloquÃ©
 }

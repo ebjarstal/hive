@@ -15,10 +15,10 @@ VuePlateau::~VuePlateau() {
         }
     }
 
-    // Supprimer la scène si elle a été allouée dynamiquement
+    // Supprimer la scÃ¨ne si elle a Ã©tÃ© allouÃ©e dynamiquement
     delete scene;
 
-    // Supprimer le plateau si il a été alloué dynamiquement
+    // Supprimer le plateau si il a Ã©tÃ© allouÃ© dynamiquement
     delete plateau;
 }
 
@@ -46,7 +46,7 @@ void VuePlateau::initialiserPlateau(int x, int y) {
 }
 
 void VuePlateau::creerLignePions(int x, int y, int ligne, int nb_colonnes) {
-    // crée une ligne de pions aux coordonnées indiquées (x, y) avec le nombre de colonnes spécifié (nb_colonnes)
+    // crÃ©e une ligne de pions aux coordonnÃ©es indiquÃ©es (x, y) avec le nombre de colonnes spÃ©cifiÃ© (nb_colonnes)
     for (size_t i = 0, n = nb_colonnes; i < n; i++) {
         VuePion* vuePion = nullptr;
         VuePion* plusHautVuePionNonVide = nullptr;
@@ -66,7 +66,7 @@ void VuePlateau::creerLignePions(int x, int y, int ligne, int nb_colonnes) {
                 plusHautVuePionNonVide = vuePion;
             }
             else {
-                // Si aucune vuePion n'a été créée, créer une vuePion vide pour la première couche et l'afficher
+                // Si aucune vuePion n'a Ã©tÃ© crÃ©Ã©e, crÃ©er une vuePion vide pour la premiÃ¨re couche et l'afficher
                 vuePion = new VuePion();
                 vuePion->setCouleur(Qt::white);
                 vuePion->setType(QString(""));

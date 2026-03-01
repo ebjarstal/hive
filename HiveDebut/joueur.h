@@ -1,7 +1,5 @@
 #pragma once
 
-#define NOMINMAX
-
 #include "plateau.h"
 #include "pions.h"
 #include "mouvement.h"
@@ -58,7 +56,7 @@ private:
 
     Mouvement* poserPionHumain(Plateau& plateau, Partie& partie);  // Poser un pion
     Mouvement* deplacerPionHumain(Plateau& plateau);  // Deplacer un pion
-    Mouvement* poserReineHumain(Plateau& plateau); //Poser le pion Reine si ne l'a pas fait après 4 tours
+    Mouvement* poserReineHumain(Plateau& plateau); //Poser le pion Reine si ne l'a pas fait aprï¿½s 4 tours
     void JouerMouvement(Partie& partie, Mouvement* emplacementChoisi);
 
 public:

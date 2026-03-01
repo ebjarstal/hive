@@ -61,17 +61,17 @@ void GestionnairePions::deletePion(Pion& p, Plateau& plateau) {
 }
 
 std::vector<Pion*> GestionnairePions::getPionsEnJeu(Plateau& plateau, string couleur) {
-    // Récupérer tous les pions sur le plateau
+    // RÃ©cupÃ©rer tous les pions sur le plateau
     std::vector<std::tuple<Pion*, int, int, int>> pionsSurPlateau = getPions(plateau);
 
-    // Vecteur pour stocker les pions appartenant à ce joueur
+    // Vecteur pour stocker les pions appartenant Ã  ce joueur
     std::vector<Pion*> pionsEnJeu;
 
     // Parcourir les pions sur le plateau
     for (size_t i = 0; i < pionsSurPlateau.size(); ++i) {
-        Pion* pion = std::get<0>(pionsSurPlateau[i]); // Récupérer le pion
-        if (pion->getCouleur() == couleur) {     // Vérifier la couleur
-            pionsEnJeu.push_back(pion);              // Ajouter à la liste des pions du joueur
+        Pion* pion = std::get<0>(pionsSurPlateau[i]); // RÃ©cupÃ©rer le pion
+        if (pion->getCouleur() == couleur) {     // VÃ©rifier la couleur
+            pionsEnJeu.push_back(pion);              // Ajouter Ã  la liste des pions du joueur
         }
     }
 

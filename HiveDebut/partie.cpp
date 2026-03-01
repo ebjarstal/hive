@@ -1,4 +1,4 @@
-﻿#include "partie.h"
+#include "partie.h"
 
 Partie::~Partie() {
     // Si les joueurs ont été créés dynamiquement ailleurs, vérifiez et libérez la mémoire.

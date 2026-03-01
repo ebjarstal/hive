@@ -14,7 +14,7 @@
 
 using namespace std;
 
-// Déclaration de Plateau au préalable pour éviter les problèmes de compilation
+// DÃ©claration de Plateau au prÃ©alable pour Ã©viter les problÃ¨mes de compilation
 class Plateau;
 class Joueur;
 
